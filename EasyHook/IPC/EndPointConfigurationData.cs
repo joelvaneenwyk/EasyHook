@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -37,7 +37,7 @@ namespace EasyHook.IPC
   public struct EndPointConfigurationData<TEndPoint>
     where TEndPoint : EndPointObject
   {
-    
+
     #region Variables
 
     private ICollection<WellKnownSidType> _allowedClients;
@@ -52,7 +52,7 @@ namespace EasyHook.IPC
     /// </summary>
     public Type RemoteObjectType
     {
-      get { return typeof(TEndPoint); }
+    get { return typeof(TEndPoint); }
     }
 
     /// <summary>
@@ -65,8 +65,8 @@ namespace EasyHook.IPC
     /// </remarks>
     public WellKnownObjectMode ObjectMode
     {
-      get { return _objectMode; }
-      set { _objectMode = value; }
+    get { return _objectMode; }
+    set { _objectMode = value; }
     }
 
     /// <summary>
@@ -74,15 +74,15 @@ namespace EasyHook.IPC
     /// </summary>
     public ICollection<WellKnownSidType> AllowedClients
     {
-      get { return _allowedClients; }
-      set
-      {
+    get { return _allowedClients; }
+    set
+    {
         if (value == null)
-          throw new ArgumentNullException("value");
+        throw new ArgumentNullException("value");
         if (value.Count == 0)
-          throw new ArgumentException();
+        throw new ArgumentException();
         _allowedClients = value;
-      }
+    }
     }
 
     #endregion
@@ -95,12 +95,12 @@ namespace EasyHook.IPC
     /// </summary>
     public static EndPointConfigurationData<TEndPoint> InitializeDefault()
     {
-      return new EndPointConfigurationData<TEndPoint>
-               {
-                 _allowedClients =
-                   new List<WellKnownSidType> {WellKnownSidType.BuiltinAdministratorsSid, WellKnownSidType.WorldSid},
-                 _objectMode = WellKnownObjectMode.Singleton
-               };
+    return new EndPointConfigurationData<TEndPoint>
+                {
+                _allowedClients =
+                    new List<WellKnownSidType> {WellKnownSidType.BuiltinAdministratorsSid, WellKnownSidType.WorldSid},
+                _objectMode = WellKnownObjectMode.Singleton
+                };
     }
 
     #endregion

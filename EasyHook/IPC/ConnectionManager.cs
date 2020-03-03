@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -56,8 +56,8 @@ namespace EasyHook.IPC
     /// </summary>
     internal ConnectionManager()
     {
-      _domainConnections = new Dictionary<DomainIdentifier, DuplexChannel<DomainConnectionEndPoint>>();
-      _domainConnectionsSyncRoot = new object();
+    _domainConnections = new Dictionary<DomainIdentifier, DuplexChannel<DomainConnectionEndPoint>>();
+    _domainConnectionsSyncRoot = new object();
     }
 
     #endregion
@@ -71,7 +71,7 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public bool CanConnect(DomainIdentifier id)
     {
-      lock (_domainConnectionsSyncRoot)
+    lock (_domainConnectionsSyncRoot)
         return _domainConnections.ContainsKey(id);
     }
 
@@ -85,21 +85,21 @@ namespace EasyHook.IPC
     /// <param name="id">The identifier of the targetted application domain.</param>
     /// <returns></returns>
     public TEndPoint Connect<TEndPoint>(DomainIdentifier id)
-      where TEndPoint : EndPointObject
+    where TEndPoint : EndPointObject
     {
-      DomainConnectionEndPoint remoteDomainEndPoint;
-      lock (_domainConnectionsSyncRoot)
-      {
+    DomainConnectionEndPoint remoteDomainEndPoint;
+    lock (_domainConnectionsSyncRoot)
+    {
         if (!_domainConnections.ContainsKey(id))
-          throw new ArgumentException("Unable to connect to remote domain with id " + id);
+        throw new ArgumentException("Unable to connect to remote domain with id " + id);
         remoteDomainEndPoint = _domainConnections[id].GetRemoteEndPoint();
-      }
-      var objectUri = remoteDomainEndPoint.CreateChannel<TEndPoint>();
-      var result = Activator.GetObject(typeof (TEndPoint), objectUri) as TEndPoint;
-      if (result == null)
+    }
+    var objectUri = remoteDomainEndPoint.CreateChannel<TEndPoint>();
+    var result = Activator.GetObject(typeof (TEndPoint), objectUri) as TEndPoint;
+    if (result == null)
         throw new RemotingException();
-      result.Ping();
-      return result;
+    result.Ping();
+    return result;
     }
 
     /// <summary>
@@ -111,23 +111,23 @@ namespace EasyHook.IPC
     /// <param name="result">The newly created proxy.</param>
     /// <returns></returns>
     public bool TryConnect<TEndPoint>(DomainIdentifier id, out TEndPoint result)
-      where TEndPoint : EndPointObject
+    where TEndPoint : EndPointObject
     {
-      if (!CanConnect(id))
-      {
+    if (!CanConnect(id))
+    {
         result = null;
         return false;
-      }
-      try
-      {
+    }
+    try
+    {
         result = Connect<TEndPoint>(id);
         return true;
-      }
-      catch
-      {
+    }
+    catch
+    {
         result = null;
         return false;
-      }
+    }
     }
 
     #endregion
@@ -144,10 +144,10 @@ namespace EasyHook.IPC
     /// <returns>The url of the created IPC channel.</returns>
     internal string InitializeInterDomainConnection()
     {
-      var endPointConfig = EndPointConfigurationData<DomainConnectionEndPoint>.InitializeDefault();
-      var duplexChannel = new DomainChannel(endPointConfig);
-      duplexChannel.InitializeConnection(OnDomainConnected);
-      return duplexChannel.LocalEndPointUrl;
+    var endPointConfig = EndPointConfigurationData<DomainConnectionEndPoint>.InitializeDefault();
+    var duplexChannel = new DomainChannel(endPointConfig);
+    duplexChannel.InitializeConnection(OnDomainConnected);
+    return duplexChannel.LocalEndPointUrl;
     }
 
     /// <summary>
@@ -159,9 +159,9 @@ namespace EasyHook.IPC
     /// <param name="channelUrl"></param>
     internal void ConnectInterDomainConnection(string channelUrl)
     {
-      var endPointConfig = EndPointConfigurationData<DomainConnectionEndPoint>.InitializeDefault();
-      var duplexChannel = new DomainChannel(endPointConfig, channelUrl);
-      duplexChannel.InitializeConnection(OnDomainConnected);
+    var endPointConfig = EndPointConfigurationData<DomainConnectionEndPoint>.InitializeDefault();
+    var duplexChannel = new DomainChannel(endPointConfig, channelUrl);
+    duplexChannel.InitializeConnection(OnDomainConnected);
     }
 
     /// <summary>
@@ -170,13 +170,13 @@ namespace EasyHook.IPC
     /// <typeparam name="TEndPoint">The type of the endpoint to create or open.</typeparam>
     /// <returns>The url to the endpoint of the connection.</returns>
     internal string CreateChannel<TEndPoint>()
-      where TEndPoint : EndPointObject
+    where TEndPoint : EndPointObject
     {
-      var endPointConfig = EndPointConfigurationData<TEndPoint>.InitializeDefault();
-      var channel = new SimplexChannel<TEndPoint>(endPointConfig);
-      channel.InitializeChannel();
-      return channel.EndPointUrl;
-      // ToDo: Testing required, need to save reference to the channel?
+    var endPointConfig = EndPointConfigurationData<TEndPoint>.InitializeDefault();
+    var channel = new SimplexChannel<TEndPoint>(endPointConfig);
+    channel.InitializeChannel();
+    return channel.EndPointUrl;
+    // ToDo: Testing required, need to save reference to the channel?
     }
 
     #endregion
@@ -189,13 +189,13 @@ namespace EasyHook.IPC
     /// <param name="sender"></param>
     private void OnDomainConnected(DomainChannel sender)
     {
-      var remoteDomainEndPoint = sender.GetRemoteEndPoint();
-      var remoteDomainId = remoteDomainEndPoint.Id;
-      lock (_domainConnectionsSyncRoot)
-      {
+    var remoteDomainEndPoint = sender.GetRemoteEndPoint();
+    var remoteDomainId = remoteDomainEndPoint.Id;
+    lock (_domainConnectionsSyncRoot)
+    {
         if (!_domainConnections.ContainsKey(remoteDomainId))
-          _domainConnections.Add(remoteDomainId, sender);
-      }
+        _domainConnections.Add(remoteDomainId, sender);
+    }
     }
 
     /// <summary>
@@ -204,11 +204,11 @@ namespace EasyHook.IPC
     /// <param name="domainIdentifier"></param>
     private void OnDomainDisposed(DomainIdentifier domainIdentifier)
     {
-      lock (_domainConnectionsSyncRoot)
-      {
+    lock (_domainConnectionsSyncRoot)
+    {
         if (_domainConnections.ContainsKey(domainIdentifier))
-          _domainConnections.Remove(domainIdentifier);
-      }
+        _domainConnections.Remove(domainIdentifier);
+    }
     }
 
     #endregion

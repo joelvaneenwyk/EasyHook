@@ -21,16 +21,16 @@ namespace ProcessMonitor
     }
 
     /*
-     * This is the class where our clients will connect to!
-     * 
-     * Please note that setting any breakpoint here will cause the related
-     * thread in the client process to block until you continue execution!
-     * So don't wonder if your browser (for example) hangs when you set a 
-     * breakpoint ;-)... Let's say you can debug a part of the code the client
-     * is executing (that's not technically correct)
-     * 
-     * In Windows 2000 debugging the following seems to cause problems. 
-     */
+    * This is the class where our clients will connect to!
+    *
+    * Please note that setting any breakpoint here will cause the related
+    * thread in the client process to block until you continue execution!
+    * So don't wonder if your browser (for example) hangs when you set a
+    * breakpoint ;-)... Let's say you can debug a part of the code the client
+    * is executing (that's not technically correct)
+    *
+    * In Windows 2000 debugging the following seems to cause problems.
+    */
     public class DemoInterface : MarshalByRefObject
     {
         public void ReportError(
@@ -43,9 +43,9 @@ namespace ProcessMonitor
         public bool Ping(Int32 InClientPID)
         {
             /*
-             * We should just check if the client is still in our list
-             * of hooked processes...
-             */
+            * We should just check if the client is still in our list
+            * of hooked processes...
+            */
             lock (Form1.ProcessList)
             {
                 return Form1.HookedProcesses.Contains(InClientPID);

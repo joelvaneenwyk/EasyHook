@@ -30,22 +30,22 @@ namespace ProcessMonitor
         private IpcServerChannel DemoServer;
 
         /*
-         * Please note that we have obtained this information with system privileges.
-         * So if you get client requests with a process ID don't try to open the process
-         * as this will fail in some cases. Just search the ID in the following list and
-         * extract information that is already there...
-         * 
-         * Of course you can change the way this list is implemented and the information
-         * it contains but you should keep the code semantic.
-         */
+        * Please note that we have obtained this information with system privileges.
+        * So if you get client requests with a process ID don't try to open the process
+        * as this will fail in some cases. Just search the ID in the following list and
+        * extract information that is already there...
+        *
+        * Of course you can change the way this list is implemented and the information
+        * it contains but you should keep the code semantic.
+        */
         internal static List<ProcessInfo> ProcessList = new List<ProcessInfo>();
         private static List<Int32> ActivePIDList = new List<Int32>();
         private static System.Threading.Timer ProcessTimer = null;
 
         /*
-         * In general you shouldn't access the GUI directly from other threads,
-         * so we are using an asynchronous approach!
-         */
+        * In general you shouldn't access the GUI directly from other threads,
+        * so we are using an asynchronous approach!
+        */
         static internal Queue<MonitorEntry> MonitorQueue = new Queue<MonitorEntry>();
         static internal Boolean IsMonitoring = true;
 
@@ -60,16 +60,16 @@ namespace ProcessMonitor
             TIMER_Tick(null, null);
 
             /*
-             * We will create a random named channel. This is where our injected
-             * libraries will connect to!
-             * 
-             * For people who don't know about NET-Remoting, please read some
-             * valuable articles. In short, the client libraries will
-             * just call the methods in "DemoInterface" and NET will pass
-             * them to us, we will process the calls, and finally NET sends
-             * the result back. This is a great advantage; imagine how many
-             * lines of native C++ code this would require!!!
-             */
+            * We will create a random named channel. This is where our injected
+            * libraries will connect to!
+            *
+            * For people who don't know about NET-Remoting, please read some
+            * valuable articles. In short, the client libraries will
+            * just call the methods in "DemoInterface" and NET will pass
+            * them to us, we will process the calls, and finally NET sends
+            * the result back. This is a great advantage; imagine how many
+            * lines of native C++ code this would require!!!
+            */
             DemoServer = RemoteHooking.IpcCreateServer<DemoInterface>(
                 ref ChannelName,
                 WellKnownObjectMode.Singleton);
@@ -167,8 +167,8 @@ namespace ProcessMonitor
             try
             {
                 /*
-                 * Add new monitoring entries...
-                 */
+                * Add new monitoring entries...
+                */
                 LIST_Accesses.BeginUpdate();
 
                 lock (MonitorQueue)
@@ -186,8 +186,8 @@ namespace ProcessMonitor
                 LIST_Accesses.EndUpdate();
 
                 /*
-                 * Update internal process list...
-                 */
+                * Update internal process list...
+                */
                 lock (ProcessList)
                 {
                     Boolean HasChanged = false;
@@ -247,8 +247,8 @@ namespace ProcessMonitor
 
 
                     /*
-                     * Update list of hooked processes...
-                     */
+                    * Update list of hooked processes...
+                    */
                     for (int i = 0; i < HookedProcesses.Count; i++)
                     {
                         if (!ActivePIDList.Contains(HookedProcesses[i]))
@@ -309,9 +309,9 @@ namespace ProcessMonitor
                     return;
 
                 /*
-                 * Uninjection will be done by client-side pinging. Next time the related
-                 * client is sending a ping, we will notify him that he should uninject itself.
-                 */
+                * Uninjection will be done by client-side pinging. Next time the related
+                * client is sending a ping, we will notify him that he should uninject itself.
+                */
                 HookedProcesses.Remove(PID);
             }
         }
@@ -322,5 +322,5 @@ namespace ProcessMonitor
         }
     }
 
-    
+
 }

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -79,8 +79,8 @@ namespace EasyHook
     /// but not all custom ones. Otherwise you will only intercept a general exception with no specific
     /// information attached.
     /// </para><para>
-    /// The second one is <c>Run(IContext, ...)</c> and should only exit/return when you want to unload your injected library. 
-    /// Unhandled exceptions WON'T be redirected automatically and are likely to crash the target process. As you are expected 
+    /// The second one is <c>Run(IContext, ...)</c> and should only exit/return when you want to unload your injected library.
+    /// Unhandled exceptions WON'T be redirected automatically and are likely to crash the target process. As you are expected
     /// to connect to your host in the <c>ctor()</c>, you are now also expected to report errors by yourself.
     /// </para><para>
     /// The parameter list described by <c>(IContext, ...)</c> will always contain a <see cref="RemoteHooking.IContext"/>
@@ -138,7 +138,7 @@ namespace EasyHook
         /// A context contains some basic information about the environment
         /// in which your library main method has been invoked. You will always
         /// get an instance of this interface in your library <c>Run</c> method
-        /// and your library constructor. 
+        /// and your library constructor.
         /// </summary>
         public interface IContext
         {
@@ -212,8 +212,8 @@ namespace EasyHook
         /// allow you to use "static" remote variables.
         /// </param>
         /// <param name="RefChannelName">
-        /// Either <c>null</c> to let the method generate a random channel name to be passed to 
-        /// <see cref="IpcConnectClient{TRemoteObject}"/> or a predefined one. If you pass a value unequal to 
+        /// Either <c>null</c> to let the method generate a random channel name to be passed to
+        /// <see cref="IpcConnectClient{TRemoteObject}"/> or a predefined one. If you pass a value unequal to
         /// <c>null</c>, you shall also specify all SIDs that are allowed to connect to your channel!
         /// </param>
         /// <param name="ipcInterface">Provide a TRemoteObject object to be made available as a well known type on the server end of the channel.</param>
@@ -330,8 +330,8 @@ namespace EasyHook
         /// allow you to use "static" remote variables.
         /// </param>
         /// <param name="RefChannelName">
-        /// Either <c>null</c> to let the method generate a random channel name to be passed to 
-        /// <see cref="IpcConnectClient{TRemoteObject}"/> or a predefined one. If you pass a value unequal to 
+        /// Either <c>null</c> to let the method generate a random channel name to be passed to
+        /// <see cref="IpcConnectClient{TRemoteObject}"/> or a predefined one. If you pass a value unequal to
         /// <c>null</c>, you shall also specify all SIDs that are allowed to connect to your channel!
         /// </param>
         /// <param name="InAllowedClientSIDs">
@@ -363,7 +363,7 @@ namespace EasyHook
         /// All requests have to be made through the returned object instance.
         /// Please note that even if you might think that managed IPC is quiet slow,
         /// this is not usually the case. Internally a mechanism is being used to
-        /// directly continue execution within the server process, so that even if 
+        /// directly continue execution within the server process, so that even if
         /// your thread does nothing while dispatching the request, no CPU time is lost,
         /// because the server thread seemlessly takes over exection. And to be true,
         /// the rare conditions in which you will need high-speed IPC ports are not
@@ -386,21 +386,21 @@ namespace EasyHook
         /// Unable to create remote object or invalid channel name...
         /// </exception>
         public static TRemoteObject IpcConnectClient<TRemoteObject>(String InChannelName) where TRemoteObject : MarshalByRefObject
-        { 
+        {
             // connect to bypass service
             TRemoteObject Interface = (TRemoteObject)Activator.GetObject(
                 typeof(TRemoteObject),
                 "ipc://" + InChannelName + "/" + InChannelName);
 
             if (Interface == null)
-		        throw new ArgumentException("Unable to create remote interface.");
+                throw new ArgumentException("Unable to create remote interface.");
 
-	        return Interface;
+            return Interface;
         }
 
         /// <summary>
         /// Injects the given user library into the target process. No memory leaks are left
-        /// in the target, even if injection fails for unknown reasons. 
+        /// in the target, even if injection fails for unknown reasons.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -425,7 +425,7 @@ namespace EasyHook
         /// raised in the target process during injection. The exception will be redirected to this method
         /// and you can catch it in a try-catch statement around <see cref="Inject"/>.
         /// </para> <para>
-        /// You will often have to pass parameters to your injected library. <see cref="IpcChannel"/> 
+        /// You will often have to pass parameters to your injected library. <see cref="IpcChannel"/>
         /// names are common, but also any other kind of data can be passed. You may add a custom list
         /// of objects marked with the <see cref="SerializableAttribute"/>. All common NET classes
         /// will be serializable by default, but if you are using your own classes you might have to provide
@@ -460,12 +460,12 @@ namespace EasyHook
         /// A valid combination of options.
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll".
         /// </param>
         /// <param name="InPassThruArgs">
         /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
@@ -505,7 +505,7 @@ namespace EasyHook
             InjectEx(
                 GetCurrentProcessId(),
                 InTargetPID,
-                0, 
+                0,
                 0,
                 InLibraryPath_x86,
                 InLibraryPath_x64,
@@ -522,12 +522,12 @@ namespace EasyHook
         /// The target process ID.
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\MyAssembly.dll".
         /// </param>
         /// <param name="InPassThruArgs">
         /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
@@ -541,10 +541,10 @@ namespace EasyHook
         {
             InjectEx(
                 GetCurrentProcessId(),
-                InTargetPID, 
+                InTargetPID,
                 0,
                 0x20000000,
-                InLibraryPath_x86, 
+                InLibraryPath_x86,
                 InLibraryPath_x64,
                 true,
                 true,
@@ -570,7 +570,7 @@ namespace EasyHook
 
             /*
                 validate assembly name...
-             */
+            */
             InRemoteInfo.UserLibrary = InLibraryPath_x86;
 
             if (NativeAPI.Is64Bit)
@@ -609,7 +609,7 @@ namespace EasyHook
 
             /*
                 Convert managed arguments to binary stream...
-             */
+            */
 
             BinaryFormatter Format = new BinaryFormatter();
             IpcServerChannel Channel = IpcCreateServer<HelperServiceInterface>(
@@ -640,7 +640,7 @@ namespace EasyHook
             {
                 ManagedRemoteInfo RemoteInfo = new ManagedRemoteInfo();
                 RemoteInfo.HostPID = InHostPID;
-				// We first serialise parameters so that they can be deserialised AFTER the UserLibrary is loaded
+                // We first serialise parameters so that they can be deserialised AFTER the UserLibrary is loaded
                 BinaryFormatter format = new BinaryFormatter();
                 List<object> args = new List<object>();
                 if (InPassThruArgs != null)
@@ -648,25 +648,25 @@ namespace EasyHook
                     foreach (var arg in InPassThruArgs)
                     {
                         using(MemoryStream ms = new MemoryStream())
-						{
+                        {
                             format.Serialize(ms, arg);
                             args.Add(ms.ToArray());
-						}
+                        }
                     }
                 }
                 RemoteInfo.UserParams = args.ToArray();
 
-				RemoteInfo.RequireStrongName = InRequireStrongName;
+                RemoteInfo.RequireStrongName = InRequireStrongName;
 
                 GCHandle hPassThru = PrepareInjection(
                     RemoteInfo,
-                    ref InLibraryPath_x86, 
+                    ref InLibraryPath_x86,
                     ref InLibraryPath_x64,
                     PassThru);
 
                 /*
                     Inject library...
-                 */
+                */
                 try
                 {
                     Int32 NtStatus;
@@ -739,10 +739,10 @@ namespace EasyHook
 
         /// <summary>
         /// Determines if the target process is 64-bit or not. This will work only
-        /// if the current process has <c>PROCESS_QUERY_INFORMATION</c> access to the target. 
+        /// if the current process has <c>PROCESS_QUERY_INFORMATION</c> access to the target.
         /// </summary>
         /// <remarks>
-        /// A typical mistake is to enumerate processes under system privileges and 
+        /// A typical mistake is to enumerate processes under system privileges and
         /// calling this method later when required. This won't work in most cases because
         /// you'll also need system privileges to run this method on processes in other sessions!
         /// </remarks>
@@ -802,12 +802,12 @@ namespace EasyHook
         { return NativeAPI.GetCurrentProcessId(); }
 
         /// <summary>
-        /// Returns the current native system thread ID. 
+        /// Returns the current native system thread ID.
         /// </summary>
         /// <remarks>
         /// Even if currently each dedicated managed
         /// thread (not a thread from a <see cref="ThreadPool"/>) exactly maps to one native
-        /// system thread, this behavior may change in future versions. 
+        /// system thread, this behavior may change in future versions.
         /// If you would like to have unintercepted threads, you should make sure that they are
         /// dedicated ones, e.g. derived from <see cref="Thread"/>.
         /// </remarks>
@@ -816,7 +816,7 @@ namespace EasyHook
         { return NativeAPI.GetCurrentThreadId(); }
 
         /// <summary>
-        /// Will execute the given static method under system privileges. 
+        /// Will execute the given static method under system privileges.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -828,7 +828,7 @@ namespace EasyHook
         /// To accomplish this task, your assembly is loaded into a system service which
         /// executes the given static method in a remoted manner. This implies that the
         /// return type shall be marked with <see cref="SerializableAttribute"/>. All
-        /// handles or other process specific things obtained in the service, will be invalid 
+        /// handles or other process specific things obtained in the service, will be invalid
         /// in your application after the call is completed! Also the service will use
         /// a new instance of your class, so you should only rely on the given parameters
         /// and avoid using any external variables.. Your method shall be threaded as isolated!
@@ -866,7 +866,7 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
+        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation
         /// with the usual <see cref="Inject"/> method.
         /// </para>
         /// <para>
@@ -889,12 +889,12 @@ namespace EasyHook
         /// A valid combination of options.
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="OutProcessId">
         /// The process ID of the newly created process.
@@ -966,7 +966,7 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
+        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation
         /// with the usual <see cref="Inject"/> method.
         /// </para>
         /// <para>
@@ -986,12 +986,12 @@ namespace EasyHook
         /// whatever!
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="OutProcessId">
         /// The process ID of the newly created process.
@@ -1013,13 +1013,13 @@ namespace EasyHook
             params Object[] InPassThruArgs)
         {
             CreateAndInject(
-                InEXEPath, 
-                InCommandLine, 
-                InProcessCreationFlags, 
-                InjectionOptions.NoService, 
-                InLibraryPath_x86, 
-                InLibraryPath_x64, 
-                out OutProcessId, 
+                InEXEPath,
+                InCommandLine,
+                InProcessCreationFlags,
+                InjectionOptions.NoService,
+                InLibraryPath_x86,
+                InLibraryPath_x64,
+                out OutProcessId,
                 InPassThruArgs);
         }
 
@@ -1046,9 +1046,9 @@ namespace EasyHook
         /// <param name="InDriverName"></param>
         public static void InstallDriver(
             String InDriverPath,
-            String InDriverName) 
-        { 
-            NativeAPI.RhInstallDriver(InDriverPath, InDriverName); 
+            String InDriverName)
+        {
+            NativeAPI.RhInstallDriver(InDriverPath, InDriverName);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -56,9 +56,9 @@ namespace EasyHook.IPC
     /// <param name="paramName"></param>
     internal static void AssertDerivedType(Type type, string paramName)
     {
-      if (type == null)
+    if (type == null)
         throw new ArgumentNullException(paramName);
-      if (!typeof(EndPointObject).IsAssignableFrom(type))
+    if (!typeof(EndPointObject).IsAssignableFrom(type))
         throw new ArgumentException("The given type must be a type deriving from EndPointObject", paramName);
     }
 

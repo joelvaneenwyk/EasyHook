@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,9 +32,9 @@ extern "C"{
 #endif
 
 typedef HRESULT __stdcall DebugCreate_PROC(
-	        __in REFIID InterfaceId,
-	        __out PVOID* Interface
-	        );
+            __in REFIID InterfaceId,
+            __out PVOID* Interface
+            );
 
 typedef LONG NTAPI ZwQueryInformationProcess_PROC(
             IN HANDLE ProcessHandle,
@@ -79,7 +79,7 @@ typedef struct _THREAD_BASIC_INFORMATION
 {
     LONG ExitStatus;
     PNT_TIB TebBaseAddress;
-	DBG_CLIENT_ID ClientId;
+    DBG_CLIENT_ID ClientId;
     DWORD AffinityMask;
     LONG Priority;
     LONG BasePriority;
@@ -100,8 +100,8 @@ EASYHOOK_NT_EXPORT DbgAttachDebugger()
 /*
 Description:
 
-    Attaches a debugger to the current process (64-bit only). This is no 
-	longer necessary for RIP-relocation and disassembling. Multiple
+    Attaches a debugger to the current process (64-bit only). This is no
+    longer necessary for RIP-relocation and disassembling. Multiple
     calls will do nothing.
 
 */
@@ -127,17 +127,17 @@ Description:
         THROW(STATUS_NOT_SUPPORTED, L"Unable to obtain IDebugControl interface.");
 
     // attach to current process
-	if(!RTL_SUCCESS(NtStatus = DebugClient->AttachProcess(0, GetCurrentProcessId(), DEBUG_ATTACH_NONINVASIVE |
-			DEBUG_ATTACH_NONINVASIVE_NO_SUSPEND)))
-	{
-		NtStatus = NtStatus;
+    if(!RTL_SUCCESS(NtStatus = DebugClient->AttachProcess(0, GetCurrentProcessId(), DEBUG_ATTACH_NONINVASIVE |
+            DEBUG_ATTACH_NONINVASIVE_NO_SUSPEND)))
+    {
+        NtStatus = NtStatus;
 
-		THROW(STATUS_NOT_SUPPORTED, L"Unable to attach debugger to current process.");
-	}
+        THROW(STATUS_NOT_SUPPORTED, L"Unable to attach debugger to current process.");
+    }
 
-	// wait for completion
-	if(!RTL_SUCCESS(DebugControl->WaitForEvent(0, 5000)))
-	    THROW(STATUS_INTERNAL_ERROR, L"Unable to wait for debugger.");
+    // wait for completion
+    if(!RTL_SUCCESS(DebugControl->WaitForEvent(0, 5000)))
+        THROW(STATUS_INTERNAL_ERROR, L"Unable to wait for debugger.");
 
     RETURN;
 
@@ -146,7 +146,7 @@ THROW_OUTRO:
         DbgDetachDebugger();
     }
 #else
-	hDbgEng = (HMODULE)-1;
+    hDbgEng = (HMODULE)-1;
 
     RETURN;
 #endif
@@ -169,15 +169,15 @@ Description:
 */
     if(DebugClient != NULL)
     {
-	    DebugClient->DetachProcesses();
-	    DebugClient->Release();
+        DebugClient->DetachProcesses();
+        DebugClient->Release();
     }
 
     if(DebugControl != NULL)
-	    DebugControl->Release();
+        DebugControl->Release();
 
     if(hDbgEng != NULL)
-	    FreeLibrary(hDbgEng);
+        FreeLibrary(hDbgEng);
 #endif
 
     DebugClient = NULL;
@@ -241,15 +241,15 @@ Description:
     // try to load newer methods first
     if((ZwGetProcessId = (ZwGetProcessId_PROC*)GetProcAddress(hKernel32, "GetProcessId")) == NULL)
     {
-	    if((ZwQueryInformationProcess = (ZwQueryInformationProcess_PROC*)::GetProcAddress(
-			    hNtDll, "NtQueryInformationProcess")) == NULL)
-		    return STATUS_PROCEDURE_NOT_FOUND;
+        if((ZwQueryInformationProcess = (ZwQueryInformationProcess_PROC*)::GetProcAddress(
+                hNtDll, "NtQueryInformationProcess")) == NULL)
+            return STATUS_PROCEDURE_NOT_FOUND;
     }
 
     if((ZwGetThreadId = (ZwGetThreadId_PROC*)GetProcAddress(hKernel32, "GetThreadId")) == NULL)
     {
-	    if((ZwQueryInformationThread = (ZwQueryInformationThread_PROC*)::GetProcAddress(
-			    hNtDll, "NtQueryInformationThread")) == NULL)
+        if((ZwQueryInformationThread = (ZwQueryInformationThread_PROC*)::GetProcAddress(
+                hNtDll, "NtQueryInformationThread")) == NULL)
             return STATUS_PROCEDURE_NOT_FOUND;
     }
 
@@ -278,8 +278,8 @@ Description:
 
 
 EASYHOOK_NT_INTERNAL DbgRelocateRIPRelative(
-	        ULONGLONG InOffset,
-	        ULONGLONG InTargetOffset,
+            ULONGLONG InOffset,
+            ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated)
 {
 /*
@@ -306,68 +306,68 @@ Parameters:
         FALSE otherwise.
 */
 #ifndef _M_X64
-	return FALSE;
+    return FALSE;
 #else
-	NTSTATUS            NtStatus;
-	CHAR					Buf[MAX_PATH];
-	ULONG					AsmSize;
-	ULONG64					NextInstr;
-	CHAR					Line[MAX_PATH];
-	LONG					Pos;
-	LONGLONG				RelAddr;
-	LONGLONG				MemDelta = InTargetOffset - InOffset;
+    NTSTATUS            NtStatus;
+    CHAR					Buf[MAX_PATH];
+    ULONG					AsmSize;
+    ULONG64					NextInstr;
+    CHAR					Line[MAX_PATH];
+    LONG					Pos;
+    LONGLONG				RelAddr;
+    LONGLONG				MemDelta = InTargetOffset - InOffset;
 
-	ASSERT(MemDelta == (LONG)MemDelta,L"debug.cpp - MemDelta == (LONG)MemDelta");
+    ASSERT(MemDelta == (LONG)MemDelta,L"debug.cpp - MemDelta == (LONG)MemDelta");
 
     *OutWasRelocated = FALSE;
 
-	// test field...
-	/*BYTE t[10] = {0x8b, 0x05, 0x12, 0x34, 0x56, 0x78};
+    // test field...
+    /*BYTE t[10] = {0x8b, 0x05, 0x12, 0x34, 0x56, 0x78};
 
-	InOffset = (LONGLONG)t;
+    InOffset = (LONGLONG)t;
 
-	MemDelta = InTargetOffset - InOffset;
+    MemDelta = InTargetOffset - InOffset;
 */
-	if(!RTL_SUCCESS(DebugControl->Disassemble(InOffset, 0, Buf, sizeof(Buf), &AsmSize, &NextInstr)))
-		THROW(STATUS_INVALID_PARAMETER_1, L"Unable to disassemble entry point. ");
+    if(!RTL_SUCCESS(DebugControl->Disassemble(InOffset, 0, Buf, sizeof(Buf), &AsmSize, &NextInstr)))
+        THROW(STATUS_INVALID_PARAMETER_1, L"Unable to disassemble entry point. ");
 
-	Pos = RtlAnsiIndexOf(Buf, '[');
+    Pos = RtlAnsiIndexOf(Buf, '[');
 
-	if(Pos < 0)
-		RETURN;
+    if(Pos < 0)
+        RETURN;
 
-	// parse content
-	if(RtlAnsiSubString(Buf, Pos + 1, RtlAnsiIndexOf(Buf, ']') - Pos - 1, Line, MAX_PATH) != 16)
-		RETURN;
+    // parse content
+    if(RtlAnsiSubString(Buf, Pos + 1, RtlAnsiIndexOf(Buf, ']') - Pos - 1, Line, MAX_PATH) != 16)
+        RETURN;
 
-	if(!RtlAnsiDbgHexToLongLong(Line, 16, &RelAddr))
-		RETURN;
-	
-	// verify that we are really RIP relative...
-	RelAddr -= NextInstr;
+    if(!RtlAnsiDbgHexToLongLong(Line, 16, &RelAddr))
+        RETURN;
 
-	if(RelAddr != (LONG)RelAddr)
-		RETURN;
+    // verify that we are really RIP relative...
+    RelAddr -= NextInstr;
 
-	if(*((LONG*)(NextInstr - 4)) != RelAddr)
-		RETURN;
+    if(RelAddr != (LONG)RelAddr)
+        RETURN;
 
-	/*
-		Just relocate this instruction...
-	*/
-	RelAddr = RelAddr - MemDelta;
+    if(*((LONG*)(NextInstr - 4)) != RelAddr)
+        RETURN;
 
-	if(RelAddr != (LONG)RelAddr)
-		THROW(STATUS_NOT_SUPPORTED, L"The given entry point contains at least one RIP-Relative instruction that could not be relocated!");
+    /*
+        Just relocate this instruction...
+    */
+    RelAddr = RelAddr - MemDelta;
 
-	// copy instruction
-	RtlCopyMemory((void*)InTargetOffset, (void*)InOffset, (ULONG)(NextInstr - InOffset));
+    if(RelAddr != (LONG)RelAddr)
+        THROW(STATUS_NOT_SUPPORTED, L"The given entry point contains at least one RIP-Relative instruction that could not be relocated!");
 
-	*((LONG*)(InTargetOffset + (NextInstr - InOffset) - 4)) = (LONG)RelAddr;
+    // copy instruction
+    RtlCopyMemory((void*)InTargetOffset, (void*)InOffset, (ULONG)(NextInstr - InOffset));
+
+    *((LONG*)(InTargetOffset + (NextInstr - InOffset) - 4)) = (LONG)RelAddr;
 
     *OutWasRelocated = TRUE;
 
-	RETURN;
+    RETURN;
 
 THROW_OUTRO:
 FINALLY_OUTRO:
@@ -404,27 +404,27 @@ Parameters:
     NTSTATUS                        NtStatus;
 
     if(!IsValidPointer(OutThreadId, sizeof(ULONG)))
-        THROW(STATUS_INVALID_PARAMETER_2, L"Invalid TID storage specified."); 
+        THROW(STATUS_INVALID_PARAMETER_2, L"Invalid TID storage specified.");
 
     if(ZwQueryInformationThread != NULL)
     {
-	    // use deprecated API
-	    FORCE(ZwQueryInformationThread(
-            InThreadHandle, 
-            0 /* ThreadBasicInformation */, 
-            &ThreadInfo, 
-            sizeof(ThreadInfo), 
+        // use deprecated API
+        FORCE(ZwQueryInformationThread(
+            InThreadHandle,
+            0 /* ThreadBasicInformation */,
+            &ThreadInfo,
+            sizeof(ThreadInfo),
             NULL));
 
         *OutThreadId = ThreadInfo.ClientId.UniqueThread;
     }
     else
     {
-	    ASSERT(ZwGetThreadId != NULL,L"debug.cpp - ZwGetThreadId != NULL");
+        ASSERT(ZwGetThreadId != NULL,L"debug.cpp - ZwGetThreadId != NULL");
 
-	    // use new support API
-	    if((*OutThreadId = ZwGetThreadId(InThreadHandle)) == 0)
-		    THROW(STATUS_INVALID_PARAMETER_1, L"Invalid thread handler or improper privileges.");
+        // use new support API
+        if((*OutThreadId = ZwGetThreadId(InThreadHandle)) == 0)
+            THROW(STATUS_INVALID_PARAMETER_1, L"Invalid thread handler or improper privileges.");
     }
 
     RETURN;
@@ -466,23 +466,23 @@ Parameters:
 
     if(ZwQueryInformationProcess != NULL)
     {
-	    // use deprecated API
-	    FORCE(ZwQueryInformationProcess(
-            InProcessHandle, 
-            0 /* ProcessBasicInformation */, 
-            &ProcInfo, 
-            sizeof(ProcInfo), 
+        // use deprecated API
+        FORCE(ZwQueryInformationProcess(
+            InProcessHandle,
+            0 /* ProcessBasicInformation */,
+            &ProcInfo,
+            sizeof(ProcInfo),
             NULL));
 
-	    *OutProcessId = (ULONG)ProcInfo.UniqueProcessId;
+        *OutProcessId = (ULONG)ProcInfo.UniqueProcessId;
     }
     else
     {
-	    ASSERT(ZwGetProcessId != NULL,L"debug.cpp - ZwGetProcessId != NULL");
+        ASSERT(ZwGetProcessId != NULL,L"debug.cpp - ZwGetProcessId != NULL");
 
-	    // use new support API
-	    if((*OutProcessId = ZwGetProcessId(InProcessHandle)) == 0)
-		    THROW(STATUS_INVALID_PARAMETER_1, L"Invalid process handle or improper privileges.");
+        // use new support API
+        if((*OutProcessId = ZwGetProcessId(InProcessHandle)) == 0)
+            THROW(STATUS_INVALID_PARAMETER_1, L"Invalid process handle or improper privileges.");
     }
 
 RETURN;
@@ -545,7 +545,7 @@ Parameters:
             THROW(STATUS_INVALID_PARAMETER_4, L"If no buffer is specified, you are expected to query the required size.");
     }
 
-    if((NtStatus = ZwQueryObject(InNamedHandle, ObjectNameInformation, NULL, 0, &RequiredSize)) 
+    if((NtStatus = ZwQueryObject(InNamedHandle, ObjectNameInformation, NULL, 0, &RequiredSize))
             != STATUS_INFO_LENGTH_MISMATCH)
         FORCE(NtStatus);
 

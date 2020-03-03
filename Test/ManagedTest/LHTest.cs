@@ -45,7 +45,7 @@ namespace Examples
             Int64 t1 = w.ElapsedTicks;
 
             w.Reset();
-            
+
             w.Start();
 
             Callback = HookRuntimeInfo.Callback;
@@ -137,9 +137,9 @@ namespace Examples
             LocalHook[] MyHooks = new LocalHook[]
             {
                 LocalHook.Create(
-                   LHTestMethodA,
-                   LHTestHookA,
-                   1),
+                    LHTestMethodA,
+                    LHTestHookA,
+                    1),
 
                 LocalHook.Create(
                     LHTestMethodB,
@@ -155,19 +155,19 @@ namespace Examples
             MyHooks[0].ThreadACL.SetInclusiveACL(new Int32[1]);
             MyHooks[1].ThreadACL.SetInclusiveACL(new Int32[1]);
 
-           // LHTestMethodBDelegate.Invoke(0, 0, "");
+            // LHTestMethodBDelegate.Invoke(0, 0, "");
 
             MyHooks[0].ThreadACL.SetExclusiveACL(new Int32[1]);
             MyHooks[1].ThreadACL.SetExclusiveACL(new Int32[1]);
 
-           // LHTestMethodBDelegate.Invoke(0, 0, "");
+            // LHTestMethodBDelegate.Invoke(0, 0, "");
 
             /*
-             * This is just to make sure that all related objects are referenced.
-             * At the beginning there were several objects like delegates that have
-             * been collected during execution! The NET-Framework will produce bugchecks
-             * in such cases...
-             */
+            * This is just to make sure that all related objects are referenced.
+            * At the beginning there were several objects like delegates that have
+            * been collected during execution! The NET-Framework will produce bugchecks
+            * in such cases...
+            */
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();

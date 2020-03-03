@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -109,12 +109,12 @@ namespace EasyLoad
                             }, ps);
                         }
                     }
-                    catch (OutOfMemoryException ome)
+                    catch (OutOfMemoryException)
                     {
                         // Creation of AppDomain failed, so fall back to using default domain (means it cannot be unloaded)
-                        
+
                         // The reason is there could be an issue with the target application's stack commit size.
-                        // The default stack commit size must be <= 253952 (or 0x3E000) - due to bug in .NET Framework, 
+                        // The default stack commit size must be <= 253952 (or 0x3E000) - due to bug in .NET Framework,
                         // this can be checked with dumpbin.exe and edited with editbin.exe.
 
                         // Load EasyHook and the target assembly
@@ -129,7 +129,7 @@ namespace EasyLoad
                 Type proxyType = typeof(LoadEasyHookProxy);
                 if (proxyType.Assembly != null)
                 {
-                    // This is where the currentDomain.AssemblyResolve that we setup within the static 
+                    // This is where the currentDomain.AssemblyResolve that we setup within the static
                     // constructor is required.
                     var proxy = (LoadEasyHookProxy)_easyHookDomain.CreateInstanceFrom(
                                     proxyType.Assembly.Location,

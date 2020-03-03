@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -72,8 +72,8 @@ namespace EasyHook.IPC
     [Obsolete("For internal use only!")]
     public void SignalEndpointReady()
     {
-      _isEndPointReady = true;
-      if (_onEndPointReady != null)
+    _isEndPointReady = true;
+    if (_onEndPointReady != null)
         _onEndPointReady(_onEndPointReadyState, null);
     }
 
@@ -84,11 +84,11 @@ namespace EasyHook.IPC
     /// <returns></returns>
     internal static bool ReadIsRemoteEndPointReadyProperty(Type derivingType)
     {
-      AssertDerivedType(derivingType, "derivingType");
-      var isEndpointReady = derivingType.GetProperty(_IsEndPointReady, _BindingFlags);
-      if (isEndpointReady == null)
+    AssertDerivedType(derivingType, "derivingType");
+    var isEndpointReady = derivingType.GetProperty(_IsEndPointReady, _BindingFlags);
+    if (isEndpointReady == null)
         return false;
-      return (bool)isEndpointReady.GetValue(null, null);
+    return (bool)isEndpointReady.GetValue(null, null);
     }
 
     /// <summary>
@@ -99,9 +99,9 @@ namespace EasyHook.IPC
     /// <param name="state"></param>
     internal static void SubscribeEndPointReadyEvent(Type derivingType, EventHandler onActivated, object state)
     {
-      AssertDerivedType(derivingType, "derivingType");
-      var subscribeMethod = derivingType.GetMethod(_Subscribe, _BindingFlags);
-      subscribeMethod.Invoke(null, new[] { onActivated, state });
+    AssertDerivedType(derivingType, "derivingType");
+    var subscribeMethod = derivingType.GetMethod(_Subscribe, _BindingFlags);
+    subscribeMethod.Invoke(null, new[] { onActivated, state });
     }
 
     /// <summary>
@@ -111,9 +111,9 @@ namespace EasyHook.IPC
     /// <param name="paramName"></param>
     internal new static void AssertDerivedType(Type type, string paramName)
     {
-      if (type == null)
+    if (type == null)
         throw new ArgumentNullException(paramName);
-      if (!typeof(DuplexChannelEndPointObject).IsAssignableFrom(type))
+    if (!typeof(DuplexChannelEndPointObject).IsAssignableFrom(type))
         throw new ArgumentException("The given type must be a type deriving from EndPointObject", paramName);
     }
 
@@ -127,7 +127,7 @@ namespace EasyHook.IPC
     /// </summary>
     internal protected static bool IsRemoteEndPointReady
     {
-      get { return _isEndPointReady; }
+    get { return _isEndPointReady; }
     }
 
     /// <summary>
@@ -138,8 +138,8 @@ namespace EasyHook.IPC
     /// <param name="state"></param>
     internal protected static void Subscribe(EventHandler onActivated, object state)
     {
-      _onEndPointReady += onActivated;
-      _onEndPointReadyState = state;
+    _onEndPointReady += onActivated;
+    _onEndPointReadyState = state;
     }
 
     #endregion

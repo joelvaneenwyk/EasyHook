@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -46,16 +46,16 @@ extern "C"{
 
 typedef struct _NOTIFICATION_REQUEST_
 {
-	ULONG				MaxCount;
-	ULONG				Count;
-	ULONG				Entries[0];
+    ULONG				MaxCount;
+    ULONG				Count;
+    ULONG				Entries[0];
 }NOTIFICATION_REQUEST, *PNOTIFICATION_REQUEST;
 
 typedef struct _HOOK_ACL_
 {
-	ULONG                   Count;
-	BOOL                    IsExclusive;
-	ULONG                   Entries[MAX_ACE_COUNT];
+    ULONG                   Count;
+    BOOL                    IsExclusive;
+    ULONG                   Entries[MAX_ACE_COUNT];
 }HOOK_ACL;
 
 #define LOCAL_HOOK_SIGNATURE            ((ULONG)0x6A910BE2)
@@ -64,25 +64,25 @@ typedef struct _LOCAL_HOOK_INFO_
 {
     PLOCAL_HOOK_INFO        Next;
     ULONG					NativeSize;
-	UCHAR*					TargetProc;
-	ULONGLONG				TargetBackup;
-	ULONGLONG				TargetBackup_x64;
-	ULONGLONG				HookCopy;
-	ULONG					EntrySize;
-	UCHAR*					Trampoline;
+    UCHAR*					TargetProc;
+    ULONGLONG				TargetBackup;
+    ULONGLONG				TargetBackup_x64;
+    ULONGLONG				HookCopy;
+    ULONG					EntrySize;
+    UCHAR*					Trampoline;
     ULONG					HLSIndex;
-	ULONG					HLSIdent;
-	void*					Callback;
-	HOOK_ACL				LocalACL;
+    ULONG					HLSIdent;
+    void*					Callback;
+    HOOK_ACL				LocalACL;
     ULONG                   Signature;
     TRACED_HOOK_HANDLE      Tracking;
 
-	void*					RandomValue; // fixed
-	void*					HookIntro; // fixed
-	UCHAR*					OldProc; // fixed
-	UCHAR*					HookProc; // fixed
-	void*					HookOutro; // fixed
-	int*					IsExecutedPtr; // fixed
+    void*					RandomValue; // fixed
+    void*					HookIntro; // fixed
+    UCHAR*					OldProc; // fixed
+    UCHAR*					HookProc; // fixed
+    void*					HookOutro; // fixed
+    int*					IsExecutedPtr; // fixed
 }LOCAL_HOOK_INFO, *PLOCAL_HOOK_INFO;
 
 
@@ -121,26 +121,26 @@ EASYHOOK_NT_INTERNAL LhAllocateHook(
             ULONG* RelocSize);
 
 EASYHOOK_NT_INTERNAL LhDisassembleInstruction(
-            void* InPtr, 
-            ULONG* length, 
-            PSTR buf, 
-            LONG buffSize, 
+            void* InPtr,
+            ULONG* length,
+            PSTR buf,
+            LONG buffSize,
             ULONG64 *nextInstr);
 
 EASYHOOK_NT_INTERNAL LhRelocateRIPRelativeInstruction(
-	        ULONGLONG InOffset,
-	        ULONGLONG InTargetOffset,
+            ULONGLONG InOffset,
+            ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated);
 
 EASYHOOK_NT_INTERNAL LhRelocateEntryPoint(
-				UCHAR* InEntryPoint,
-				ULONG InEPSize,
-				UCHAR* Buffer,
-				ULONG* OutRelocSize);
+                UCHAR* InEntryPoint,
+                ULONG InEPSize,
+                UCHAR* Buffer,
+                ULONG* OutRelocSize);
 
 EASYHOOK_NT_INTERNAL LhRoundToNextInstruction(
-			void* InCodePtr,
-			ULONG InCodeSize);
+            void* InCodePtr,
+            ULONG InCodeSize);
 
 EASYHOOK_NT_INTERNAL LhGetInstructionLength(void* InPtr);
 

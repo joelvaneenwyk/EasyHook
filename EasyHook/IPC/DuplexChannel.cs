@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -73,7 +73,7 @@ namespace EasyHook.IPC
     /// </summary>
     public DuplexChannelState State
     {
-      get { return _state; }
+    get { return _state; }
     }
 
     /// <summary>
@@ -81,7 +81,7 @@ namespace EasyHook.IPC
     /// </summary>
     public string LocalEndPointUrl
     {
-      get { return _localChannelProperties.Url; }
+    get { return _localChannelProperties.Url; }
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ namespace EasyHook.IPC
     /// </summary>
     public bool IsLocalEndPointInstantiator
     {
-      get { return _localChannelProperties.IsInstantiatorChannel; }
+    get { return _localChannelProperties.IsInstantiatorChannel; }
     }
 
     #endregion
@@ -101,7 +101,7 @@ namespace EasyHook.IPC
     /// </summary>
     /// <param name="localEndPointConfig">Configuration for the local endpoint.</param>
     public DuplexChannel(EndPointConfigurationData<TRemoteEndPoint> localEndPointConfig)
-      : this(localEndPointConfig, ChannelProperties.CreateRandomChannelProperties())
+    : this(localEndPointConfig, ChannelProperties.CreateRandomChannelProperties())
     {
     }
 
@@ -111,7 +111,7 @@ namespace EasyHook.IPC
     /// <param name="localEndPointConfig">Configuration for the local endpoint.</param>
     /// <param name="otherChannelUrl">The url to the remote endpoint, which is the channel instantiator.</param>
     public DuplexChannel(EndPointConfigurationData<TRemoteEndPoint> localEndPointConfig, string otherChannelUrl)
-      : this(localEndPointConfig, ChannelProperties.InitializeFromUrl(otherChannelUrl).GetRemoteEndpointChannelProperties())
+    : this(localEndPointConfig, ChannelProperties.InitializeFromUrl(otherChannelUrl).GetRemoteEndpointChannelProperties())
     {
     }
 
@@ -122,10 +122,10 @@ namespace EasyHook.IPC
     /// <param name="serverChannelProperties"></param>
     internal DuplexChannel(EndPointConfigurationData<TRemoteEndPoint> localEndPointConfig, ChannelProperties serverChannelProperties)
     {
-      AssertEndpointConfigurationData(localEndPointConfig, "localEndpointConfig");
-      _localEndPointConfig = localEndPointConfig;
-      _localChannelProperties = serverChannelProperties;
-      _remoteChannelProperties = serverChannelProperties.GetRemoteEndpointChannelProperties();
+    AssertEndpointConfigurationData(localEndPointConfig, "localEndpointConfig");
+    _localEndPointConfig = localEndPointConfig;
+    _localChannelProperties = serverChannelProperties;
+    _remoteChannelProperties = serverChannelProperties.GetRemoteEndpointChannelProperties();
     }
 
     #endregion
@@ -138,8 +138,8 @@ namespace EasyHook.IPC
     /// <param name="onConnectionReady"></param>
     public void InitializeConnection(DuplexChannelReadyEventHandler<TRemoteEndPoint> onConnectionReady)
     {
-      CreateServer();
-      CreateClient(onConnectionReady);
+    CreateServer();
+    CreateClient(onConnectionReady);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public TRemoteEndPoint GetRemoteEndPoint()
     {
-      return GetRemoteEndPoint(true);
+    return GetRemoteEndPoint(true);
     }
 
     #endregion
@@ -163,14 +163,14 @@ namespace EasyHook.IPC
     /// </remarks>
     private void CreateServer()
     {
-      var provider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
-      var securityDescriptor = CreateSecurityDescriptor(_localEndPointConfig.AllowedClients);
-      _serverChannel = new IpcServerChannel(_localChannelProperties.AsDictionary(), provider, securityDescriptor);
-      ChannelServices.RegisterChannel(_serverChannel, false);
-      RemotingConfiguration.RegisterWellKnownServiceType(_localEndPointConfig.RemoteObjectType,
-                                                         _localChannelProperties.EndPointName,
-                                                         _localEndPointConfig.ObjectMode);
-      _state |= DuplexChannelState.ServerUp;
+    var provider = new BinaryServerFormatterSinkProvider { TypeFilterLevel = TypeFilterLevel.Full };
+    var securityDescriptor = CreateSecurityDescriptor(_localEndPointConfig.AllowedClients);
+    _serverChannel = new IpcServerChannel(_localChannelProperties.AsDictionary(), provider, securityDescriptor);
+    ChannelServices.RegisterChannel(_serverChannel, false);
+    RemotingConfiguration.RegisterWellKnownServiceType(_localEndPointConfig.RemoteObjectType,
+                                                        _localChannelProperties.EndPointName,
+                                                        _localEndPointConfig.ObjectMode);
+    _state |= DuplexChannelState.ServerUp;
     }
 
     /// <summary>
@@ -183,22 +183,22 @@ namespace EasyHook.IPC
     /// <param name="callback"></param>
     private void CreateClient(DuplexChannelReadyEventHandler<TRemoteEndPoint> callback)
     {
-      if (_remoteChannelProperties.IsInstantiatorChannel
-          // The remote endpoint instantiated the channel and must already have set up its server,
-          // therefore the remote endpoint is always expected to be ready to be connected to.
-          // Verify this by attempting a connection.
-          && TryConnectClient())
-      {
+    if (_remoteChannelProperties.IsInstantiatorChannel
+        // The remote endpoint instantiated the channel and must already have set up its server,
+        // therefore the remote endpoint is always expected to be ready to be connected to.
+        // Verify this by attempting a connection.
+        && TryConnectClient())
+    {
         callback(this);
-      }
-      else
-      {
+    }
+    else
+    {
         // Subscribe to the server object using reflection.
         // When the client is connected, it signals the server that its own server is ready to be connected to.
         DuplexChannelEndPointObject.SubscribeEndPointReadyEvent(_localEndPointConfig.RemoteObjectType,
                                                                 OnRemoteEndPointSignaledReady,
                                                                 callback);
-      }
+    }
     }
 
     /// <summary>
@@ -208,10 +208,10 @@ namespace EasyHook.IPC
     /// <param name="args"></param>
     private void OnRemoteEndPointSignaledReady(object state, EventArgs args)
     {
-      if (!TryConnectClient())
+    if (!TryConnectClient())
         return; // Remote endpoint is not ready, why did it signal?
-      var callback = state as DuplexChannelReadyEventHandler<TRemoteEndPoint>;
-      if (callback != null)
+    var callback = state as DuplexChannelReadyEventHandler<TRemoteEndPoint>;
+    if (callback != null)
         callback(this);
     }
 
@@ -222,17 +222,17 @@ namespace EasyHook.IPC
     /// <returns></returns>
     private bool TryConnectClient()
     {
-      try
-      {
+    try
+    {
         var remoteEndPoint = GetRemoteEndPoint(false);
         remoteEndPoint.SignalEndpointReady();
         _state |= DuplexChannelState.ClientUp;
         return true;
-      }
-      catch (RemotingException)
-      {
+    }
+    catch (RemotingException)
+    {
         return false;
-      }
+    }
     }
 
     /// <summary>
@@ -249,17 +249,17 @@ namespace EasyHook.IPC
     /// <returns></returns>
     private TRemoteEndPoint GetRemoteEndPoint(bool checkChannelStateFirst)
     {
-      if (checkChannelStateFirst
-          && (_state & DuplexChannelState.ClientUp) != DuplexChannelState.ClientUp)
+    if (checkChannelStateFirst
+        && (_state & DuplexChannelState.ClientUp) != DuplexChannelState.ClientUp)
         throw new ApplicationException("Unable to return remote endpoint due to channel state " + _state);
-      // Get proxy.
-      var remoteObject = Activator.GetObject(typeof (TRemoteEndPoint), _remoteChannelProperties.Url) as TRemoteEndPoint;
-      // Verify the proxy instance.
-      if (remoteObject != null)
+    // Get proxy.
+    var remoteObject = Activator.GetObject(typeof (TRemoteEndPoint), _remoteChannelProperties.Url) as TRemoteEndPoint;
+    // Verify the proxy instance.
+    if (remoteObject != null)
         remoteObject.Ping();
-      else
+    else
         throw new RemotingException("Unable to create remote interface of type " + typeof (TRemoteEndPoint));
-      return remoteObject;
+    return remoteObject;
     }
 
     #endregion
@@ -277,7 +277,7 @@ namespace EasyHook.IPC
     /// <param name="paramName"></param>
     private static void AssertEndpointConfigurationData(EndPointConfigurationData<TRemoteEndPoint> configData, string paramName)
     {
-      if (configData.AllowedClients == null)
+    if (configData.AllowedClients == null)
         throw new ArgumentException("The given EndPointConfigurationData specifies an illegal value for AllowedClients",
                                     paramName);
     }
@@ -289,16 +289,16 @@ namespace EasyHook.IPC
     /// <returns></returns>
     private static CommonSecurityDescriptor CreateSecurityDescriptor(ICollection<WellKnownSidType> allowedClients)
     {
-      var dacl = new DiscretionaryAcl(false, false, allowedClients.Count);
-      foreach (var sid in allowedClients)
-      {
+    var dacl = new DiscretionaryAcl(false, false, allowedClients.Count);
+    foreach (var sid in allowedClients)
+    {
         var securityId = new SecurityIdentifier(sid, null);
         dacl.AddAccess(AccessControlType.Allow, securityId, -1, InheritanceFlags.None, PropagationFlags.None);
-      }
-      const ControlFlags controlFlags =
+    }
+    const ControlFlags controlFlags =
         ControlFlags.GroupDefaulted | ControlFlags.OwnerDefaulted | ControlFlags.DiscretionaryAclPresent;
-      var securityDescriptor = new CommonSecurityDescriptor(false, false, controlFlags, null, null, null, dacl);
-      return securityDescriptor;
+    var securityDescriptor = new CommonSecurityDescriptor(false, false, controlFlags, null, null, null, dacl);
+    return securityDescriptor;
     }
 
     #endregion

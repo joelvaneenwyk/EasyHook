@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -175,8 +175,8 @@ namespace EasyHook
 
         /// <summary>
         /// When not using the GAC, the BinaryFormatter fails to recognise the InParam
-        /// when attempting to deserialise. 
-        /// 
+        /// when attempting to deserialise.
+        ///
         /// A custom DeserializationBinder works around this (see http://spazzarama.com/2009/06/25/binary-deserialize-unable-to-find-assembly/)
         /// </summary>
         private sealed class AllowAllAssemblyVersionsDeserializationBinder :
@@ -299,7 +299,7 @@ namespace EasyHook
                         paramArray[i] = format.Deserialize(ms);
                     }
                 }
-                
+
                 // Determine if a Run() method is defined with matching parameters, before initializing an instance for the type.
                 runMethod = FindMatchingMethod(entryPoint, "Run", paramArray);
                 if (runMethod == null)
@@ -331,7 +331,7 @@ namespace EasyHook
                 // After this it is safe to enter the Run() method, which will block until assembly unloading...
                 // From now on the user library has to take care about error reporting!
                 runMethod.Invoke(instance, BindingFlags.Public | BindingFlags.Instance | BindingFlags.ExactBinding |
-                                           BindingFlags.InvokeMethod, null, paramArray, null);
+                                            BindingFlags.InvokeMethod, null, paramArray, null);
             }
             finally
             {

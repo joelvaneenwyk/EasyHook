@@ -116,14 +116,14 @@ namespace FileMonInject
             UInt32 InFlagsAndAttributes,
             IntPtr InTemplateFile)
         {
-            
+
             try
             {
                 Main This = (Main)HookRuntimeInfo.Callback;
 
                 lock (This.Queue)
                 {
-                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" + 
+                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" +
                         RemoteHooking.GetCurrentThreadId() +  "]: \"" + InFileName + "\"");
                 }
             }

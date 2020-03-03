@@ -12,18 +12,18 @@ namespace EasyHook.IPC
 
     static DummyCore()
     {
-      ConnectionManager = new ConnectionManager();
+    ConnectionManager = new ConnectionManager();
     }
 
     public static void StartRemoteProcess(string exe)
     {
-      string channelUrl = ConnectionManager.InitializeInterDomainConnection();
-      Process.Start(exe, channelUrl);
+    string channelUrl = ConnectionManager.InitializeInterDomainConnection();
+    Process.Start(exe, channelUrl);
     }
 
     public static void InitializeAsRemoteProcess(string channelUrl)
     {
-      ConnectionManager.ConnectInterDomainConnection(channelUrl);
+    ConnectionManager.ConnectInterDomainConnection(channelUrl);
     }
 
   }

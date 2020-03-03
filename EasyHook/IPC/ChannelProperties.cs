@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -59,7 +59,7 @@ namespace EasyHook.IPC
     /// </summary>
     public bool IsInstantiatorChannel
     {
-      get { return _localEndPointIsInstantiator; }
+    get { return _localEndPointIsInstantiator; }
     }
 
     /// <summary>
@@ -75,13 +75,13 @@ namespace EasyHook.IPC
     /// </exception>
     public string EndPointName
     {
-      get { return _endPointName; }
-      set
-      {
+    get { return _endPointName; }
+    set
+    {
         AssertParameterNotNull(value, "value");
         AssertLegalValues(value, "value");
         _endPointName = value;
-      }
+    }
     }
 
     /// <summary>
@@ -90,14 +90,14 @@ namespace EasyHook.IPC
     /// </summary>
     public string ChannelName
     {
-      get
-      {
+    get
+    {
         if (_channelName == null)
-          return null;
+        return null;
         return _localEndPointIsInstantiator
-                 ? _channelName + _PostfixInstantiatorSide
-                 : _channelName + _PostfixRemoteSide;
-      }
+                ? _channelName + _PostfixInstantiatorSide
+                : _channelName + _PostfixRemoteSide;
+    }
     }
 
     /// <summary>
@@ -105,12 +105,12 @@ namespace EasyHook.IPC
     /// </summary>
     public string Url
     {
-      get
-      {
+    get
+    {
         return ChannelName != null && EndPointName != null
-                 ? _UrlPrefix + ChannelName + _Seperator + EndPointName
-                 : null;
-      }
+                ? _UrlPrefix + ChannelName + _Seperator + EndPointName
+                : null;
+    }
     }
 
     #endregion
@@ -124,11 +124,11 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public IDictionary AsDictionary()
     {
-      return new Hashtable(2)
-               {
-                 {"name", EndPointName},
-                 {"portName", ChannelName}
-               };
+    return new Hashtable(2)
+                {
+                {"name", EndPointName},
+                {"portName", ChannelName}
+                };
     }
 
     /// <summary>
@@ -137,12 +137,12 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public ChannelProperties GetRemoteEndpointChannelProperties()
     {
-      return new ChannelProperties
-      {
+    return new ChannelProperties
+    {
         _endPointName = _endPointName,
         _channelName = _channelName,
         _localEndPointIsInstantiator = !_localEndPointIsInstantiator
-      };
+    };
     }
 
     /// <summary>
@@ -158,9 +158,9 @@ namespace EasyHook.IPC
     /// <param name="channelName"></param>
     public void SetChannelName(string channelName)
     {
-      AssertParameterNotNull(channelName, "value");
-      AssertLegalValues(channelName, "value");
-      _channelName = channelName;
+    AssertParameterNotNull(channelName, "value");
+    AssertLegalValues(channelName, "value");
+    _channelName = channelName;
     }
 
     #endregion
@@ -174,29 +174,29 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public static ChannelProperties CreateRandomChannelProperties()
     {
-      // Creating a very random name provides an extra layer of protection to the channel
-      var data = new byte[30];
-      new RNGCryptoServiceProvider().GetBytes(data);
-      var nameLength = 20 + (data[0]%10);
-      // Convert the bytes to a string contain only numbers and letters
-      var builder = new StringBuilder(nameLength);
-      for (var i = 0; i < nameLength; i++)
-      {
+    // Creating a very random name provides an extra layer of protection to the channel
+    var data = new byte[30];
+    new RNGCryptoServiceProvider().GetBytes(data);
+    var nameLength = 20 + (data[0]%10);
+    // Convert the bytes to a string contain only numbers and letters
+    var builder = new StringBuilder(nameLength);
+    for (var i = 0; i < nameLength; i++)
+    {
         var b = data[i]%62;
         if (b < 10)
-          builder.Append((char) ('0' + b));
+        builder.Append((char) ('0' + b));
         else if (b < 36)
-          builder.Append((char) ('A' + b - 10));
+        builder.Append((char) ('A' + b - 10));
         else
-          builder.Append((char) ('a' + b - 36));
-      }
-      var randomName = builder.ToString();
-      return new ChannelProperties
-               {
-                 _endPointName = randomName,
-                 _channelName = randomName,
-                 _localEndPointIsInstantiator = true
-               };
+        builder.Append((char) ('a' + b - 36));
+    }
+    var randomName = builder.ToString();
+    return new ChannelProperties
+                {
+                _endPointName = randomName,
+                _channelName = randomName,
+                _localEndPointIsInstantiator = true
+                };
     }
 
     /// <summary>
@@ -213,29 +213,29 @@ namespace EasyHook.IPC
     /// <returns></returns>
     public static ChannelProperties InitializeFromUrl(string url)
     {
-      // Verify and split the argument.
-      AssertParameterNotNull(url, "url");
-      if (url.StartsWith(_UrlPrefix))
+    // Verify and split the argument.
+    AssertParameterNotNull(url, "url");
+    if (url.StartsWith(_UrlPrefix))
         url = url.Substring(_UrlPrefix.Length);
-      var values = url.Split(new[] {_Seperator}, StringSplitOptions.None);
-      if (values.Length != 2)
+    var values = url.Split(new[] {_Seperator}, StringSplitOptions.None);
+    if (values.Length != 2)
         throw new ArgumentException("The provided url isn't valid.", "url");
-      // Extract properties.
-      var properties = new ChannelProperties();
-      var channelName = values[0];
-      string postFix;
-      if (channelName.EndsWith(_PostfixInstantiatorSide))
+    // Extract properties.
+    var properties = new ChannelProperties();
+    var channelName = values[0];
+    string postFix;
+    if (channelName.EndsWith(_PostfixInstantiatorSide))
         postFix = _PostfixInstantiatorSide;
-      else if (channelName.EndsWith(_PostfixRemoteSide))
+    else if (channelName.EndsWith(_PostfixRemoteSide))
         postFix = _PostfixRemoteSide;
-      else
+    else
         throw new ArgumentException("The provided url isn't valid.", "url");
-      properties._localEndPointIsInstantiator = postFix == _PostfixInstantiatorSide;
-      properties._channelName = channelName.Substring(0, channelName.Length - postFix.Length);
-      properties._endPointName = values[1];
-      AssertLegalValues(properties._channelName, "url");
-      AssertLegalValues(properties._endPointName, "url");
-      return properties;
+    properties._localEndPointIsInstantiator = postFix == _PostfixInstantiatorSide;
+    properties._channelName = channelName.Substring(0, channelName.Length - postFix.Length);
+    properties._endPointName = values[1];
+    AssertLegalValues(properties._channelName, "url");
+    AssertLegalValues(properties._endPointName, "url");
+    return properties;
     }
 
     #endregion
@@ -244,19 +244,19 @@ namespace EasyHook.IPC
 
     private static void AssertParameterNotNull(object value, string paramName)
     {
-      if (value == null)
+    if (value == null)
         throw new ArgumentNullException(paramName);
     }
 
     private static void AssertLegalValues(string value, string paramName)
     {
-      if (value.EndsWith(_PostfixInstantiatorSide)
-          || value.EndsWith(_PostfixRemoteSide)
-          || value.Contains(_Seperator))
+    if (value.EndsWith(_PostfixInstantiatorSide)
+        || value.EndsWith(_PostfixRemoteSide)
+        || value.Contains(_Seperator))
         throw new ArgumentException(
-          string.Format("The provided value can not contain \"{0}\", \"{1}\" nor \"{2}\"",
+        string.Format("The provided value can not contain \"{0}\", \"{1}\" nor \"{2}\"",
                         _PostfixInstantiatorSide, _PostfixRemoteSide, _Seperator),
-          paramName);
+        paramName);
     }
 
     #endregion

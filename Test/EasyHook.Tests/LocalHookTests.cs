@@ -108,7 +108,7 @@ namespace EasyHook.Tests
                 LocalHook.GetProcAddress("kernel32.dll", "Beep"),
                 new BeepDelegate(BeepHook),
                 this);
-            
+
             lh.ThreadACL.SetInclusiveACL(new int[] { 0 });
 
             Assert.IsFalse(Beep(100, 100));

@@ -45,16 +45,16 @@ namespace ComplexParameterInject
                     this);
 
                 /*
-                 * Don't forget that all hooks will start deactivated...
-                 * The following ensures that all threads are intercepted:
-                 */
+                * Don't forget that all hooks will start deactivated...
+                * The following ensures that all threads are intercepted:
+                */
                 CreateFileHook.ThreadACL.SetExclusiveACL(new Int32[1]);
             }
             catch (Exception e)
             {
                 /*
                     Now we should notice our host process about this error...
-                 */
+                */
                 _interface.ReportException(e);
 
                 return;
@@ -71,7 +71,7 @@ namespace ComplexParameterInject
 
                     _interface.Ping();
                 }
-            
+
             }
             catch
             {
@@ -136,5 +136,5 @@ namespace ComplexParameterInject
         }
     }
 
-    
+
 }

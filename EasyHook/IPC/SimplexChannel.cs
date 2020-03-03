@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -55,7 +55,7 @@ namespace EasyHook.IPC
     /// </summary>
     public string EndPointUrl
     {
-      get { return _channelProperties.Url; }
+    get { return _channelProperties.Url; }
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace EasyHook.IPC
     /// </summary>
     public bool IsInitialized
     {
-      get { return _serverChannel != null; }
+    get { return _serverChannel != null; }
     }
 
     #endregion
@@ -77,9 +77,9 @@ namespace EasyHook.IPC
     /// <param name="endPointConfigurationData"></param>
     public SimplexChannel(EndPointConfigurationData<TEndPoint> endPointConfigurationData)
     {
-      AssertEndpointConfigurationData(endPointConfigurationData, "endPointConfigurationData");
-      _channelProperties = ChannelProperties.CreateRandomChannelProperties();
-      _endPointConfig = endPointConfigurationData;
+    AssertEndpointConfigurationData(endPointConfigurationData, "endPointConfigurationData");
+    _channelProperties = ChannelProperties.CreateRandomChannelProperties();
+    _endPointConfig = endPointConfigurationData;
     }
 
     #endregion
@@ -91,15 +91,15 @@ namespace EasyHook.IPC
     /// </summary>
     public void InitializeChannel()
     {
-      if (IsInitialized)
+    if (IsInitialized)
         return;
-      var provider = new BinaryServerFormatterSinkProvider {TypeFilterLevel = TypeFilterLevel.Full};
-      var securityDescriptor = CreateSecurityDescriptor(_endPointConfig.AllowedClients);
-      _serverChannel = new IpcServerChannel(_channelProperties.AsDictionary(), provider, securityDescriptor);
-      ChannelServices.RegisterChannel(_serverChannel, false);
-      RemotingConfiguration.RegisterWellKnownServiceType(_endPointConfig.RemoteObjectType,
-                                                         _channelProperties.EndPointName,
-                                                         _endPointConfig.ObjectMode);
+    var provider = new BinaryServerFormatterSinkProvider {TypeFilterLevel = TypeFilterLevel.Full};
+    var securityDescriptor = CreateSecurityDescriptor(_endPointConfig.AllowedClients);
+    _serverChannel = new IpcServerChannel(_channelProperties.AsDictionary(), provider, securityDescriptor);
+    ChannelServices.RegisterChannel(_serverChannel, false);
+    RemotingConfiguration.RegisterWellKnownServiceType(_endPointConfig.RemoteObjectType,
+                                                        _channelProperties.EndPointName,
+                                                        _endPointConfig.ObjectMode);
     }
 
     #endregion
@@ -114,9 +114,9 @@ namespace EasyHook.IPC
     /// <param name="paramName"></param>
     private static void AssertEndpointConfigurationData(EndPointConfigurationData<TEndPoint> configData, string paramName)
     {
-      if (configData.AllowedClients == null)
+    if (configData.AllowedClients == null)
         throw new ArgumentException(
-          "The given EndPointConfigurationData specifies an illegal value for " + "AllowedClients", paramName);
+        "The given EndPointConfigurationData specifies an illegal value for " + "AllowedClients", paramName);
     }
 
     /// <summary>
@@ -126,19 +126,19 @@ namespace EasyHook.IPC
     /// <returns></returns>
     private static CommonSecurityDescriptor CreateSecurityDescriptor(ICollection<WellKnownSidType> allowedClients)
     {
-      var dacl = new DiscretionaryAcl(false, false, allowedClients.Count);
-      foreach (var sid in allowedClients)
-      {
+    var dacl = new DiscretionaryAcl(false, false, allowedClients.Count);
+    foreach (var sid in allowedClients)
+    {
         var securityId = new SecurityIdentifier(sid, null);
         dacl.AddAccess(AccessControlType.Allow, securityId, -1, InheritanceFlags.None, PropagationFlags.None);
-      }
-      const ControlFlags controlFlags =
+    }
+    const ControlFlags controlFlags =
         ControlFlags.GroupDefaulted | ControlFlags.OwnerDefaulted | ControlFlags.DiscretionaryAclPresent;
-      var securityDescriptor = new CommonSecurityDescriptor(false, false, controlFlags, null, null, null, dacl);
-      return securityDescriptor;
+    var securityDescriptor = new CommonSecurityDescriptor(false, false, controlFlags, null, null, null, dacl);
+    return securityDescriptor;
     }
 
     #endregion
-    
+
   }
 }

@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -47,7 +47,7 @@ namespace EasyHook.IPC
     /// </summary>
     public DomainIdentifier Id
     {
-      get { return _id; }
+    get { return _id; }
     }
 
     #endregion
@@ -56,7 +56,7 @@ namespace EasyHook.IPC
 
     static DomainConnectionEndPoint()
     {
-      _id = DomainIdentifier.GetLocalDomainIdentifier();
+    _id = DomainIdentifier.GetLocalDomainIdentifier();
     }
 
     #endregion
@@ -69,9 +69,9 @@ namespace EasyHook.IPC
     /// <typeparam name="TEndPoint">The type of the endpoint to create or open.</typeparam>
     /// <returns>The url to the endpoint of the connection.</returns>
     public string CreateChannel<TEndPoint>()
-      where TEndPoint : EndPointObject
+    where TEndPoint : EndPointObject
     {
-      return DummyCore.ConnectionManager.CreateChannel<TEndPoint>();
+    return DummyCore.ConnectionManager.CreateChannel<TEndPoint>();
     }
 
     #endregion
@@ -80,8 +80,8 @@ namespace EasyHook.IPC
 
     public override object InitializeLifetimeService()
     {
-      // Returning null ensures the endpoint stays available during the complete domain's lifetime.
-      return null;
+    // Returning null ensures the endpoint stays available during the complete domain's lifetime.
+    return null;
     }
 
     #endregion

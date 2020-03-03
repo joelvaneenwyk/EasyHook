@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -54,7 +54,7 @@ namespace EasyHook.Domain
     /// <returns></returns>
     public override string ToString()
     {
-      return ProcessId + "." + DomainId;
+    return ProcessId + "." + DomainId;
     }
 
     #endregion
@@ -67,15 +67,15 @@ namespace EasyHook.Domain
     /// <returns></returns>
     public static DomainIdentifier GetLocalDomainIdentifier()
     {
-      return new DomainIdentifier
-               {
-                 DomainId = AppDomain.CurrentDomain.Id,
-                 ProcessId = Process.GetCurrentProcess().Id
-               };
+    return new DomainIdentifier
+                {
+                DomainId = AppDomain.CurrentDomain.Id,
+                ProcessId = Process.GetCurrentProcess().Id
+                };
     }
 
     #endregion
-    
+
     #region IEquatable<DomainIdentifier> Members
 
     /// <summary>
@@ -85,7 +85,7 @@ namespace EasyHook.Domain
     /// <returns></returns>
     public bool Equals(DomainIdentifier other)
     {
-      return ProcessId == other.ProcessId && DomainId == other.DomainId;
+    return ProcessId == other.ProcessId && DomainId == other.DomainId;
     }
 
     #endregion

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -39,8 +39,8 @@ extern "C"{
 #endif
 
 #ifndef DRIVER
-	#define ASSERT(expr, Msg)            RtlAssert((BOOL)(expr),(LPCWSTR) Msg);
-	#define THROW(code, Msg)        { NtStatus = (code); RtlSetLastError(GetLastError(), NtStatus, Msg); goto THROW_OUTRO; }
+    #define ASSERT(expr, Msg)            RtlAssert((BOOL)(expr),(LPCWSTR) Msg);
+    #define THROW(code, Msg)        { NtStatus = (code); RtlSetLastError(GetLastError(), NtStatus, Msg); goto THROW_OUTRO; }
 #else
 #pragma warning(disable: 4005)
     #define ASSERT( exp, Msg )           ((!(exp)) ? (RtlAssert(#exp, __FILE__, __LINE__, NULL), FALSE) : TRUE)
@@ -56,7 +56,7 @@ extern "C"{
 
     typedef struct _RTL_SPIN_LOCK_
     {
-        KSPIN_LOCK				Lock;  
+        KSPIN_LOCK				Lock;
         KIRQL                   OldIrql;
     }RTL_SPIN_LOCK;
 
@@ -81,7 +81,7 @@ void RtlDeleteLock(RTL_SPIN_LOCK* InLock);
 void RtlSleep(ULONG InTimeout);
 
 void* RtlAllocateMemory(
-            BOOL InZeroMemory, 
+            BOOL InZeroMemory,
             ULONG InSize);
 
 void RtlFreeMemory(void* InPointer);
@@ -104,22 +104,22 @@ void RtlZeroMemory(
             ULONG InByteCount);
 
 LONG RtlProtectMemory(
-            void* InPointer, 
-            ULONG InSize, 
+            void* InPointer,
+            ULONG InSize,
             ULONG InNewProtection);
 
 #ifndef DRIVER
-	void RtlAssert(BOOL InAssert,LPCWSTR lpMessageText);
+    void RtlAssert(BOOL InAssert,LPCWSTR lpMessageText);
 #endif
 
 void RtlSetLastError(
-            LONG InCode, 
+            LONG InCode,
             LONG InNtStatus,
             WCHAR* InMessage);
 
 LONGLONG RtlAnsiHexToLongLong(
-	const CHAR *s, 
-	int len);
+    const CHAR *s,
+    int len);
 
 BOOL RtlAnsiDbgHexToLongLong(
             CHAR* InHexString,

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -75,8 +75,8 @@ ULONGLONG LhBarrierIntro(LOCAL_HOOK_INFO* InHandle, void* InRetAddr, void** InAd
 void* __stdcall LhBarrierOutro(LOCAL_HOOK_INFO* InHandle, void** InAddrOfRetAddr);
 
 LONG DbgRelocateRIPRelative(
-	        ULONGLONG InOffset,
-	        ULONGLONG InTargetOffset,
+            ULONGLONG InOffset,
+            ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated);
 
 EASYHOOK_NT_INTERNAL RhSetWakeUpThreadID(ULONG InThreadID);
@@ -91,36 +91,36 @@ extern HANDLE              hEasyHookHeap;
 #define WRAP_ULONG64(Decl)\
 union\
 {\
-	ULONG64 UNUSED;\
-	Decl;\
+    ULONG64 UNUSED;\
+    Decl;\
 }\
-    
+
 #define UNUSED2(y) __Unused_##y
 #define UNUSED1(y) UNUSED2(y)
 #define UNUSED UNUSED1(__COUNTER__)
 
 typedef struct _REMOTE_INFO_
 {
-	// will be the same for all processes
-	WRAP_ULONG64(wchar_t* UserLibrary); // fixed 0
-	WRAP_ULONG64(wchar_t* EasyHookPath); // fixed 8
-	WRAP_ULONG64(wchar_t* PATH); // fixed 16
-	WRAP_ULONG64(char* EasyHookEntry); // fixed 24
-	WRAP_ULONG64(void* RemoteEntryPoint); // fixed 32
-	WRAP_ULONG64(void* LoadLibraryW); // fixed; 40
-	WRAP_ULONG64(void* FreeLibrary); // fixed; 48
-	WRAP_ULONG64(void* GetProcAddress); // fixed; 56
-	WRAP_ULONG64(void* VirtualFree); // fixed; 64
-	WRAP_ULONG64(void* VirtualProtect); // fixed; 72
-	WRAP_ULONG64(void* ExitThread); // fixed; 80
-	WRAP_ULONG64(void* GetLastError); // fixed; 88
-	
+    // will be the same for all processes
+    WRAP_ULONG64(wchar_t* UserLibrary); // fixed 0
+    WRAP_ULONG64(wchar_t* EasyHookPath); // fixed 8
+    WRAP_ULONG64(wchar_t* PATH); // fixed 16
+    WRAP_ULONG64(char* EasyHookEntry); // fixed 24
+    WRAP_ULONG64(void* RemoteEntryPoint); // fixed 32
+    WRAP_ULONG64(void* LoadLibraryW); // fixed; 40
+    WRAP_ULONG64(void* FreeLibrary); // fixed; 48
+    WRAP_ULONG64(void* GetProcAddress); // fixed; 56
+    WRAP_ULONG64(void* VirtualFree); // fixed; 64
+    WRAP_ULONG64(void* VirtualProtect); // fixed; 72
+    WRAP_ULONG64(void* ExitThread); // fixed; 80
+    WRAP_ULONG64(void* GetLastError); // fixed; 88
+
     BOOL            IsManaged;
-	HANDLE          hRemoteSignal; 
-	DWORD           HostProcess;
-	DWORD           Size;
-	BYTE*           UserData;
-	DWORD           UserDataSize;
+    HANDLE          hRemoteSignal;
+    DWORD           HostProcess;
+    DWORD           Size;
+    BYTE*           UserData;
+    DWORD           UserDataSize;
     ULONG           WakeUpThreadID;
 }REMOTE_INFO, *LPREMOTE_INFO;
 

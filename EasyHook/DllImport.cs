@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -184,16 +184,16 @@ namespace EasyHook
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
         public static extern Int32 RtlCreateSuspendedProcess(
-           String InEXEPath,
-           String InCommandLine,
+            String InEXEPath,
+            String InCommandLine,
             Int32 InProcessCreationFlags,
-           out Int32 OutProcessId,
-           out Int32 OutThreadId);
+            out Int32 OutProcessId,
+            out Int32 OutThreadId);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
         public static extern Int32 RhInstallDriver(
-           String InDriverPath,
-           String InDriverName);
+            String InDriverPath,
+            String InDriverName);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 RhInstallSupportDriver();
@@ -374,19 +374,19 @@ namespace EasyHook
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
         public static extern Int32 RtlCreateSuspendedProcess(
-           String InEXEPath,
-           String InCommandLine,
+            String InEXEPath,
+            String InCommandLine,
             Int32 InProcessCreationFlags,
-           out Int32 OutProcessId,
-           out Int32 OutThreadId);
+            out Int32 OutProcessId,
+            out Int32 OutThreadId);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 RhWakeUpProcess();
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode)]
         public static extern Int32 RhInstallDriver(
-           String InDriverPath,
-           String InDriverName);
+            String InDriverPath,
+            String InDriverName);
 
         [DllImport(DllName, CallingConvention = CallingConvention.StdCall)]
         public static extern Int32 RhInstallSupportDriver();
@@ -686,11 +686,11 @@ namespace EasyHook
         }
 
         public static void RtlCreateSuspendedProcess(
-           String InEXEPath,
-           String InCommandLine,
+            String InEXEPath,
+            String InCommandLine,
             Int32 InProcessCreationFlags,
-           out Int32 OutProcessId,
-           out Int32 OutThreadId)
+            out Int32 OutProcessId,
+            out Int32 OutThreadId)
         {
             if (Is64Bit) Force(NativeAPI_x64.RtlCreateSuspendedProcess(InEXEPath, InCommandLine, InProcessCreationFlags,
                 out OutProcessId, out OutThreadId));
@@ -734,13 +734,13 @@ namespace EasyHook
         }
 
         public static void RhInstallDriver(
-           String InDriverPath,
-           String InDriverName)
+            String InDriverPath,
+            String InDriverName)
         {
             if (Is64Bit) Force(NativeAPI_x64.RhInstallDriver(InDriverPath, InDriverName));
             else Force(NativeAPI_x86.RhInstallDriver(InDriverPath, InDriverName));
         }
-        
+
         public static void RhInstallSupportDriver()
         {
             if (Is64Bit) Force(NativeAPI_x64.RhInstallSupportDriver());
