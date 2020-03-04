@@ -1,0 +1,41 @@
+version: 0.0.{build}
+pull_requests:
+  do_not_increment_build_number: true
+skip_tags: true
+image: Visual Studio 2015
+shallow_clone: true
+install:
+- ps: >-
+    $msiPath = "$($env:USERPROFILE)\CoApp.Tools.Powershell.msi"
+
+    (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
+
+    cmd /c start /wait msiexec /i "$msiPath" /quiet
+
+    # Update environment path
+
+    $env:PSModulePath = $env:PSModulePath + ';C:\Program Files (x86)\Outercurve Foundation\Modules'
+
+    # Import CoApp module (for packaging native NuGet)
+
+    Import-Module CoApp
+build_script:
+- cmd: >-
+    nuget install MSBuildTasks -Version 1.5.0.196
+
+    nuget restore EasyHook.sln
+
+    SET LOGGER=/logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+    call findvs.bat
+
+    msbuild build-package.proj /t:Clean;BeforeBuild /tv:%tv% %LOGGER%
+
+    msbuild build.proj /t:Build /tv:%tv% %LOGGER%
+
+    msbuild build-package.proj /t:PreparePackage;Package /tv:%tv% %LOGGER%
+artifacts:
+- path: .\*.nupkg
+  name: EasyHook NuGet
+- path: .\Deploy\*.zip
+  name: EasyHook Binaries
