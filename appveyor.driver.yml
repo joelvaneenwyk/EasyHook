@@ -12,14 +12,14 @@ image:
   - Visual Studio 2019
 
 configuration:
-  - Win10 Debug
-  - Win10 Release
-  - Win7 Debug
-  - Win7 Release
-  - Win8 Debug
-  - Win8 Release
-  - Win8.1 Debug
-  - Win8.1 Release
+  - Win7-Debug
+  - Win7-Release
+  - Win8-Debug
+  - Win8-Release
+  - Win8.1-Debug
+  - Win8.1-Release
+  - Win10-Debug
+  - Win10-Release
 
 platform:
   - Win32
