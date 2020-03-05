@@ -18,7 +18,6 @@ configuration:
   - netfx4-Release
 
 platform:
-  - Any CPU
   - Win32
   - x64
 
@@ -26,7 +25,7 @@ shallow_clone: true
 
 install:
 - ps: >-
-    & Tools\ci_install.ps1
+    . Tools\ci_install.ps1
 
 build:
   parallel: true
