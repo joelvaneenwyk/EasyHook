@@ -1,7 +1,7 @@
 param(
-    [ValidateSet("vs2013", "vs2015", "vs2017", "nupkg-only")]
+    [ValidateSet("vs2013", "vs2015", "vs2017", "vs2019", "nupkg-only")]
     [Parameter(Position = 0)] 
-    [string] $Target = "vs2015",
+    [string] $Target = "vs2017",
     [Parameter(Position = 1)]
     [string] $AssemblyVersion = "2.8.0.0" 
 )
@@ -36,11 +36,11 @@ function RestoreNugetPackages()
 {
     $Nuget = Join-Path $env:LOCALAPPDATA .\nuget\NuGet.exe
     Get-Location
-    . $Nuget restore EasyHook.sln
+    . $Nuget restore -OutputDirectory .\Packages EasyHook.sln
 
-    . $Nuget install MSBuildTasks -Version 1.5.0.196
+    . $Nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
     
-    . $Nuget install vswhere -Version 2.1.3
+    . $Nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
 }
 
 # https://github.com/jbake/Powershell_scripts/blob/master/Invoke-BatchFile.ps1
@@ -114,7 +114,7 @@ function Msvs
     param(
         [Parameter(Position = 0, ValueFromPipeline = $true)]
         [string] $Sln = $null,
-        [ValidateSet('v120', 'v140', 'v141')]
+        [ValidateSet('v120', 'v140', 'v141', 'v142')]
         [Parameter(Position = 1, ValueFromPipeline = $true)]
         [string] $Toolchain, 
 
@@ -132,22 +132,20 @@ function Msvs
     $VisualStudioVersion = $null
     $VXXCommonTools = $null
 
+    $VSWhere = ".\Packages\vswhere.2.8.4\tools\vswhere.exe"
+    $MSBuildExe = . $VSWhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe | select-object -first 1
+
     switch -Exact ($Toolchain) {
         'v120' {
-            $MSBuildExe = join-path -path (Get-ItemProperty "HKLM:\software\Microsoft\MSBuild\ToolsVersions\12.0").MSBuildToolsPath -childpath "msbuild.exe"
-            $MSBuildExe = $MSBuildExe -replace "Framework64", "Framework"
             $VisualStudioVersion = '12.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v140' {
-            $MSBuildExe = join-path -path (Get-ItemProperty "HKLM:\software\Microsoft\MSBuild\ToolsVersions\14.0").MSBuildToolsPath -childpath "msbuild.exe"
-            $MSBuildExe = $MSBuildExe -replace "Framework64", "Framework"
             $VisualStudioVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v141' {
-            $MSBuildExe = join-path $VSInstallationPath ".\MSBuild\15.0\Bin\msbuild.exe"
-            $VisualStudioVersion = '15.0'
+            $VisualStudioVersion = '14.1'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -172,7 +170,7 @@ function Msvs
     $Arguments = @(
         "$Sln",
         "/t:rebuild",
-        "/tv:$VisualStudioVersion",
+        "/tv:Current",
         "/p:VisualStudioVersion=$VisualStudioVersion",
         "/p:Configuration=$Configuration",
         "/p:Platform=$Arch",
@@ -181,39 +179,36 @@ function Msvs
         "/verbosity:quiet"
     )
 
-    #$StartInfo = New-Object System.Diagnostics.ProcessStartInfo
-    #$StartInfo.FileName = $MSBuildExe
-    #$StartInfo.Arguments = $Arguments
+    Write-Diagnostic "MSBuild Executable: $MSBuildExe $Arguments"
 
-    #$StartInfo.EnvironmentVariables.Clear()
+    $StartInfo = New-Object System.Diagnostics.ProcessStartInfo
+    $StartInfo.FileName = $MSBuildExe
+    $StartInfo.Arguments = $Arguments
 
-    #Get-ChildItem -Path env:* | ForEach-Object {
-    #    $StartInfo.EnvironmentVariables.Add($_.Name, $_.Value)
-    #}
+    $StartInfo.EnvironmentVariables.Clear()
 
-    #$StartInfo.UseShellExecute = $false
-    #$StartInfo.CreateNoWindow = $false
-    #$StartInfo.RedirectStandardError = $true
-    #$StartInfo.RedirectStandardOutput = $true
+    Get-ChildItem -Path env:* | ForEach-Object {
+        $StartInfo.EnvironmentVariables.Add($_.Name, $_.Value)
+    }
 
-    #$Process = New-Object System.Diagnostics.Process
-    #$Process.StartInfo = $startInfo
-    #$Process.Start()
+    $StartInfo.UseShellExecute = $false
+    $StartInfo.CreateNoWindow = $false
+    $StartInfo.RedirectStandardError = $true
+    $StartInfo.RedirectStandardOutput = $true
+
+    $Process = New-Object System.Diagnostics.Process
+    $Process.StartInfo = $startInfo
+    $Process.Start()
     
-    #$stdout = $Process.StandardOutput.ReadToEnd()
-    #$stderr = $Process.StandardError.ReadToEnd()
+    $stdout = $Process.StandardOutput.ReadToEnd()
+    $stderr = $Process.StandardError.ReadToEnd()
     
-    #$Process.WaitForExit()
+    $Process.WaitForExit()
 
-    #if($Process.ExitCode -ne 0)
-    #{
-    #    Write-Host "stdout: $stdout"
-    #    Write-Host "stderr: $stderr"
-    #    Die "Build failed"
-    #}
-    
-    &$MSBuildExe $Arguments
-    if (!$?) {
+    if($Process.ExitCode -ne 0)
+    {
+        Write-Host "stdout: $stdout"
+        Write-Host "stderr: $stderr"
         Die "Build failed"
     }
 }
@@ -225,7 +220,7 @@ function FindVS
         [string] $Toolchain
     )
 
-    $VSWhere = ".\vswhere.2.1.3\tools\vswhere.exe"
+    $VSWhere = ".\Packages\vswhere.2.8.4\tools\vswhere.exe"
 
     # use vswhere to locate toolchain dir
 
@@ -239,6 +234,10 @@ function FindVS
     }
     
     if ($Toolchain -eq 'v141') {
+        $script:VSInstallationPath = . $VSWhere -version "[15.0,16.0)" -property installationPath
+    }
+    
+    if ($Toolchain -eq 'v142') {
         $script:VSInstallationPath = . $VSWhere -version "[15.0,16.0)" -property installationPath
     }
 }
@@ -337,6 +336,11 @@ switch -Exact ($Target)
     "vs2017"
     {
         VSX v141
+        Nupkg
+    }
+    "vs2019"
+    {
+        VSX v142
         Nupkg
     }
 }

@@ -1,6 +1,6 @@
 echo off
 
-call findvs.bat
+call %~dp0\Tools\findvs.bat
 
 IF NOT "%vspath%"=="" (
   msbuild build-package.proj /t:Clean /tv:%tv%
