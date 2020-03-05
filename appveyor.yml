@@ -28,7 +28,9 @@ install:
     . Tools\ci_install.ps1
 
 before_build:
-  - nuget restore
+  - nuget restore -OutputDirectory .\Packages EasyHook.sln
+  - nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
+  - nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
 
 build:
   parallel: true
