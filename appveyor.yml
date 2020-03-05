@@ -36,10 +36,6 @@ build:
   parallel: true
   project: EasyHook.sln
 
-#build_script:
-#- cmd: >-
-#    call Tools\ci_build.bat
-
 artifacts:
 - path: .\*.nupkg
   name: EasyHook NuGet
