@@ -1,7 +1,11 @@
 #  Ignore thumbnails created by windows
 Thumbs.db
 
+# NPM
+node_modules
+
 #  Ignore files build by Visual Studio
+*.ipch
 *.obj
 *.exe
 *.pdb
@@ -20,12 +24,14 @@ Thumbs.db
 *.ilk
 *.log
 *.sdf
+*.tlog
 *.VC.db
 db.lock
 storage.ide
 *.ide-*
 *.db-*
 *.opendb
+Win8.1*/
 [Pp]ackages/
 [Bb]uild*/
 [Dd]eploy*/
