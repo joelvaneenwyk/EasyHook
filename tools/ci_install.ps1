@@ -1,3 +1,5 @@
+Write-Host "Running PowerShell install script."
+
 $msiPath = "$($env:USERPROFILE)\CoApp.Tools.Powershell.msi"
 
 (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
