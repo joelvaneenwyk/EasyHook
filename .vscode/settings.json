@@ -1,0 +1,31 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.renderWhitespace": "all",
+    "editor.renderControlCharacters": true,
+    "[batch]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": false
+    },
+    "files.exclude": {
+        "**/.git": true,
+        "**/.sfdx": true,
+        "**/.pytest_cache": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        ".vs/**": true,
+        "**/.DS_Store": true,
+        "**/Obj/**": true,
+        "**/Build/**": true,
+        "**/packages/**": true,
+        "**/node_modules/**": true,
+        "**/obj/**": true,
+        "**/*.csproj*": true,
+        "**/*.pyproj*": true,
+        "**/*.sln": true,
+        "**/*.ico": true,
+        "**/*.pyc": true,
+        "_*/**": true,
+        "**/.cache": true,
+        "**/.mypy_cache": true
+    }
+}
