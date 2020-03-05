@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -29,28 +29,28 @@
 I am using a >>well known<< library to check for OS loader lock ;-)
 */
 #ifndef DRIVER
-	#include "Aux_ulib.h"
+    #include "Aux_ulib.h"
 #endif
 
 
 typedef struct _RUNTIME_INFO_
 {
-	// "true" if the current thread is within the related hook handler
-	BOOL            IsExecuting;
-	// the hook this information entry belongs to... This allows a per thread and hook storage!
-	DWORD           HLSIdent;
-	// the return address of the current thread's hook handler...
-	void*           RetAddress;
+    // "true" if the current thread is within the related hook handler
+    BOOL            IsExecuting;
+    // the hook this information entry belongs to... This allows a per thread and hook storage!
+    DWORD           HLSIdent;
+    // the return address of the current thread's hook handler...
+    void*           RetAddress;
     // the address of the return address of the current thread's hook handler...
-	void**          AddrOfRetAddr;
+    void**          AddrOfRetAddr;
 }RUNTIME_INFO;
 
 typedef struct _THREAD_RUNTIME_INFO_
 {
-	RUNTIME_INFO*		Entries;
-	RUNTIME_INFO*		Current;
-	void*				Callback;
-	BOOL				IsProtected;
+    RUNTIME_INFO*		Entries;
+    RUNTIME_INFO*		Current;
+    void*				Callback;
+    BOOL				IsProtected;
 }THREAD_RUNTIME_INFO, *LPTHREAD_RUNTIME_INFO;
 
 typedef struct _THREAD_LOCAL_STORAGE_
@@ -62,9 +62,9 @@ typedef struct _THREAD_LOCAL_STORAGE_
 
 typedef struct _BARRIER_UNIT_
 {
-	HOOK_ACL				GlobalACL;
-	BOOL					IsInitialized;
-	THREAD_LOCAL_STORAGE	TLS;
+    HOOK_ACL				GlobalACL;
+    BOOL					IsInitialized;
+    THREAD_LOCAL_STORAGE	TLS;
 }BARRIER_UNIT;
 
 
@@ -101,37 +101,37 @@ Returns:
     TRUE on success, FALSE otherwise.
 */
 #ifndef DRIVER
-	ULONG		CurrentId = (ULONG)GetCurrentThreadId();
+    ULONG		CurrentId = (ULONG)GetCurrentThreadId();
 #else
-	ULONG		CurrentId = (ULONG)PsGetCurrentThreadId();
+    ULONG		CurrentId = (ULONG)PsGetCurrentThreadId();
 #endif
-	LONG		Index = -1;
+    LONG		Index = -1;
     LONG		i;
 
     RtlAcquireLock(&InTls->ThreadSafe);
 
     // select Index AND check whether thread is already registered.
-	for(i = 0; i < MAX_THREAD_COUNT; i++)
-	{
-		if((InTls->IdList[i] == 0) && (Index == -1))
-			Index = i;
-		
-		ASSERT(InTls->IdList[i] != CurrentId,L"barrier.c - InTls->IdList[i] != CurrentId");
-	}
+    for(i = 0; i < MAX_THREAD_COUNT; i++)
+    {
+        if((InTls->IdList[i] == 0) && (Index == -1))
+            Index = i;
 
-	if(Index == -1)
-	{
-		RtlReleaseLock(&InTls->ThreadSafe);
+        ASSERT(InTls->IdList[i] != CurrentId,L"barrier.c - InTls->IdList[i] != CurrentId");
+    }
 
-		return FALSE;
-	}
+    if(Index == -1)
+    {
+        RtlReleaseLock(&InTls->ThreadSafe);
 
-	InTls->IdList[Index] = CurrentId;
-	RtlZeroMemory(&InTls->Entries[Index], sizeof(THREAD_RUNTIME_INFO));
-	
-	RtlReleaseLock(&InTls->ThreadSafe);
+        return FALSE;
+    }
 
-	return TRUE;
+    InTls->IdList[Index] = CurrentId;
+    RtlZeroMemory(&InTls->Entries[Index], sizeof(THREAD_RUNTIME_INFO));
+
+    RtlReleaseLock(&InTls->ThreadSafe);
+
+    return TRUE;
 }
 
 
@@ -140,7 +140,7 @@ Returns:
 
 
 BOOL TlsGetCurrentValue(
-            THREAD_LOCAL_STORAGE* InTls,                
+            THREAD_LOCAL_STORAGE* InTls,
             THREAD_RUNTIME_INFO** OutValue)
 {
 /*
@@ -165,23 +165,23 @@ Returns:
     FALSE if the caller was not registered in the storage, TRUE otherwise.
 */
 #ifndef DRIVER
-	ULONG		CurrentId = (ULONG)GetCurrentThreadId();
+    ULONG		CurrentId = (ULONG)GetCurrentThreadId();
 #else
-	ULONG		CurrentId = (ULONG)PsGetCurrentThreadId();
+    ULONG		CurrentId = (ULONG)PsGetCurrentThreadId();
 #endif
     LONG        Index;
 
-	for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
-	{
-		if(InTls->IdList[Index] == CurrentId)
-		{
-			*OutValue = &InTls->Entries[Index];
+    for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
+    {
+        if(InTls->IdList[Index] == CurrentId)
+        {
+            *OutValue = &InTls->Entries[Index];
 
-			return TRUE;
-		}
-	}
+            return TRUE;
+        }
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -203,25 +203,25 @@ Parameters:
         The storage from which the caller should be removed.
 */
 #ifndef DRIVER
-	ULONG		    CurrentId = (ULONG)GetCurrentThreadId();
+    ULONG		    CurrentId = (ULONG)GetCurrentThreadId();
 #else
-	ULONG		    CurrentId = (ULONG)PsGetCurrentThreadId();
+    ULONG		    CurrentId = (ULONG)PsGetCurrentThreadId();
 #endif
     ULONG           Index;
 
     RtlAcquireLock(&InTls->ThreadSafe);
 
-	for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
-	{
-		if(InTls->IdList[Index] == CurrentId)
-		{
-			InTls->IdList[Index] = 0;
+    for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
+    {
+        if(InTls->IdList[Index] == CurrentId)
+        {
+            InTls->IdList[Index] = 0;
 
-			RtlZeroMemory(&InTls->Entries[Index], sizeof(THREAD_RUNTIME_INFO));
-		}
-	}
+            RtlZeroMemory(&InTls->Entries[Index], sizeof(THREAD_RUNTIME_INFO));
+        }
+    }
 
-	RtlReleaseLock(&InTls->ThreadSafe);
+    RtlReleaseLock(&InTls->ThreadSafe);
 }
 
 
@@ -240,11 +240,11 @@ Returns:
 
 */
 #ifndef DRIVER
-	BOOL     IsLoaderLock = FALSE;
+    BOOL     IsLoaderLock = FALSE;
 
-	return (!AuxUlibIsDLLSynchronizationHeld(&IsLoaderLock) || IsLoaderLock || !Unit.IsInitialized);
+    return (!AuxUlibIsDLLSynchronizationHeld(&IsLoaderLock) || IsLoaderLock || !Unit.IsInitialized);
 #else
-	return FALSE;
+    return FALSE;
 #endif
 }
 
@@ -257,7 +257,7 @@ BOOL AcquireSelfProtection()
 Description:
 
     To provide more convenience for writing the TDB, this self protection
-    will disable ALL hooks for the current thread until ReleaseSelfProtection() 
+    will disable ALL hooks for the current thread until ReleaseSelfProtection()
     is called. This allows one to call any API during TDB initialization
     without being intercepted...
 
@@ -270,14 +270,14 @@ Returns:
     this case!
 
 */
-	LPTHREAD_RUNTIME_INFO		Runtime = NULL;
+    LPTHREAD_RUNTIME_INFO		Runtime = NULL;
 
-	if(!TlsGetCurrentValue(&Unit.TLS, &Runtime) || Runtime->IsProtected)
-		return FALSE;
+    if(!TlsGetCurrentValue(&Unit.TLS, &Runtime) || Runtime->IsProtected)
+        return FALSE;
 
-	Runtime->IsProtected = TRUE;
+    Runtime->IsProtected = TRUE;
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -294,11 +294,11 @@ Description:
 
     An assertion is raised if the caller has not owned the self protection.
 */
-	LPTHREAD_RUNTIME_INFO		Runtime = NULL;
+    LPTHREAD_RUNTIME_INFO		Runtime = NULL;
 
-	ASSERT(TlsGetCurrentValue(&Unit.TLS, &Runtime) && Runtime->IsProtected,L"barrier.c - TlsGetCurrentValue(&Unit.TLS, &Runtime) && Runtime->IsProtected");
+    ASSERT(TlsGetCurrentValue(&Unit.TLS, &Runtime) && Runtime->IsProtected,L"barrier.c - TlsGetCurrentValue(&Unit.TLS, &Runtime) && Runtime->IsProtected");
 
-	Runtime->IsProtected = FALSE;
+    Runtime->IsProtected = FALSE;
 }
 
 
@@ -307,8 +307,8 @@ Description:
 
 
 BOOL ACLContains(
-	HOOK_ACL* InACL,
-	ULONG InCheckID)
+    HOOK_ACL* InACL,
+    ULONG InCheckID)
 {
 /*
 Returns:
@@ -317,13 +317,13 @@ Returns:
 */
     ULONG           Index;
 
-	for(Index = 0; Index < InACL->Count; Index++)
-	{
-		if(InACL->Entries[Index] == InCheckID)
-			return TRUE;
-	}
+    for(Index = 0; Index < InACL->Count; Index++)
+    {
+        if(InACL->Entries[Index] == InCheckID)
+            return TRUE;
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -331,12 +331,12 @@ Returns:
 
 #ifndef DRIVER
 BOOL IsThreadIntercepted(
-	HOOK_ACL* LocalACL, 
-	ULONG InThreadID)
+    HOOK_ACL* LocalACL,
+    ULONG InThreadID)
 #else
 BOOL IsProcessIntercepted(
-	HOOK_ACL* LocalACL, 
-	ULONG InProcessID)
+    HOOK_ACL* LocalACL,
+    ULONG InProcessID)
 #endif
 {
 /*
@@ -349,50 +349,50 @@ Returns:
     TRUE if the given thread is intercepted by the global AND local ACL,
     FALSE otherwise.
 */
-	ULONG				CheckID;
+    ULONG				CheckID;
 
 #ifndef DRIVER
-	if(InThreadID == 0)
-		CheckID = GetCurrentThreadId();
-	else
-		CheckID = InThreadID;
+    if(InThreadID == 0)
+        CheckID = GetCurrentThreadId();
+    else
+        CheckID = InThreadID;
 #else
-	if(InProcessID == 0)
-		CheckID = (ULONG)PsGetCurrentProcessId();
-	else
-		CheckID = InProcessID;
+    if(InProcessID == 0)
+        CheckID = (ULONG)PsGetCurrentProcessId();
+    else
+        CheckID = InProcessID;
 #endif
 
-	if(ACLContains(&Unit.GlobalACL, CheckID))
-	{
-		if(ACLContains(LocalACL, CheckID))
-		{
-			if(LocalACL->IsExclusive)
-				return FALSE;
-		}
-		else
-		{
-			if(!LocalACL->IsExclusive)
-				return FALSE;
-		}
+    if(ACLContains(&Unit.GlobalACL, CheckID))
+    {
+        if(ACLContains(LocalACL, CheckID))
+        {
+            if(LocalACL->IsExclusive)
+                return FALSE;
+        }
+        else
+        {
+            if(!LocalACL->IsExclusive)
+                return FALSE;
+        }
 
-		return !Unit.GlobalACL.IsExclusive;
-	}
-	else
-	{
-		if(ACLContains(LocalACL, CheckID))
-		{
-			if(LocalACL->IsExclusive)
-				return FALSE;
-		}
-		else
-		{
-			if(!LocalACL->IsExclusive)
-				return FALSE;
-		}
+        return !Unit.GlobalACL.IsExclusive;
+    }
+    else
+    {
+        if(ACLContains(LocalACL, CheckID))
+        {
+            if(LocalACL->IsExclusive)
+                return FALSE;
+        }
+        else
+        {
+            if(!LocalACL->IsExclusive)
+                return FALSE;
+        }
 
-		return Unit.GlobalACL.IsExclusive;
-	}
+        return Unit.GlobalACL.IsExclusive;
+    }
 }
 
 
@@ -401,13 +401,13 @@ Returns:
 
 #ifndef DRIVER
 EASYHOOK_NT_EXPORT LhIsThreadIntercepted(
-	TRACED_HOOK_HANDLE InHook,
-	ULONG InThreadID,
+    TRACED_HOOK_HANDLE InHook,
+    ULONG InThreadID,
     BOOL* OutResult)
 #else
 EASYHOOK_NT_EXPORT LhIsProcessIntercepted(
-	TRACED_HOOK_HANDLE InHook,
-	ULONG InProcessID,
+    TRACED_HOOK_HANDLE InHook,
+    ULONG InProcessID,
     BOOL* OutResult)
 #endif
 {
@@ -432,7 +432,7 @@ Description:
 #ifndef DRIVER
     *OutResult = IsThreadIntercepted(&Handle->LocalACL, InThreadID);
 #else
-	*OutResult = IsProcessIntercepted(&Handle->LocalACL, InProcessID);
+    *OutResult = IsProcessIntercepted(&Handle->LocalACL, InProcessID);
 #endif
 
     RETURN;
@@ -458,18 +458,18 @@ Description:
 
 */
     NTSTATUS            NtStatus;
-	LPTHREAD_RUNTIME_INFO       Runtime;
+    LPTHREAD_RUNTIME_INFO       Runtime;
 
     if(!IsValidPointer(OutValue, sizeof(PVOID)))
         THROW(STATUS_INVALID_PARAMETER, L"Invalid result storage specified.");
 
-	if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
+    if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
         THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
-	if(Runtime->Current != NULL)
-		*OutValue = Runtime->Callback;
-	else
-		THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
+    if(Runtime->Current != NULL)
+        *OutValue = Runtime->Callback;
+    else
+        THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
     RETURN;
 
@@ -497,18 +497,18 @@ Description:
 
 */
     NTSTATUS            NtStatus;
-	LPTHREAD_RUNTIME_INFO       Runtime;
+    LPTHREAD_RUNTIME_INFO       Runtime;
 
     if(!IsValidPointer(OutValue, sizeof(PVOID)))
         THROW(STATUS_INVALID_PARAMETER, L"Invalid result storage specified.");
 
-	if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
+    if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
         THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
-	if(Runtime->Current != NULL)
-		*OutValue = Runtime->Current->RetAddress;
-	else
-		THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
+    if(Runtime->Current != NULL)
+        *OutValue = Runtime->Current->RetAddress;
+    else
+        THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
     RETURN;
 
@@ -528,21 +528,21 @@ Description:
 
     Is expected to be called inside a hook handler. Otherwise it
     will fail with STATUS_NOT_SUPPORTED. The method retrieves
-    the address of the return address of the hook handler. 
+    the address of the return address of the hook handler.
 */
-	LPTHREAD_RUNTIME_INFO       Runtime;
+    LPTHREAD_RUNTIME_INFO       Runtime;
     NTSTATUS                    NtStatus;
 
     if(OutValue == NULL)
         THROW(STATUS_INVALID_PARAMETER, L"Invalid storage specified.");
 
-	if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
+    if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
         THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
-	if(Runtime->Current != NULL)
+    if(Runtime->Current != NULL)
         *OutValue = Runtime->Current->AddrOfRetAddr;
-	else
-		THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
+    else
+        THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
     RETURN;
 
@@ -561,10 +561,10 @@ EASYHOOK_NT_EXPORT LhBarrierBeginStackTrace(PVOID* OutBackup)
 Description:
 
     Is expected to be called inside a hook handler. Otherwise it
-    will fail with STATUS_NOT_SUPPORTED. 
+    will fail with STATUS_NOT_SUPPORTED.
     Temporarily restores the call stack to allow stack traces.
 
-    You have to pass the stored backup pointer to 
+    You have to pass the stored backup pointer to
     LhBarrierEndStackTrace() BEFORE leaving the handler, otherwise
     the application will be left in an unstable state!
 */
@@ -574,11 +574,11 @@ Description:
     if(OutBackup == NULL)
         THROW(STATUS_INVALID_PARAMETER, L"The given backup storage is invalid.");
 
-	if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
+    if(!TlsGetCurrentValue(&Unit.TLS, &Runtime))
         THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
-	if(Runtime->Current == NULL)
-		THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
+    if(Runtime->Current == NULL)
+        THROW(STATUS_NOT_SUPPORTED, L"The caller is not inside a hook handler.");
 
     *OutBackup = *Runtime->Current->AddrOfRetAddr;
     *Runtime->Current->AddrOfRetAddr = Runtime->Current->RetAddress;
@@ -601,7 +601,7 @@ EASYHOOK_NT_EXPORT LhBarrierEndStackTrace(PVOID InBackup)
 Description:
 
     Is expected to be called inside a hook handler. Otherwise it
-    will fail with STATUS_NOT_SUPPORTED. 
+    will fail with STATUS_NOT_SUPPORTED.
 
     You have to pass the backup pointer obtained with
     LhBarrierBeginStackTrace().
@@ -635,17 +635,17 @@ Description:
 
     Will be called on thread termination and cleans up the TLS.
 */
-	LPTHREAD_RUNTIME_INFO		Info;
+    LPTHREAD_RUNTIME_INFO		Info;
 
-	if(TlsGetCurrentValue(&Unit.TLS, &Info))
-	{
-		if(Info->Entries != NULL)
-			RtlFreeMemory(Info->Entries);
+    if(TlsGetCurrentValue(&Unit.TLS, &Info))
+    {
+        if(Info->Entries != NULL)
+            RtlFreeMemory(Info->Entries);
 
-		Info->Entries = NULL;
-	}
+        Info->Entries = NULL;
+    }
 
-	TlsRemoveCurrentThread(&Unit.TLS);
+    TlsRemoveCurrentThread(&Unit.TLS);
 }
 
 
@@ -653,14 +653,14 @@ Description:
 
 #ifdef DRIVER
 void OnThreadDetach(
-			IN HANDLE  ProcessId,
-			IN HANDLE  ThreadId,
-			IN BOOLEAN  Create)
+            IN HANDLE  ProcessId,
+            IN HANDLE  ThreadId,
+            IN BOOLEAN  Create)
 {
-	if(Create)
-		return;
+    if(Create)
+        return;
 
-	LhBarrierThreadDetach();
+    LhBarrierThreadDetach();
 }
 #endif
 
@@ -675,26 +675,26 @@ Description:
 
     Will be called on DLL load and initializes all barrier structures.
 */
-	RtlZeroMemory(&Unit, sizeof(Unit));
+    RtlZeroMemory(&Unit, sizeof(Unit));
 
-	// globally accept all threads...
-	Unit.GlobalACL.IsExclusive = TRUE;
+    // globally accept all threads...
+    Unit.GlobalACL.IsExclusive = TRUE;
 
-	// allocate private heap
+    // allocate private heap
     RtlInitializeLock(&Unit.TLS.ThreadSafe);
 
 #ifndef DRIVER
 
     Unit.IsInitialized = AuxUlibInitialize()?TRUE:FALSE;
 
-	return STATUS_SUCCESS;
+    return STATUS_SUCCESS;
 
 #else
 
-	// we also have to emulate a thread detach event...
-	Unit.IsInitialized = TRUE;
+    // we also have to emulate a thread detach event...
+    Unit.IsInitialized = TRUE;
 
-	return PsSetCreateThreadNotifyRoutine(OnThreadDetach);
+    return PsSetCreateThreadNotifyRoutine(OnThreadDetach);
 
 #endif
 }
@@ -706,22 +706,22 @@ Description:
 
     Will be called on DLL unload.
 */
-	ULONG			Index;
+    ULONG			Index;
 
 #ifdef DRIVER
-	PsRemoveCreateThreadNotifyRoutine(OnThreadDetach);
+    PsRemoveCreateThreadNotifyRoutine(OnThreadDetach);
 #endif
 
-	RtlDeleteLock(&Unit.TLS.ThreadSafe);
+    RtlDeleteLock(&Unit.TLS.ThreadSafe);
 
-	// release thread specific resources
-	for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
-	{
-		if(Unit.TLS.Entries[Index].Entries != NULL)
-			RtlFreeMemory(Unit.TLS.Entries[Index].Entries);
-	}
+    // release thread specific resources
+    for(Index = 0; Index < MAX_THREAD_COUNT; Index++)
+    {
+        if(Unit.TLS.Entries[Index].Entries != NULL)
+            RtlFreeMemory(Unit.TLS.Entries[Index].Entries);
+    }
 
-	RtlZeroMemory(&Unit, sizeof(Unit));
+    RtlZeroMemory(&Unit, sizeof(Unit));
 }
 
 
@@ -732,128 +732,128 @@ ULONGLONG LhBarrierIntro(LOCAL_HOOK_INFO* InHandle, void* InRetAddr, void** InAd
 /*
 Description:
 
-    Will be called from assembler code and enters the 
+    Will be called from assembler code and enters the
     thread deadlock barrier.
 */
     LPTHREAD_RUNTIME_INFO		Info;
     RUNTIME_INFO*		        Runtime;
-	BOOL						Exists;
+    BOOL						Exists;
 
-	#ifdef _M_X64
-		InHandle -= 1;
-	#endif
+    #ifdef _M_X64
+        InHandle -= 1;
+    #endif
 
-	// are we in OS loader lock?
-	if(IsLoaderLock())
-	{
-		/*
-			Execution of managed code or even any other code within any loader lock
-			may lead into unpredictable application behavior and therefore we just
-			execute without intercepting the call...
-		*/
+    // are we in OS loader lock?
+    if(IsLoaderLock())
+    {
+        /*
+            Execution of managed code or even any other code within any loader lock
+            may lead into unpredictable application behavior and therefore we just
+            execute without intercepting the call...
+        */
 
-		/*  !!Note that the assembler code does not invoke LhBarrierOutro() in this case!! */
+        /*  !!Note that the assembler code does not invoke LhBarrierOutro() in this case!! */
 
-		return FALSE;
-	}
+        return FALSE;
+    }
 
-	// open pointer table
-	Exists = TlsGetCurrentValue(&Unit.TLS, &Info);
+    // open pointer table
+    Exists = TlsGetCurrentValue(&Unit.TLS, &Info);
 
-	if(!Exists)
-	{
-		if(!TlsAddCurrentThread(&Unit.TLS))
-			return FALSE;
-	}
+    if(!Exists)
+    {
+        if(!TlsAddCurrentThread(&Unit.TLS))
+            return FALSE;
+    }
 
-	/*
-		To minimize APIs that can't be hooked, we are now entering the self protection.
-		This will allow anybody to hook any APIs except those required to setup
-		self protection.
+    /*
+        To minimize APIs that can't be hooked, we are now entering the self protection.
+        This will allow anybody to hook any APIs except those required to setup
+        self protection.
 
-		Self protection prevents any further hook interception for the current fiber,
-		while setting up the "Thread Deadlock Barrier"...
-	*/
-	if(!AcquireSelfProtection())
-	{
-		/*  !!Note that the assembler code does not invoke LhBarrierOutro() in this case!! */
+        Self protection prevents any further hook interception for the current fiber,
+        while setting up the "Thread Deadlock Barrier"...
+    */
+    if(!AcquireSelfProtection())
+    {
+        /*  !!Note that the assembler code does not invoke LhBarrierOutro() in this case!! */
 
-		return FALSE;
-	}
+        return FALSE;
+    }
 
-	ASSERT(InHandle->HLSIndex < MAX_HOOK_COUNT,L"barrier.c - InHandle->HLSIndex < MAX_HOOK_COUNT");
+    ASSERT(InHandle->HLSIndex < MAX_HOOK_COUNT,L"barrier.c - InHandle->HLSIndex < MAX_HOOK_COUNT");
 
-	if(!Exists)
-	{
-		TlsGetCurrentValue(&Unit.TLS, &Info);
+    if(!Exists)
+    {
+        TlsGetCurrentValue(&Unit.TLS, &Info);
 
-		Info->Entries = (RUNTIME_INFO*)RtlAllocateMemory(TRUE, sizeof(RUNTIME_INFO) * MAX_HOOK_COUNT);
+        Info->Entries = (RUNTIME_INFO*)RtlAllocateMemory(TRUE, sizeof(RUNTIME_INFO) * MAX_HOOK_COUNT);
 
-		if(Info->Entries == NULL)
-			goto DONT_INTERCEPT;
-	}
+        if(Info->Entries == NULL)
+            goto DONT_INTERCEPT;
+    }
 
-	// get hook runtime info...
-	Runtime = &Info->Entries[InHandle->HLSIndex];
+    // get hook runtime info...
+    Runtime = &Info->Entries[InHandle->HLSIndex];
 
-	if(Runtime->HLSIdent != InHandle->HLSIdent)
-	{
-		// just reset execution information
-		Runtime->HLSIdent = InHandle->HLSIdent;
-		Runtime->IsExecuting = FALSE;
-	}
+    if(Runtime->HLSIdent != InHandle->HLSIdent)
+    {
+        // just reset execution information
+        Runtime->HLSIdent = InHandle->HLSIdent;
+        Runtime->IsExecuting = FALSE;
+    }
 
-	// detect loops in hook execution hiearchy.
-	if(Runtime->IsExecuting)
-	{
-		/*
-			This implies that actually the handler has invoked itself. Because of
-			the special HookLocalStorage, this is now also signaled if other
-			hooks invoked by the related handler are calling it again.
+    // detect loops in hook execution hiearchy.
+    if(Runtime->IsExecuting)
+    {
+        /*
+            This implies that actually the handler has invoked itself. Because of
+            the special HookLocalStorage, this is now also signaled if other
+            hooks invoked by the related handler are calling it again.
 
-			I call this the "Thread deadlock barrier".
+            I call this the "Thread deadlock barrier".
 
-			!!Note that the assembler code does not invoke LhBarrierOutro() in this case!!
-		*/
+            !!Note that the assembler code does not invoke LhBarrierOutro() in this case!!
+        */
 
-		goto DONT_INTERCEPT;
-	}
+        goto DONT_INTERCEPT;
+    }
 
-	Info->Callback = InHandle->Callback;
-	Info->Current = Runtime;
+    Info->Callback = InHandle->Callback;
+    Info->Current = Runtime;
 
-	/*
-		Now we will negotiate thread/process access based on global and local ACL...
-	*/
+    /*
+        Now we will negotiate thread/process access based on global and local ACL...
+    */
 #ifndef DRIVER
-	Runtime->IsExecuting = IsThreadIntercepted(&InHandle->LocalACL, GetCurrentThreadId());
+    Runtime->IsExecuting = IsThreadIntercepted(&InHandle->LocalACL, GetCurrentThreadId());
 #else
-	Runtime->IsExecuting = IsProcessIntercepted(&InHandle->LocalACL, (ULONG)PsGetCurrentProcessId());
+    Runtime->IsExecuting = IsProcessIntercepted(&InHandle->LocalACL, (ULONG)PsGetCurrentProcessId());
 #endif
 
-	if(!Runtime->IsExecuting)
-		goto DONT_INTERCEPT;
+    if(!Runtime->IsExecuting)
+        goto DONT_INTERCEPT;
 
-	// save some context specific information
-	Runtime->RetAddress = InRetAddr;
-	Runtime->AddrOfRetAddr = InAddrOfRetAddr;
+    // save some context specific information
+    Runtime->RetAddress = InRetAddr;
+    Runtime->AddrOfRetAddr = InAddrOfRetAddr;
 
-	ReleaseSelfProtection();
-	
-	return TRUE;
+    ReleaseSelfProtection();
+
+    return TRUE;
 
 DONT_INTERCEPT:
-	/*  !!Note that the assembler code does not invoke UnmanagedHookOutro() in this case!! */
+    /*  !!Note that the assembler code does not invoke UnmanagedHookOutro() in this case!! */
 
-	if(Info != NULL)
-	{
-		Info->Current = NULL;
-		Info->Callback = NULL;
+    if(Info != NULL)
+    {
+        Info->Current = NULL;
+        Info->Callback = NULL;
 
-		ReleaseSelfProtection();
-	}
+        ReleaseSelfProtection();
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -864,42 +864,42 @@ void* __stdcall LhBarrierOutro(LOCAL_HOOK_INFO* InHandle, void** InAddrOfRetAddr
 {
 /*
 Description:
-    
-    Will just reset the "thread deadlock barrier" for the current hook handler and provides
-	some important integrity checks. 
 
-	The hook handle is just passed through, because the assembler code has no chance to
-	save it in any efficient manner at this point of execution...
+    Will just reset the "thread deadlock barrier" for the current hook handler and provides
+    some important integrity checks.
+
+    The hook handle is just passed through, because the assembler code has no chance to
+    save it in any efficient manner at this point of execution...
 */
     RUNTIME_INFO*			Runtime;
     LPTHREAD_RUNTIME_INFO	Info;
 
-	#ifdef _M_X64
-		InHandle -= 1;
-	#endif
+    #ifdef _M_X64
+        InHandle -= 1;
+    #endif
 
-	ASSERT(AcquireSelfProtection(),L"barrier.c - AcquireSelfProtection()");
+    ASSERT(AcquireSelfProtection(),L"barrier.c - AcquireSelfProtection()");
 
-	ASSERT(TlsGetCurrentValue(&Unit.TLS, &Info) && (Info != NULL),L"barrier.c - TlsGetCurrentValue(&Unit.TLS, &Info) && (Info != NULL)");
+    ASSERT(TlsGetCurrentValue(&Unit.TLS, &Info) && (Info != NULL),L"barrier.c - TlsGetCurrentValue(&Unit.TLS, &Info) && (Info != NULL)");
 
-	Runtime = &Info->Entries[InHandle->HLSIndex];
+    Runtime = &Info->Entries[InHandle->HLSIndex];
 
-	// leave handler context
-	Info->Current = NULL;
-	Info->Callback = NULL;
+    // leave handler context
+    Info->Current = NULL;
+    Info->Callback = NULL;
 
-	ASSERT(Runtime != NULL,L"barrier.c - Runtime != NULL");
+    ASSERT(Runtime != NULL,L"barrier.c - Runtime != NULL");
 
-	ASSERT(Runtime->IsExecuting,L"barrier.c - Runtime->IsExecuting");
+    ASSERT(Runtime->IsExecuting,L"barrier.c - Runtime->IsExecuting");
 
-	Runtime->IsExecuting = FALSE;
+    Runtime->IsExecuting = FALSE;
 
-	ASSERT(*InAddrOfRetAddr == NULL,L"barrier.c - *InAddrOfRetAddr == NULL");
+    ASSERT(*InAddrOfRetAddr == NULL,L"barrier.c - *InAddrOfRetAddr == NULL");
 
-	*InAddrOfRetAddr = Runtime->RetAddress;
+    *InAddrOfRetAddr = Runtime->RetAddress;
 
-	ReleaseSelfProtection();
+    ReleaseSelfProtection();
 
-	return InHandle;
+    return InHandle;
 
 }

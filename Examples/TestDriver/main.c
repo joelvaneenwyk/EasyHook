@@ -4,20 +4,20 @@
 #include "stdafx.h"
 
 NTSTATUS DriverEntry(
-	IN PDRIVER_OBJECT InDriverObject,
-	IN PUNICODE_STRING InRegistryPath);
+    IN PDRIVER_OBJECT InDriverObject,
+    IN PUNICODE_STRING InRegistryPath);
 
 NTSTATUS TestDriverDispatchCreate(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP	InIrp);
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP	InIrp);
 
 NTSTATUS TestDriverDispatchClose(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP InIrp);
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP InIrp);
 
 NTSTATUS TestDriverDispatchDeviceControl(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP InIrp);
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP InIrp);
 
 VOID TestDriverUnload(IN PDRIVER_OBJECT DriverObject);
 
@@ -32,27 +32,27 @@ VOID TestDriverUnload(IN PDRIVER_OBJECT DriverObject);
 #endif
 
 NTSTATUS DriverEntry(
-	IN PDRIVER_OBJECT		InDriverObject,
-	IN PUNICODE_STRING		InRegistryPath)
+    IN PDRIVER_OBJECT		InDriverObject,
+    IN PUNICODE_STRING		InRegistryPath)
 {
     UNREFERENCED_PARAMETER(InRegistryPath);
 
-    NTSTATUS						Status;    
-	PDEVICE_OBJECT					DeviceObject = NULL;
+    NTSTATUS						Status;
+    PDEVICE_OBJECT					DeviceObject = NULL;
 
-	/*
-		Create device...
-	*/
+    /*
+        Create device...
+    */
     if (!NT_SUCCESS(Status = IoCreateDevice(
-		InDriverObject,
-		0,								// DeviceExtensionSize
-		NULL,
-		0x893D,							// DeviceType
-		0,								// DeviceCharacteristics
-		TRUE,							// Exclusive
-		&DeviceObject					// [OUT]
-		)))
-		goto ERROR_ABORT;
+        InDriverObject,
+        0,								// DeviceExtensionSize
+        NULL,
+        0x893D,							// DeviceType
+        0,								// DeviceCharacteristics
+        TRUE,							// Exclusive
+        &DeviceObject					// [OUT]
+        )))
+        goto ERROR_ABORT;
 
 
     InDriverObject->MajorFunction[IRP_MJ_CREATE] = TestDriverDispatchCreate;
@@ -61,22 +61,22 @@ NTSTATUS DriverEntry(
     InDriverObject->DriverUnload = TestDriverUnload;
 
     // run test code...
-	return RunTestSuite();
+    return RunTestSuite();
 
 ERROR_ABORT:
 
-	/*
-		Rollback in case of errors...
-	*/
-	if (DeviceObject != NULL)
-		IoDeleteDevice(DeviceObject);
+    /*
+        Rollback in case of errors...
+    */
+    if (DeviceObject != NULL)
+        IoDeleteDevice(DeviceObject);
 
-	return Status;
+    return Status;
 }
 
 NTSTATUS TestDriverDispatchCreate(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP InIrp)
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -89,8 +89,8 @@ NTSTATUS TestDriverDispatchCreate(
 }
 
 NTSTATUS TestDriverDispatchClose(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP InIrp)
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -103,8 +103,8 @@ NTSTATUS TestDriverDispatchClose(
 }
 
 NTSTATUS TestDriverDispatchDeviceControl(
-	IN PDEVICE_OBJECT InDeviceObject,
-	IN PIRP	InIrp)
+    IN PDEVICE_OBJECT InDeviceObject,
+    IN PIRP	InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -119,9 +119,8 @@ NTSTATUS TestDriverDispatchDeviceControl(
 VOID TestDriverUnload(IN PDRIVER_OBJECT InDriverObject)
 {
     /*
-		Delete the device object
+        Delete the device object
     */
 
     IoDeleteDevice(InDriverObject->DeviceObject);
 }
-

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,9 +27,9 @@
 
 ULONG RtlAnsiLength(CHAR* InString)
 {
-    ULONG       Length = 0;
+    ULONG Length = 0;
 
-    while(*InString != 0)
+    while (*InString != 0)
     {
         Length++;
         InString++;
@@ -40,9 +40,9 @@ ULONG RtlAnsiLength(CHAR* InString)
 
 ULONG RtlUnicodeLength(WCHAR* InString)
 {
-    ULONG       Length = 0;
+    ULONG Length = 0;
 
-    while(*InString != 0)
+    while (*InString != 0)
     {
         Length++;
         InString++;
@@ -52,14 +52,14 @@ ULONG RtlUnicodeLength(WCHAR* InString)
 }
 
 LONG RtlAnsiIndexOf(
-            CHAR* InString,
-            CHAR InChar)
+    CHAR* InString,
+    CHAR InChar)
 {
-    ULONG       Index = 0;
+    ULONG Index = 0;
 
-    while(*InString != 0)
+    while (*InString != 0)
     {
-        if(*InString == InChar)
+        if (*InString == InChar)
             return Index;
 
         Index++;
@@ -70,29 +70,29 @@ LONG RtlAnsiIndexOf(
 }
 
 LONG RtlAnsiSubString(
-            CHAR* InString,
-            ULONG InOffset,
-            ULONG InCount,
-            CHAR* InTarget,
-            ULONG InTargetMaxLen)
+    CHAR* InString,
+    ULONG InOffset,
+    ULONG InCount,
+    CHAR* InTarget,
+    ULONG InTargetMaxLen)
 {
-    ULONG       Index = 0;
-    ULONG       Result = 0;
+    ULONG Index = 0;
+    ULONG Result = 0;
 
-    while(*InString != 0)
+    while (*InString != 0)
     {
-        if(Index >= InOffset + InCount)
+        if (Index >= InOffset + InCount)
         {
             *InTarget = 0;
 
             return Result;
         }
 
-        if(Index >= InOffset)
+        if (Index >= InOffset)
         {
             Result++;
 
-            if(InTargetMaxLen < Result)
+            if (InTargetMaxLen < Result)
                 return -1;
 
             *InTarget = *InString;
@@ -107,55 +107,60 @@ LONG RtlAnsiSubString(
     return -1;
 }
 
-
-LONGLONG RtlAnsiHexToLongLong(const CHAR *s, int len)
+LONGLONG RtlAnsiHexToLongLong(const CHAR* s, int len)
 {
-	// Almost equivalent behaviour to strtol (but long long and doesn't support signed hex)
-	const char *start = s;
-	if ('0' == s[0] && ('x' == s[1] || 'X' == s[1]))
-		s += 2;
-	int c;
-	LONGLONG rc = 0;
-	for (rc = 0; (s - start < len && '\0' != (c = *s)); s++) {
-		if (c >= 'a' && c <= 'f') {
-			c = c - 'a' + 10;
-		}
-		else if (c >= 'A' && c <= 'F') {
-			c = c - 'A' + 10;
-		}
-		else if (c >= '0' && c <= '9') {
-			c = c - '0';
-		}
-		else {
-			//errno = EINVAL;
-			return 0;
-		}
+    // Almost equivalent behaviour to strtol (but long long and doesn't support signed hex)
+    const char* start = s;
+    if ('0' == s[0] && ('x' == s[1] || 'X' == s[1]))
+        s += 2;
+    int c;
+    LONGLONG rc = 0;
+    for (rc = 0; (s - start < len && '\0' != (c = *s)); s++)
+    {
+        if (c >= 'a' && c <= 'f')
+        {
+            c = c - 'a' + 10;
+        }
+        else if (c >= 'A' && c <= 'F')
+        {
+            c = c - 'A' + 10;
+        }
+        else if (c >= '0' && c <= '9')
+        {
+            c = c - '0';
+        }
+        else
+        {
+            //errno = EINVAL;
+            return 0;
+        }
 #ifndef LLONG_MAX
-#define LLONG_MAX     9223372036854775807i64
+#    define LLONG_MAX 9223372036854775807i64
 #endif
-		if (rc > (LLONG_MAX / 16)) {
-			//errno = ERANGE;
-			return LLONG_MAX;
-		}
-		rc *= 16;
-		rc += (LONGLONG)c;
-	}
-	return rc;
+        if (rc > (LLONG_MAX / 16))
+        {
+            //errno = ERANGE;
+            return LLONG_MAX;
+        }
+        rc *= 16;
+        rc += (LONGLONG)c;
+    }
+    return rc;
 }
 
 BOOL RtlAnsiDbgHexToLongLong(
-            CHAR* InHexString,
-            ULONG InMinStrLen,
-            LONGLONG* OutValue)
+    CHAR* InHexString,
+    ULONG InMinStrLen,
+    LONGLONG* OutValue)
 {
-    ULONG       Index = 0;
-    CHAR        c;
-    LONGLONG    Result = 0;
-    LONGLONG    Tmp;
+    ULONG Index = 0;
+    CHAR c;
+    LONGLONG Result = 0;
+    LONGLONG Tmp;
 
-    while((c = *InHexString) != 0)
+    while ((c = *InHexString) != 0)
     {
-        if((c >= '0') && (c <= '9'))
+        if ((c >= '0') && (c <= '9'))
             Tmp = c - '0';
         else if ((c >= 'a') && (c <= 'f'))
             Tmp = c - 'a' + 10;
@@ -164,16 +169,16 @@ BOOL RtlAnsiDbgHexToLongLong(
         else
             return FALSE;
 
-        if(Index >= 16)
+        if (Index >= 16)
             return FALSE;
 
         Result += Tmp << (60 - (Index * 4));
-        
+
         Index++;
         InHexString++;
     }
 
-    if(Index < InMinStrLen)
+    if (Index < InMinStrLen)
         return FALSE;
 
     *OutValue = Result;
@@ -183,22 +188,22 @@ BOOL RtlAnsiDbgHexToLongLong(
 
 void RtlLongLongToUnicodeHex(LONGLONG InValue, WCHAR* InBuffer)
 {
-    ULONG           Index;
-    ULONG           iChar;
-    WCHAR           c;
+    ULONG Index;
+    ULONG iChar;
+    WCHAR c;
 
-    for(Index = 0, iChar = 0; Index < 64; Index += 4, iChar++)
+    for (Index = 0, iChar = 0; Index < 64; Index += 4, iChar++)
     {
 #ifdef _M_X64
         c = ((LONGLONG)InValue >> Index) & 0x0F;
 #else
-        if(Index < 32)
+        if (Index < 32)
             c = (WCHAR)(((LONG)InValue >> Index) & 0x0F);
         else
             c = 0;
 #endif
 
-        if(c < 10)
+        if (c < 10)
             c += '0';
         else
             c += 'A' - 10;

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,34 +27,34 @@
 
 void RtlInitializeLock(RTL_SPIN_LOCK* OutLock)
 {
-	KeInitializeSpinLock(&OutLock->Lock);
+    KeInitializeSpinLock(&OutLock->Lock);
 
-	OutLock->OldIrql = PASSIVE_LEVEL;
+    OutLock->OldIrql = PASSIVE_LEVEL;
 }
 
 void RtlAcquireLock(RTL_SPIN_LOCK* InLock)
 {
-	KeAcquireSpinLock(&InLock->Lock, &InLock->OldIrql);
+    KeAcquireSpinLock(&InLock->Lock, &InLock->OldIrql);
 }
 
 void RtlReleaseLock(RTL_SPIN_LOCK* InLock)
 {
-	KeReleaseSpinLock(&InLock->Lock, InLock->OldIrql);
+    KeReleaseSpinLock(&InLock->Lock, InLock->OldIrql);
 }
 
 void RtlDeleteLock(RTL_SPIN_LOCK* InLock)
 {
-	RtlZeroMemory(InLock, sizeof(RTL_SPIN_LOCK));
+    RtlZeroMemory(InLock, sizeof(RTL_SPIN_LOCK));
 }
 
 void RtlSleep(ULONG InTimeout)
 {
-	KEVENT				Event;
-	LARGE_INTEGER		DueTime;
+    KEVENT				Event;
+    LARGE_INTEGER		DueTime;
 
-	DueTime.QuadPart = -10 * 1000 * InTimeout;
+    DueTime.QuadPart = -10 * 1000 * InTimeout;
 
-	KeInitializeEvent(&Event, NotificationEvent, FALSE);
+    KeInitializeEvent(&Event, NotificationEvent, FALSE);
 
     KeWaitForSingleObject(&Event, Executive, KernelMode, FALSE, &DueTime);
 }
@@ -91,7 +91,7 @@ BOOL RtlMoveMemory(
     RtlCopyMemory(Buffer, InSource, InByteCount);
     RtlCopyMemory(InDest, Buffer, InByteCount);
 
-	RtlFreeMemory(Buffer);
+    RtlFreeMemory(Buffer);
 
     return TRUE;
 }
@@ -114,7 +114,7 @@ void RtlZeroMemory(
     }
 }
 #ifndef _DEBUG
-    #pragma optimize ("", on) 
+    #pragma optimize ("", on)
 #endif
 
 
@@ -135,7 +135,7 @@ LONG RtlProtectMemory(void* InPointer, ULONG InSize, ULONG InNewProtection)
 
 void RtlFreeMemory(void* InPointer)
 {
-	ExFreePool(InPointer);
+    ExFreePool(InPointer);
 }
 
 BOOL RtlIsValidPointer(PVOID InPtr, ULONG InSize)
@@ -150,26 +150,26 @@ BOOL RtlIsValidPointer(PVOID InPtr, ULONG InSize)
 // Write Protection Off
 KIRQL RtlWPOff()
 {
-	// prevent rescheduling 
-	KIRQL irql = KeRaiseIrqlToDpcLevel();
-	// disable memory protection (disable WP bit of CR0)   
-	UINT64 cr0 = __readcr0();
-	cr0 &= ~0x10000;
-	__writecr0(cr0);
-	// disable interrupts
-	_disable();
-	return irql;
+    // prevent rescheduling
+    KIRQL irql = KeRaiseIrqlToDpcLevel();
+    // disable memory protection (disable WP bit of CR0)
+    UINT64 cr0 = __readcr0();
+    cr0 &= ~0x10000;
+    __writecr0(cr0);
+    // disable interrupts
+    _disable();
+    return irql;
 }
 //Write Protection On
 void RtlWPOn(KIRQL irql)
 {
-	// re-enable memory protection (enable WP bit of CR0)   
-	UINT64 cr0 = __readcr0();
-	cr0 |= 0x10000;
-	// enable interrupts
-	_enable();
-	__writecr0(cr0);
-	// lower irql again
-	KeLowerIrql(irql);
+    // re-enable memory protection (enable WP bit of CR0)
+    UINT64 cr0 = __readcr0();
+    cr0 |= 0x10000;
+    // enable interrupts
+    _enable();
+    __writecr0(cr0);
+    // lower irql again
+    KeLowerIrql(irql);
 }
 #endif

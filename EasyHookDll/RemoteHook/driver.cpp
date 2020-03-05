@@ -25,7 +25,6 @@
 
 #include "stdafx.h"
 
-
 EASYHOOK_NT_EXPORT RhInstallDriver(
             WCHAR* InDriverPath,
             WCHAR* InDriverName)

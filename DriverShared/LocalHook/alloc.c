@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -73,8 +73,8 @@ Returns:
     NULL if no memory could be allocated, a valid pointer otherwise.
 
 */
-	ULONG pageSize;
-	return LhAllocateMemoryEx(InEntryPoint, &pageSize);
+    ULONG pageSize;
+    return LhAllocateMemoryEx(InEntryPoint, &pageSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ Returns:
     LONGLONG            Index;
 
 #endif
-	
+
 #if !defined(DRIVER)
     SYSTEM_INFO		    SysInfo;
     ULONG               PAGE_SIZE;
@@ -145,32 +145,32 @@ Returns:
     // we are trying to get memory as near as possible to relocate most RIP-relative instructions
     for(Base = (LONGLONG)InEntryPoint, Index = 0; ; Index += PAGE_SIZE)
     {
-		BOOLEAN end = TRUE;
-		if(Base + Index < iEnd)
-		{
-			if((Res = (UCHAR*)VirtualAlloc((void*)(Base + Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
-				break;
-			end = FALSE;
-		}
+        BOOLEAN end = TRUE;
+        if(Base + Index < iEnd)
+        {
+            if((Res = (UCHAR*)VirtualAlloc((void*)(Base + Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
+                break;
+            end = FALSE;
+        }
 
         if(Base - Index > iStart)
         {
-	        if((Res = (BYTE*)VirtualAlloc((void*)(Base - Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
-		        break;
-			end = FALSE;
+            if((Res = (BYTE*)VirtualAlloc((void*)(Base - Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
+                break;
+            end = FALSE;
         }
 
-		if (end)
-			break;
+        if (end)
+            break;
     }
 
     if(Res == NULL)
-	    return NULL;
+        return NULL;
 #else
-    
-	*OutPageSize = PAGE_SIZE;
-	// in 32-bit mode the trampoline will always be reachable
-	// In 64-bit driver mode we use an absolute address so the trampoline will always be reachable
+
+    *OutPageSize = PAGE_SIZE;
+    // in 32-bit mode the trampoline will always be reachable
+    // In 64-bit driver mode we use an absolute address so the trampoline will always be reachable
     if((Res = (UCHAR*)RtlAllocateMemory(TRUE, PAGE_SIZE)) == NULL)
         return NULL;
 

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,7 +42,7 @@ void LhCriticalInitialize()
 {
 /*
 Description:
-    
+
     Fail safe initialization of global hooking structures...
 */
     RtlZeroMemory(&GlobalHookListHead, sizeof(GlobalHookListHead));
@@ -111,12 +111,12 @@ EASYHOOK_NT_INTERNAL LhAllocateHook(
 /*
 Description:
 
-    For internal use only, this method allocates a hook for the given 
-    entry point, preparing the redirection of all calls to the given 
+    For internal use only, this method allocates a hook for the given
+    entry point, preparing the redirection of all calls to the given
     hooking method. Upon completion the original entry point remains
     unchanged.
-    
-    Originally located within LhInstallHook, this code has been split 
+
+    Originally located within LhInstallHook, this code has been split
     out to improve testing.
 
 Parameters:
@@ -140,7 +140,7 @@ Parameters:
     - OutHook
 
         OutHook will point to a newly allocated Hook, with completed trampoline
-        code including relocated entry point. The original entry point is still 
+        code including relocated entry point. The original entry point is still
         unchanged at this point.
 
     - RelocSize
@@ -150,17 +150,17 @@ Parameters:
 Returns:
 
     STATUS_NO_MEMORY
-    
+
         Unable to allocate memory around the target entry point.
-    
+
     STATUS_NOT_SUPPORTED
-    
+
         The target entry point contains unsupported instructions.
-    
+
     STATUS_INSUFFICIENT_RESOURCES
-    
+
         The limit of MAX_HOOK_COUNT simultaneous hooks was reached.
-    
+
 */
 
     ULONG           			EntrySize;
@@ -168,21 +168,21 @@ Returns:
     LONGLONG          			RelAddr;
     UCHAR*                      MemoryPtr;
     LONG                        NtStatus = STATUS_INTERNAL_ERROR;
-	ULONG                       PageSize = 0;
+    ULONG                       PageSize = 0;
 
 #if X64_DRIVER
-	// This is the ASM that will perform a JMP back out of the trampoline
-	// Note that the address 0x0 will be replaced with appropriate address.
-	// 50                             push   rax
-	// 48 b8 00 00 00 00 00 00 00 00  mov rax, 0x0
-	// 48 87 04 24                    xchg   QWORD PTR[rsp], rax
-	// c3                             ret
-	UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = { 
-		0x50, 
-		0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x48, 0x87, 0x04, 0x24,
-		0xc3
-	};
+    // This is the ASM that will perform a JMP back out of the trampoline
+    // Note that the address 0x0 will be replaced with appropriate address.
+    // 50                             push   rax
+    // 48 b8 00 00 00 00 00 00 00 00  mov rax, 0x0
+    // 48 87 04 24                    xchg   QWORD PTR[rsp], rax
+    // c3                             ret
+    UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = {
+        0x50,
+        0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x48, 0x87, 0x04, 0x24,
+        0xc3
+    };
 #endif
 
 #ifndef _M_X64
@@ -205,11 +205,11 @@ Returns:
     FORCE(RtlProtectMemory(Hook, PageSize, PAGE_EXECUTE_READWRITE));
 
     // Set MemoryPtr to end of LOCAL_HOOK_INFO structure where we will copy the trampoline and old proc
-	MemoryPtr = (UCHAR*)(Hook + 1);
+    MemoryPtr = (UCHAR*)(Hook + 1);
 
     // determine entry point size
 #ifdef X64_DRIVER
-	FORCE(EntrySize = LhRoundToNextInstruction(InEntryPoint, X64_DRIVER_JMPSIZE));
+    FORCE(EntrySize = LhRoundToNextInstruction(InEntryPoint, X64_DRIVER_JMPSIZE));
 #else
     FORCE(EntrySize = LhRoundToNextInstruction(InEntryPoint, 5));
 #endif
@@ -226,21 +226,21 @@ Returns:
 #endif
     Hook->HookProc = (UCHAR*)InHookProc;
     Hook->TargetProc = (UCHAR*)InEntryPoint;
-    Hook->EntrySize = EntrySize;	
+    Hook->EntrySize = EntrySize;
     Hook->IsExecutedPtr = (int*)((UCHAR*)Hook + 2048);
     Hook->Callback = InCallback;
     *Hook->IsExecutedPtr = 0;
 
     /*
-	    The following will be called by the trampoline before the user defined handler is invoked.
-	    It will setup a proper environment for the hook handler which includes the "fiber deadlock barrier"
-	    and user specific callback.
+        The following will be called by the trampoline before the user defined handler is invoked.
+        It will setup a proper environment for the hook handler which includes the "fiber deadlock barrier"
+        and user specific callback.
     */
     Hook->HookIntro = (PVOID)LhBarrierIntro;
     Hook->HookOutro = (PVOID)LhBarrierOutro;
 
     // copy trampoline
-    Hook->Trampoline = MemoryPtr; 
+    Hook->Trampoline = MemoryPtr;
     MemoryPtr += GetTrampolineSize();
 
     Hook->NativeSize += GetTrampolineSize();
@@ -248,42 +248,42 @@ Returns:
     RtlCopyMemory(Hook->Trampoline, GetTrampolinePtr(), GetTrampolineSize());
 
     /*
-	    Relocate entry point (the same for both archs)
-	    Has to be written directly into the target buffer, because to
-	    relocate RIP-relative addressing we need to know where the
-	    instruction will go to...
+        Relocate entry point (the same for both archs)
+        Has to be written directly into the target buffer, because to
+        relocate RIP-relative addressing we need to know where the
+        instruction will go to...
 
-		The entry point code will be copied to the end of the trampoline
-		with any relative addresses adjusted (if possible). Hook->OldProc
-		points to this location.
+        The entry point code will be copied to the end of the trampoline
+        with any relative addresses adjusted (if possible). Hook->OldProc
+        points to this location.
     */
     *RelocSize = 0;
-    Hook->OldProc = MemoryPtr; 
+    Hook->OldProc = MemoryPtr;
 
     FORCE(LhRelocateEntryPoint(Hook->TargetProc, EntrySize, Hook->OldProc, RelocSize));
 
-	// Reserve enough room to fit worst case
-	MemoryPtr += *RelocSize + MAX_JMP_SIZE;
-	Hook->NativeSize += *RelocSize + MAX_JMP_SIZE;
+    // Reserve enough room to fit worst case
+    MemoryPtr += *RelocSize + MAX_JMP_SIZE;
+    Hook->NativeSize += *RelocSize + MAX_JMP_SIZE;
 
-    // add jumper to end of relocated entry point that will continue execution at 
-	// the next instruction within the original method.
+    // add jumper to end of relocated entry point that will continue execution at
+    // the next instruction within the original method.
 #ifdef X64_DRIVER
 
-	// absolute jumper
-	RelAddr = (LONGLONG)(Hook->TargetProc + Hook->EntrySize);
+    // absolute jumper
+    RelAddr = (LONGLONG)(Hook->TargetProc + Hook->EntrySize);
 
-	RtlCopyMemory(Hook->OldProc + *RelocSize, Jumper_x64, X64_DRIVER_JMPSIZE);
-	// Set address to be copied into RAX
-	RtlCopyMemory(Hook->OldProc + *RelocSize + X64_DRIVER_JMPADDR_OFFSET, &RelAddr, 8);
+    RtlCopyMemory(Hook->OldProc + *RelocSize, Jumper_x64, X64_DRIVER_JMPSIZE);
+    // Set address to be copied into RAX
+    RtlCopyMemory(Hook->OldProc + *RelocSize + X64_DRIVER_JMPADDR_OFFSET, &RelAddr, 8);
 
 #else
 
-	// relative jumper
+    // relative jumper
     RelAddr = (LONGLONG)(Hook->TargetProc + Hook->EntrySize) - ((LONGLONG)Hook->OldProc + *RelocSize + 5);
 
-	if(RelAddr != (LONG)RelAddr)
-		THROW(STATUS_NOT_SUPPORTED, L"The given entry point is out of reach.");
+    if(RelAddr != (LONG)RelAddr)
+        THROW(STATUS_NOT_SUPPORTED, L"The given entry point is out of reach.");
 
     Hook->OldProc[*RelocSize] = 0xE9;
 
@@ -292,36 +292,36 @@ Returns:
 #endif
 
     // backup original entry point (8 bytes)
-    Hook->TargetBackup = *((ULONGLONG*)Hook->TargetProc); 
+    Hook->TargetBackup = *((ULONGLONG*)Hook->TargetProc);
 
 #ifdef X64_DRIVER
-	// 64-bit driver requires backup of additional 8 bytes supporting up to MAX_JMP_SIZE
-	Hook->TargetBackup_x64 = *((ULONGLONG*)(Hook->TargetProc + 8));
+    // 64-bit driver requires backup of additional 8 bytes supporting up to MAX_JMP_SIZE
+    Hook->TargetBackup_x64 = *((ULONGLONG*)(Hook->TargetProc + 8));
 #endif
 
 #ifndef _M_X64
 
     /*
-	    Replace absolute placeholders with proper addresses...
+        Replace absolute placeholders with proper addresses...
     */
     Ptr = Hook->Trampoline;
 
     for(Index = 0; Index < GetTrampolineSize(); Index++)
     {
     #pragma warning (disable:4311) // pointer truncation
-	    switch(*((ULONG*)(Ptr)))
-	    {
-	    /*Handle*/			case 0x1A2B3C05: *((ULONG*)Ptr) = (ULONG)Hook; break;
-	    /*UnmanagedIntro*/	case 0x1A2B3C03: *((ULONG*)Ptr) = (ULONG)Hook->HookIntro; break;
-	    /*OldProc*/			case 0x1A2B3C01: *((ULONG*)Ptr) = (ULONG)Hook->OldProc; break;
-	    /*Ptr:NewProc*/		case 0x1A2B3C07: *((ULONG*)Ptr) = (ULONG)&Hook->HookProc; break;
-	    /*NewProc*/			case 0x1A2B3C00: *((ULONG*)Ptr) = (ULONG)Hook->HookProc; break;
-	    /*UnmanagedOutro*/	case 0x1A2B3C06: *((ULONG*)Ptr) = (ULONG)Hook->HookOutro; break;
-	    /*IsExecuted*/		case 0x1A2B3C02: *((ULONG*)Ptr) = (ULONG)Hook->IsExecutedPtr; break;
-	    /*RetAddr*/			case 0x1A2B3C04: *((ULONG*)Ptr) = (ULONG)(Hook->Trampoline + 92); break;
-	    }
+        switch(*((ULONG*)(Ptr)))
+        {
+        /*Handle*/			case 0x1A2B3C05: *((ULONG*)Ptr) = (ULONG)Hook; break;
+        /*UnmanagedIntro*/	case 0x1A2B3C03: *((ULONG*)Ptr) = (ULONG)Hook->HookIntro; break;
+        /*OldProc*/			case 0x1A2B3C01: *((ULONG*)Ptr) = (ULONG)Hook->OldProc; break;
+        /*Ptr:NewProc*/		case 0x1A2B3C07: *((ULONG*)Ptr) = (ULONG)&Hook->HookProc; break;
+        /*NewProc*/			case 0x1A2B3C00: *((ULONG*)Ptr) = (ULONG)Hook->HookProc; break;
+        /*UnmanagedOutro*/	case 0x1A2B3C06: *((ULONG*)Ptr) = (ULONG)Hook->HookOutro; break;
+        /*IsExecuted*/		case 0x1A2B3C02: *((ULONG*)Ptr) = (ULONG)Hook->IsExecutedPtr; break;
+        /*RetAddr*/			case 0x1A2B3C04: *((ULONG*)Ptr) = (ULONG)(Hook->Trampoline + 92); break;
+        }
 
-	    Ptr++;
+        Ptr++;
     }
 #endif
 
@@ -332,8 +332,8 @@ FINALLY_OUTRO:
     {
         if(!RTL_SUCCESS(NtStatus))
         {
-	        if(Hook != NULL)
-	            LhFreeMemory(&Hook);
+            if(Hook != NULL)
+                LhFreeMemory(&Hook);
         }
 
         return NtStatus;
@@ -387,17 +387,17 @@ Parameters:
 Returns:
 
     STATUS_NO_MEMORY
-    
+
         Unable to allocate memory around the target entry point.
-    
+
     STATUS_NOT_SUPPORTED
-    
+
         The target entry point contains unsupported instructions.
-    
+
     STATUS_INSUFFICIENT_RESOURCES
-    
+
         The limit of MAX_HOOK_COUNT simultaneous hooks was reached.
-    
+
 */
     LOCAL_HOOK_INFO*			Hook = NULL;
     ULONG                       Index;
@@ -410,20 +410,20 @@ Returns:
     LONG                        NtStatus = STATUS_INTERNAL_ERROR;
 
 #if X64_DRIVER
-	// This is the ASM that will perform a jump INTO the trampoline for X64_DRIVER
-	// Note that the address 0x0 will be replaced with appropriate address.
-	// 50                             push   rax
-	// 48 b8 00 00 00 00 00 00 00 00  mov rax, 0x0
-	// 48 87 04 24                    xchg   QWORD PTR[rsp], rax
-	// c3                             ret
-	UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = {
-		0x50,
-		0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x48, 0x87, 0x04, 0x24,
-		0xc3
-	};
-	ULONGLONG					AtomicCache_x64;
-	KIRQL						CurrentIRQL = PASSIVE_LEVEL;
+    // This is the ASM that will perform a jump INTO the trampoline for X64_DRIVER
+    // Note that the address 0x0 will be replaced with appropriate address.
+    // 50                             push   rax
+    // 48 b8 00 00 00 00 00 00 00 00  mov rax, 0x0
+    // 48 87 04 24                    xchg   QWORD PTR[rsp], rax
+    // c3                             ret
+    UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = {
+        0x50,
+        0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x48, 0x87, 0x04, 0x24,
+        0xc3
+    };
+    ULONGLONG					AtomicCache_x64;
+    KIRQL						CurrentIRQL = PASSIVE_LEVEL;
 #endif
 
     // validate parameters
@@ -441,24 +441,24 @@ Returns:
 
     // allocate hook and prepare trampoline / hook stub
     FORCE(LhAllocateHook(InEntryPoint, InHookProc, InCallback, &Hook, &RelocSize));
-    
-	// Prepare jumper from entry point to hook stub...
+
+    // Prepare jumper from entry point to hook stub...
 #if X64_DRIVER
 
-	// absolute jumper
-	RelAddr = (ULONGLONG)Hook->Trampoline;
+    // absolute jumper
+    RelAddr = (ULONGLONG)Hook->Trampoline;
 
-	RtlCopyMemory(Jumper, Jumper_x64, X64_DRIVER_JMPSIZE);
-	// Set address to be copied into RAX
-	RtlCopyMemory(Jumper + X64_DRIVER_JMPADDR_OFFSET, &RelAddr, 8);
+    RtlCopyMemory(Jumper, Jumper_x64, X64_DRIVER_JMPSIZE);
+    // Set address to be copied into RAX
+    RtlCopyMemory(Jumper + X64_DRIVER_JMPADDR_OFFSET, &RelAddr, 8);
 
 #else
 
-	// relative jumper
+    // relative jumper
     RelAddr = (LONGLONG)Hook->Trampoline - ((LONGLONG)Hook->TargetProc + 5);
 
-	if(RelAddr != (LONG)RelAddr)
-		THROW(STATUS_NOT_SUPPORTED, L"The given entry point is out of reach.");
+    if(RelAddr != (LONG)RelAddr)
+        THROW(STATUS_NOT_SUPPORTED, L"The given entry point is out of reach.");
 
     RtlCopyMemory(Jumper + 1, &RelAddr, 4);
 
@@ -468,56 +468,56 @@ Returns:
     // register in global HLS list
     RtlAcquireLock(&GlobalHookLock);
     {
-		Hook->HLSIdent = UniqueIDCounter++;
+        Hook->HLSIdent = UniqueIDCounter++;
 
-		Exists = FALSE;
+        Exists = FALSE;
 
         for(Index = 0; Index < MAX_HOOK_COUNT; Index++)
         {
-	        if(GlobalSlotList[Index] == 0)
-	        {
-		        GlobalSlotList[Index] = Hook->HLSIdent;
+            if(GlobalSlotList[Index] == 0)
+            {
+                GlobalSlotList[Index] = Hook->HLSIdent;
 
-		        Hook->HLSIndex = Index;
+                Hook->HLSIndex = Index;
 
-		        Exists = TRUE;
+                Exists = TRUE;
 
-		        break;
-	        }
+                break;
+            }
         }
     }
     RtlReleaseLock(&GlobalHookLock);
 
-	// ATTENTION: This must be the last THROW!!!!
+    // ATTENTION: This must be the last THROW!!!!
     if(!Exists)
-	    THROW(STATUS_INSUFFICIENT_RESOURCES, L"Not more than MAX_HOOK_COUNT hooks are supported simultaneously.");
+        THROW(STATUS_INSUFFICIENT_RESOURCES, L"Not more than MAX_HOOK_COUNT hooks are supported simultaneously.");
 
     // from now on the unrecoverable code section starts...
 #ifdef X64_DRIVER
 
-	AtomicCache = *((ULONGLONG*)(Hook->TargetProc + 8));
+    AtomicCache = *((ULONGLONG*)(Hook->TargetProc + 8));
     {
-		RtlCopyMemory(&AtomicCache_x64, Jumper, 8);
-	    // Copy the second part of the Jumper
-		RtlCopyMemory(&AtomicCache, Jumper + 8, X64_DRIVER_JMPSIZE - 8);
+        RtlCopyMemory(&AtomicCache_x64, Jumper, 8);
+        // Copy the second part of the Jumper
+        RtlCopyMemory(&AtomicCache, Jumper + 8, X64_DRIVER_JMPSIZE - 8);
 
-		// backup entry point for later comparison
-	    Hook->HookCopy = AtomicCache_x64;
+        // backup entry point for later comparison
+        Hook->HookCopy = AtomicCache_x64;
     }
-	CurrentIRQL = KeGetCurrentIrql();
-	RtlWPOff();
-	*((ULONGLONG*)(Hook->TargetProc + 0)) = AtomicCache_x64;
+    CurrentIRQL = KeGetCurrentIrql();
+    RtlWPOff();
+    *((ULONGLONG*)(Hook->TargetProc + 0)) = AtomicCache_x64;
     *((ULONGLONG*)(Hook->TargetProc + 8)) = AtomicCache;
-	RtlWPOn(CurrentIRQL);
+    RtlWPOn(CurrentIRQL);
 
 #else
 
     AtomicCache = *((ULONGLONG*)Hook->TargetProc);
     {
-	    RtlCopyMemory(&AtomicCache, Jumper, 5);
+        RtlCopyMemory(&AtomicCache, Jumper, 5);
 
-	    // backup entry point for later comparison
-	    Hook->HookCopy = AtomicCache;
+        // backup entry point for later comparison
+        Hook->HookCopy = AtomicCache;
     }
     *((ULONGLONG*)Hook->TargetProc) = AtomicCache;
 
@@ -544,8 +544,8 @@ FINALLY_OUTRO:
     {
         if(!RTL_SUCCESS(NtStatus))
         {
-	        if(Hook != NULL)
-	            LhFreeMemory(&Hook);
+            if(Hook != NULL)
+                LhFreeMemory(&Hook);
         }
 
         return NtStatus;
@@ -556,60 +556,60 @@ FINALLY_OUTRO:
 
 DESCRIPTION:
 
-	Will dynamically detect the size in bytes of the assembler code stored
-	in "HookSpecifix_x##.asm".
+    Will dynamically detect the size in bytes of the assembler code stored
+    in "HookSpecifix_x##.asm".
 */
 static ULONG ___TrampolineSize = 0;
 
 #ifdef _M_X64
-	EXTERN_C void __stdcall Trampoline_ASM_x64();
+    EXTERN_C void __stdcall Trampoline_ASM_x64();
 #else
-	EXTERN_C void __stdcall Trampoline_ASM_x86();
+    EXTERN_C void __stdcall Trampoline_ASM_x86();
 #endif
 
 UCHAR* GetTrampolinePtr()
 {
 // bypass possible Visual Studio debug jump table
 #ifdef _M_X64
-	UCHAR* Ptr = (UCHAR*)Trampoline_ASM_x64;
+    UCHAR* Ptr = (UCHAR*)Trampoline_ASM_x64;
 #else
-	UCHAR* Ptr = (UCHAR*)Trampoline_ASM_x86;
+    UCHAR* Ptr = (UCHAR*)Trampoline_ASM_x86;
 #endif
 
-	if(*Ptr == 0xE9)
-		Ptr += *((int*)(Ptr + 1)) + 5;
+    if(*Ptr == 0xE9)
+        Ptr += *((int*)(Ptr + 1)) + 5;
 
 #ifdef _M_X64
-	return Ptr + 5 * 8;
+    return Ptr + 5 * 8;
 #else
-	return Ptr;
+    return Ptr;
 #endif
 }
 
 ULONG GetTrampolineSize()
 {
     UCHAR*		Ptr = GetTrampolinePtr();
-	UCHAR*		BasePtr = Ptr;
+    UCHAR*		BasePtr = Ptr;
     ULONG       Signature;
     ULONG       Index;
 
-	if(___TrampolineSize != 0)
-		return ___TrampolineSize;
-	
-	// search for signature
-	for(Index = 0; Index < 2000 /* some always large enough value*/; Index++)
-	{
-		Signature = *((ULONG*)Ptr);
+    if(___TrampolineSize != 0)
+        return ___TrampolineSize;
 
-		if(Signature == 0x12345678)	
-		{
-			___TrampolineSize = (ULONG)(Ptr - BasePtr);
+    // search for signature
+    for(Index = 0; Index < 2000 /* some always large enough value*/; Index++)
+    {
+        Signature = *((ULONG*)Ptr);
 
-			return ___TrampolineSize;
-		}
+        if(Signature == 0x12345678)
+        {
+            ___TrampolineSize = (ULONG)(Ptr - BasePtr);
 
-		Ptr++;
-	}
+            return ___TrampolineSize;
+        }
+
+        Ptr++;
+    }
 
     ASSERT(FALSE,L"install.c - ULONG GetTrampolineSize()");
 

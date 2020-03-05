@@ -1,3 +1,4 @@
+
 #ifndef UD_ITAB_H
 #define UD_ITAB_H
 
@@ -930,6 +931,6 @@ enum ud_mnemonic_code {
     UD_MAX_MNEMONIC_CODE
 } UD_ATTR_PACKED;
 
-extern const char * ud_mnemonics_str[];
+extern const char* ud_mnemonics_str[];
 
 #endif /* UD_ITAB_H */

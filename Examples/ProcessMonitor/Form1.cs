@@ -16,8 +16,8 @@ using System.Threading;
 using EasyHook;
 
 /*
- * This is a very simple GUI that just demonstrates the very basics of what you can do with EasyHook...
- */
+* This is a very simple GUI that just demonstrates the very basics of what you can do with EasyHook...
+*/
 
 namespace ProcessMonitor
 {

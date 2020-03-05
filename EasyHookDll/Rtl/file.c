@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,9 +27,9 @@
 
 BOOL RtlFileExists(WCHAR* InPath)
 {
-    HANDLE          hFile;
+    HANDLE hFile;
 
-    if((hFile = CreateFileW(InPath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL)) == INVALID_HANDLE_VALUE)
+    if ((hFile = CreateFileW(InPath, 0, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING, 0, NULL)) == INVALID_HANDLE_VALUE)
         return FALSE;
 
     CloseHandle(hFile);
@@ -39,18 +39,18 @@ BOOL RtlFileExists(WCHAR* InPath)
 
 LONG RtlGetWorkingDirectory(WCHAR* OutPath, ULONG InMaxLength)
 {
-    NTSTATUS            NtStatus;
-    LONG            Index;
+    NTSTATUS NtStatus;
+    LONG Index;
 
     Index = GetModuleFileName(NULL, OutPath, InMaxLength);
 
-    if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+    if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
         THROW(STATUS_BUFFER_TOO_SMALL, L"The given buffer is too small.");
 
     // remove file name...
-    for(Index--; Index >= 0; Index--)
+    for (Index--; Index >= 0; Index--)
     {
-        if(OutPath[Index] == '\\')
+        if (OutPath[Index] == '\\')
         {
             OutPath[Index + 1] = 0;
 
@@ -67,11 +67,11 @@ FINALLY_OUTRO:
 
 LONG RtlGetCurrentModulePath(WCHAR* OutPath, ULONG InMaxLength)
 {
-    NTSTATUS            NtStatus;
+    NTSTATUS NtStatus;
 
     GetModuleFileName(hCurrentModule, OutPath, InMaxLength);
 
-    if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+    if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
         THROW(STATUS_BUFFER_TOO_SMALL, L"The given buffer is too small.");
 
     RETURN;
