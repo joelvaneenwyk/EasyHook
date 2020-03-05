@@ -152,7 +152,7 @@ function Msvs
         }
     }
 
-    if ($VXXCommonTools -eq $null -or (-not (Test-Path($VXXCommonTools)))) {
+    if ($null -eq $VXXCommonTools -or (-not (Test-Path($VXXCommonTools)))) {
         Die 'Error unable to find any visual studio environment'
     }
 
@@ -162,7 +162,7 @@ function Msvs
     }
 
     # Only configure build environment once
-    if($env:EASYHOOK_BUILD_IS_BOOTSTRAPPED -eq $null) {
+    if($null -eq $env:EASYHOOK_BUILD_IS_BOOTSTRAPPED) {
         Invoke-BatchFile $VCVarsAll $Platform
         $env:EASYHOOK_BUILD_IS_BOOTSTRAPPED = $true
     }
@@ -253,7 +253,7 @@ function VSX
 
     FindVS "$Toolchain"
     
-    if ($script:VSInstallationPath -eq $null) {
+    if ($null -eq $script:VSInstallationPath) {
         Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
         Return
     }
