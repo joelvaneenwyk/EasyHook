@@ -1,0 +1,30 @@
+{
+  "name": "easyhook",
+  "version": "2.8.0",
+  "description": "EasyHook makes it possible to extend (via hooking) unmanaged code APIs with pure managed functions, from within a fully managed environment.",
+  "main": "build.bat",
+  "scripts": {
+    "test": "build.bat",
+    "lint": "./node_modules/.bin/eclint.cmd check **/*.cs **/*.cpp **/*.h **/*.c",
+    "fix": "./node_modules/.bin/eclint.cmd fix **/*.cs **/*.cpp **/*.h **/*.c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelvaneenwyk/EasyHook.git"
+  },
+  "keywords": [
+    "hook",
+    "hooking",
+    "managed",
+    "easy"
+  ],
+  "author": "Christoph Husse",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joelvaneenwyk/EasyHook/issues"
+  },
+  "homepage": "https://github.com/joelvaneenwyk/EasyHook#readme",
+  "devDependencies": {
+    "eclint": "^2.8.1"
+  }
+}
