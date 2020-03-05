@@ -31,7 +31,11 @@ storage.ide
 *.ide-*
 *.db-*
 *.opendb
-Win8.1*/
+Win10*/
+Win8*/
+Win7*/
+MSBuildTasks*/
+vswhere*/
 [Pp]ackages/
 [Bb]uild*/
 [Dd]eploy*/
@@ -39,6 +43,7 @@ Win8.1*/
 [Dd]ebug*/
 *.lib
 *.sbr
+.vs/
 obj/
 [Rr]elease*/
 _ReSharper*/

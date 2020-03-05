@@ -9,6 +9,7 @@
     "files.exclude": {
         "**/.git": true,
         "**/.sfdx": true,
+        "**/*.user": true,
         "**/.pytest_cache": true,
         "**/.svn": true,
         "**/.hg": true,
@@ -19,14 +20,17 @@
         "**/packages/**": true,
         "**/node_modules/**": true,
         "**/Win8*/**": true,
+        "**/Win7*/**": true,
+        "**/Win10*/**": true,
         "**/obj/**": true,
-        "**/*.csproj*": true,
         "**/*.pyproj*": true,
-        "**/*.sln": true,
         "**/*.ico": true,
         "**/*.pyc": true,
         "_*/**": true,
         "**/.cache": true,
-        "**/.mypy_cache": true
+        "**/.mypy_cache": true,
+        "**/vswhere*/**": true,
+        "**/MSBuildTasks*/**": true,
+        "**/TestResults/**": true
     }
 }
