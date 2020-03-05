@@ -18,6 +18,7 @@
         "**/Build/**": true,
         "**/packages/**": true,
         "**/node_modules/**": true,
+        "**/Win8*/**": true,
         "**/obj/**": true,
         "**/*.csproj*": true,
         "**/*.pyproj*": true,
