@@ -27,6 +27,9 @@ install:
 - ps: >-
     . Tools\ci_install.ps1
 
+before_build:
+  - nuget restore
+
 build:
   parallel: true
   project: EasyHook.sln
