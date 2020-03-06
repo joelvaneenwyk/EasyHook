@@ -6,16 +6,16 @@ pull_requests:
 skip_tags: true
 
 image:
-  - Visual Studio 2013
-  - Visual Studio 2015
-  - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2017
+  - Visual Studio 2015
+  - Visual Studio 2013
 
 configuration:
-  - netfx3.5-Debug
-  - netfx3.5-Release
   - netfx4-Debug
   - netfx4-Release
+  - netfx3.5-Debug
+  - netfx3.5-Release
 
 platform:
   - Win32

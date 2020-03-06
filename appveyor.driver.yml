@@ -6,20 +6,20 @@ pull_requests:
 skip_tags: true
 
 image:
-  - Visual Studio 2013
-  - Visual Studio 2015
-  - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2017
+  - Visual Studio 2015
+  - Visual Studio 2013
 
 configuration:
-  - Win7-Debug
-  - Win7-Release
-  - Win8-Debug
-  - Win8-Release
-  - Win8.1-Debug
-  - Win8.1-Release
   - Win10-Debug
   - Win10-Release
+  - Win8.1-Debug
+  - Win8.1-Release
+  - Win8-Debug
+  - Win8-Release
+  - Win7-Debug
+  - Win7-Release
 
 platform:
   - Win32
