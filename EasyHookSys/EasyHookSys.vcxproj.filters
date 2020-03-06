@@ -116,6 +116,12 @@
     <ClInclude Include="..\DriverShared\Disassembler\libudis86\udint.h">
       <Filter>Driver Files\Disassembler</Filter>
     </ClInclude>
+    <ClInclude Include="..\DriverShared\DriverShared.h">
+      <Filter>Driver Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\DriverShared\rtl.h">
+      <Filter>Driver Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\DriverShared\ASM\HookSpecific_x64.asm">
