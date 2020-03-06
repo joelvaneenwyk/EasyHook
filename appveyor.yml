@@ -26,8 +26,6 @@ shallow_clone: true
 test_script:
   - vstest.console /Logger:Appveyor /Parallel /Platform:%PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%PLATFORM%\EasyHook.Tests.dll"
 
-test: off
-
 install:
 - ps: >-
     . Tools\ci_install.ps1
