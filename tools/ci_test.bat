@@ -40,7 +40,15 @@ echo.
 echo ================================================
 echo.
 
-pushd %TEST_PLATFORM_ROOT%
+
+:: This calls the newest version of vstest.console.exe but for some reason even with correct adapater
+:: paths it is not able to find Appveyor
+::pushd %TEST_PLATFORM_ROOT%
+::echo vstest.console.exe %VSTEST_ARGS%
+::%VSTEST% %VSTEST_ARGS%
+::popd
+
+set VSTEST=vstest.console.exe
+set VSTEST_ARGS=/Logger:Appveyor /Platform:%TEST_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\EasyHook.Tests.dll"
 echo vstest.console.exe %VSTEST_ARGS%
 %VSTEST% %VSTEST_ARGS%
-popd
