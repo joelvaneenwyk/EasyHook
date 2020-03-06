@@ -31,10 +31,11 @@ install:
     . Tools\ci_install.ps1
 
 before_build:
-  - nuget restore -OutputDirectory .\Packages EasyHook.sln
   - nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
   - nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
   - nuget install -OutputDirectory .\Packages Microsoft.TestPlatform -Version 16.5.0
+  - nuget install -OutputDirectory .\Packages Appveyor.TestLogger -Version 2.0.0
+  - nuget restore -OutputDirectory .\Packages EasyHook.sln
 
 build:
   parallel: true
