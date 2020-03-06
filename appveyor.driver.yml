@@ -25,6 +25,33 @@ platform:
   - Win32
   - x64
 
+exclude:
+  - image: Visual Studio 2013
+    configuration:
+      - Win8-Debug
+      - Win8-Release
+      - Win8.1-Debug
+      - Win8.1-Release
+      - Win10-Debug
+      - Win10-Release
+
+  - image: Visual Studio 2015
+    configuration:
+      - Win7-Debug
+      - Win7-Release
+      - Win10-Debug
+      - Win10-Release
+
+  - image: Visual Studio 2017
+    configuration:
+      - Win7-Debug
+      - Win7-Release
+
+  - image: Visual Studio 2019
+    configuration:
+      - Win7-Debug
+      - Win7-Release
+
 shallow_clone: true
 
 install:
