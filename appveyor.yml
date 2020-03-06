@@ -24,7 +24,7 @@ platform:
 shallow_clone: true
 
 test_script:
-  - vstest.console /Logger:Appveyor /Parallel /Platform:%PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%PLATFORM%\EasyHook.Tests.dll"
+  - Tools\ci_test.bat
 
 install:
 - ps: >-
@@ -34,6 +34,7 @@ before_build:
   - nuget restore -OutputDirectory .\Packages EasyHook.sln
   - nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
   - nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
+  - nuget install -OutputDirectory .\Packages Microsoft.TestPlatform -Version 16.5.0
 
 build:
   parallel: true
