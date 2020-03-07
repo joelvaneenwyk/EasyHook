@@ -6,10 +6,10 @@ pull_requests:
 skip_tags: true
 
 image:
-  - Visual Studio 2019
-  - Visual Studio 2017
   - Visual Studio 2015
   - Visual Studio 2013
+  - Visual Studio 2017
+  - Visual Studio 2019
 
 configuration:
   - Win10-Debug
