@@ -6,10 +6,8 @@ pull_requests:
 skip_tags: true
 
 image:
-  - Visual Studio 2015
-  - Visual Studio 2013
-  - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2017
 
 configuration:
   - Win10-Debug
@@ -24,15 +22,6 @@ configuration:
 platform:
   - Win32
   - x64
-
-matrix:
-  # VS2013 supports everything but Windows 10 and the other
-  # versions support all targets.
-  exclude:
-    - image: Visual Studio 2013
-      configuration: Win10-Debug
-    - image: Visual Studio 2013
-      configuration: Win10-Release
 
 shallow_clone: true
 
