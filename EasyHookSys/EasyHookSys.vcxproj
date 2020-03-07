@@ -113,7 +113,7 @@
     <TemplateGuid>{497e31cb-056b-4f31-abb8-447fd55ee5a5}</TemplateGuid>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <Configuration>Win8.1 Debug</Configuration>
+    <Configuration>Win8.1-Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <RootNamespace>EasyHookSys</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
@@ -312,6 +312,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\DriverShared\Disassembler;$(SolutionDir)\DriverShared;$(SolutionDir)\Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_X86_=1;i386=1;DRIVER=1;DRIVER=1;STD_CALL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
     <ClCompile>
@@ -333,6 +336,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\DriverShared\Disassembler;$(SolutionDir)\DriverShared;$(SolutionDir)\Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_X86_=1;i386=1;DRIVER=1;STD_CALL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'">
     <ClCompile>
@@ -378,6 +384,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)\DriverShared\Disassembler;$(SolutionDir)\DriverShared;$(SolutionDir)\Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_X86_=1;i386=1;DRIVER=1;STD_CALL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <Link>
+      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|Win32'">
     <ClCompile>
