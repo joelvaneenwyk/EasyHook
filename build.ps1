@@ -37,9 +37,7 @@ function RestoreNugetPackages()
     $Nuget = Join-Path $env:LOCALAPPDATA .\nuget\NuGet.exe
     Get-Location
     . $Nuget restore -OutputDirectory .\Packages EasyHook.sln
-
-    . $Nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
-    
+    . $Nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196    
     . $Nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
 }
 
