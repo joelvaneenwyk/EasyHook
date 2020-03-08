@@ -7,27 +7,26 @@ skip_tags: true
 
 image:
   - Visual Studio 2019
-  #- Visual Studio 2017
+  - Visual Studio 2017
 
 configuration:
   - Win10-Release
-  #- Win10-Debug
-  #- Win8.1-Release
-  #- Win8.1-Debug
-  #- Win8-Release
-  #- Win8-Debug
-  #- Win7-Release
-  #- Win7-Debug
+  - Win10-Debug
+  - Win8.1-Release
+  - Win8.1-Debug
+  - Win8-Release
+  - Win8-Debug
+  - Win7-Release
+  - Win7-Debug
 
 platform:
   - x64
-  #- Win32
+  - Win32
 
 shallow_clone: true
 
 install:
-- ps: >-
-    . Tools\ci_install.ps1
+  - Tools\ci_install.bat
 
 before_build:
   - nuget restore -OutputDirectory .\Packages EasyHookSys.sln
@@ -38,8 +37,9 @@ build:
   parallel: true
   project: EasyHookSys.sln
 
+after_build:
+  - 7z a "EasyHook.%VISUAL_STUDIO_NAME%.%CONFIGURATION%.%BUILD_PLATFORM%.zip" %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.exe
+
 artifacts:
-- path: .\*.nupkg
-  name: EasyHook NuGet
-- path: .\Deploy\*.zip
-  name: EasyHook Binaries
+- path: 'EasyHook.$(VISUAL_STUDIO_NAME).$(CONFIGURATION).$(BUILD_PLATFORM).zip'
+  name: EasyHook
