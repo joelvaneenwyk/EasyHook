@@ -7,21 +7,21 @@ skip_tags: true
 
 image:
   - Visual Studio 2019
-  - Visual Studio 2017
+  #- Visual Studio 2017
 
 configuration:
-  - Win10-Debug
   - Win10-Release
-  - Win8.1-Debug
-  - Win8.1-Release
-  - Win8-Debug
-  - Win8-Release
-  - Win7-Debug
-  - Win7-Release
+  #- Win10-Debug
+  #- Win8.1-Release
+  #- Win8.1-Debug
+  #- Win8-Release
+  #- Win8-Debug
+  #- Win7-Release
+  #- Win7-Debug
 
 platform:
-  - Win32
   - x64
+  #- Win32
 
 shallow_clone: true
 

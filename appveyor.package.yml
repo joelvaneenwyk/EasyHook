@@ -15,7 +15,7 @@ install:
 
 build_script:
 - cmd: >-
-    nuget install MSBuildTasks -Version 1.5.0.196
+    nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
 
     nuget restore EasyHook.sln
 
