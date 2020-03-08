@@ -1,6 +1,6 @@
 @echo off
 
-set SETUP_VERSION=0
+set SETUP_VERSION=2
 
 if "%PATH_BACKUP%" == "" set PATH_BACKUP=%PATH%
 nuget >nul
@@ -45,16 +45,20 @@ echo.
 echo AppVeyor Build Worker Image: %APPVEYOR_BUILD_WORKER_IMAGE%
 
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( 
-    set BUILD_TOOL_VERSION=120 && set VISUAL_STUDIO_NAME=VS2013 
+    set BUILD_TOOL_VERSION=120
+    set VISUAL_STUDIO_NAME=VS2013
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (
-    set BUILD_TOOL_VERSION=140 && set VISUAL_STUDIO_NAME=VS2015 
+    set BUILD_TOOL_VERSION=140
+    set VISUAL_STUDIO_NAME=VS2015
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( 
-    set BUILD_TOOL_VERSION=141 && set VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
+    set BUILD_TOOL_VERSION=141
+    set VISUAL_STUDIO_NAME=VS2017
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" ( 
-    set BUILD_TOOL_VERSION=142 && set VISUAL_STUDIO_NAME=VS2019 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
+    set BUILD_TOOL_VERSION=142
+    set VISUAL_STUDIO_NAME=VS2019
 )
 
 if NOT "%VS140COMNTOOLS%"=="" (
