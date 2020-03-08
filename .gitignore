@@ -4,6 +4,9 @@ Thumbs.db
 # NPM
 node_modules
 
+# Deployed files
+EasyHook*.nupkg
+
 #  Ignore files build by Visual Studio
 *.ipch
 *.obj
