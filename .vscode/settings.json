@@ -9,6 +9,7 @@
     "files.exclude": {
         "**/.git": true,
         "**/.sfdx": true,
+        "**/*.nupkg": true,
         "**/*.user": true,
         "**/.pytest_cache": true,
         "**/.svn": true,
@@ -17,6 +18,8 @@
         "**/.DS_Store": true,
         "**/Obj/**": true,
         "**/Build/**": true,
+        "**/Deploy/**": true,
+        "**/Bin/**": true,
         "**/packages/**": true,
         "**/node_modules/**": true,
         "**/Win8*/**": true,
