@@ -1,6 +1,6 @@
 @echo off
 
-set SETUP_VERSION=2
+set SETUP_VERSION=0
 
 if "%PATH_BACKUP%" == "" set PATH_BACKUP=%PATH%
 nuget >nul
@@ -21,8 +21,8 @@ if "%APPVEYOR_BUILD_FOLDER%" == "" (
 if "%PLATFORM%" == "" set PLATFORM=Win32
 if "%CONFIGURATION%" == "" set CONFIGURATION=netfx3.5-Debug
 
-set TEST_PLATFORM=x64
-if "%PLATFORM%" == "Win32" set TEST_PLATFORM=x86
+set BUILD_PLATFORM=x64
+if "%PLATFORM%" == "Win32" set BUILD_PLATFORM=x86
 
 set PATH=%~dp0..\Bin;%PATH_BACKUP%
 
@@ -33,10 +33,10 @@ set APPVEYOR_TEST_ADAPTER_DLL=Microsoft.VisualStudio.TestPlatform.Extension.Appv
 set APPVEYOR_TEST_LOGGER_DLL=Microsoft.VisualStudio.TestPlatform.Extension.Appveyor.TestLogger.dll
 
 set VSTEST=%TEST_PLATFORM_ROOT%\vstest.console.exe
-set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%TEST_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\EasyHook.Tests.dll"
+set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%BUILD_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
 
-set _VISUAL_STUDIO_PATH=
-set _BUILD_TOOL_VERSION=
+set VISUAL_STUDIO_PATH=
+set BUILD_TOOL_VERSION=
 
 echo.
 echo ================================================
@@ -45,37 +45,37 @@ echo.
 echo AppVeyor Build Worker Image: %APPVEYOR_BUILD_WORKER_IMAGE%
 
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2013" ( 
-    set _BUILD_TOOL_VERSION=120 && set _VISUAL_STUDIO_NAME=VS2013 
+    set BUILD_TOOL_VERSION=120 && set VISUAL_STUDIO_NAME=VS2013 
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (
-    set _BUILD_TOOL_VERSION=140 && set _VISUAL_STUDIO_NAME=VS2015 
+    set BUILD_TOOL_VERSION=140 && set VISUAL_STUDIO_NAME=VS2015 
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( 
-    set _BUILD_TOOL_VERSION=141 && set _VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
+    set BUILD_TOOL_VERSION=141 && set VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
 )
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019'" ( 
-    set _BUILD_TOOL_VERSION=142 && set _VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
+    set BUILD_TOOL_VERSION=142 && set VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
 )
 
 if NOT "%VS140COMNTOOLS%"=="" (
   REM Visual Studio 2015
-  SET "_VISUAL_STUDIO_PATH=%VS140COMNTOOLS%"
-  SET "_MSBUILD_TOOL_VERSION=14.0"
+  SET "VISUAL_STUDIO_PATH=%VS140COMNTOOLS%"
+  SET "MSBUILD_TOOL_VERSION=14.0"
 ) else (
   if NOT "%VS120COMNTOOLS%"=="" (
     REM Visual Studio 2013
-    SET "_VISUAL_STUDIO_PATH=%VS120COMNTOOLS%"
-    SET "_MSBUILD_TOOL_VERSION=12.0"
+    SET "VISUAL_STUDIO_PATH=%VS120COMNTOOLS%"
+    SET "MSBUILD_TOOL_VERSION=12.0"
   )
 )
 
-ECHO Visual Studio Path: %_VISUAL_STUDIO_PATH%
+ECHO Visual Studio Path: %VISUAL_STUDIO_PATH%
 
-::IF "%_VISUAL_STUDIO_PATH%"=="" (
+::IF "%VISUAL_STUDIO_PATH%"=="" (
 ::  ECHO Could not find Visual Studio path for supported toolset versions 12.0 or 14.0
 :: goto ERROR
 ::)
-::call "%_VISUAL_STUDIO_PATH%\..\..\VC\vcvarsall.bat" x86_amd64
+::call "%VISUAL_STUDIO_PATH%\..\..\VC\vcvarsall.bat" x86_amd64
 
 copy %ADAPTER_PATH%\%APPVEYOR_TEST_ADAPTER_DLL% %VSTEST_EXTENSIONS%\%APPVEYOR_TEST_ADAPTER_DLL%
 copy %ADAPTER_PATH%\%APPVEYOR_TEST_LOGGER_DLL% %VSTEST_EXTENSIONS%\%APPVEYOR_TEST_LOGGER_DLL%

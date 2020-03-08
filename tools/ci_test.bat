@@ -11,9 +11,9 @@ call %~dp0\setup.bat
 
 ::set VSTEST=%TEST_PLATFORM_ROOT%\vstest.console.exe
 ::set VSTEST_EXTENSIONS=%TEST_PLATFORM_ROOT%\Extensions
-::set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%TEST_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\EasyHook.Tests.dll"
+::set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%BUILD_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
 
 set VSTEST=vstest.console.exe
-set VSTEST_ARGS=/Logger:Appveyor /Platform:%TEST_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\EasyHook.Tests.dll"
+set VSTEST_ARGS=/Logger:Appveyor /Platform:%BUILD_PLATFORM% "%APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
 echo vstest.console.exe %VSTEST_ARGS%
 %VSTEST% %VSTEST_ARGS%

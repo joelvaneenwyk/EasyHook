@@ -23,18 +23,13 @@ platform:
 
 shallow_clone: true
 
+install:
+  - Tools\ci_install.bat
+
 test_script:
   - Tools\ci_test.bat
 
-install:
-- ps: >-
-    . Tools\ci_install.ps1
-
 before_build:
-  - nuget install -OutputDirectory .\Packages MSBuildTasks -Version 1.5.0.196
-  - nuget install -OutputDirectory .\Packages vswhere -Version 2.8.4
-  - nuget install -OutputDirectory .\Packages Microsoft.TestPlatform -Version 16.5.0
-  - nuget install -OutputDirectory .\Packages Appveyor.TestLogger -Version 2.0.0
   - nuget restore -OutputDirectory .\Packages EasyHook.sln
 
 build:
@@ -42,8 +37,8 @@ build:
   project: EasyHook.sln
 
 after_build:
-  - 7z a EasyHook-%_VISUAL_STUDIO_NAME%-%CONFIGURATION%-%TEST_PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.exe
+  - 7z a EasyHook-%VISUAL_STUDIO_NAME%-%CONFIGURATION%-%BUILD_PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\*.exe
 
 artifacts:
-- path: EasyHook-$(_VISUAL_STUDIO_NAME)-$(configuration)-$(TEST_PLATFORM).zip
+- path: EasyHook-$(VISUAL_STUDIO_NAME)-$(CONFIGURATION)-$(BUILD_PLATFORM).zip
   name: EasyHook
