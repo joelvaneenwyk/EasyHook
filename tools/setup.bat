@@ -53,8 +53,8 @@ if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (
 if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( 
     set BUILD_TOOL_VERSION=141 && set VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
 )
-if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019'" ( 
-    set BUILD_TOOL_VERSION=142 && set VISUAL_STUDIO_NAME=VS2017 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
+if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2019" ( 
+    set BUILD_TOOL_VERSION=142 && set VISUAL_STUDIO_NAME=VS2019 && C:\Program^ Files^ ^(x86^)\Microsoft^ Visual^ Studio\2017\Community\Common7\Tools\VsDevCmd.bat 
 )
 
 if NOT "%VS140COMNTOOLS%"=="" (
