@@ -42,7 +42,7 @@ build:
   project: EasyHook.sln
 
 artifacts:
-- path: .\*.nupkg
-  name: EasyHook NuGet
-- path: .\Deploy\*.zip
+- path: .\Build\$(configuration)\$(TEST_PLATFORM)\*.dll
   name: EasyHook Binaries
+- path: .\Build\$(configuration)\$(TEST_PLATFORM)\*.pdb
+  name: EasyHook Debug Databases
