@@ -42,8 +42,8 @@ build:
   project: EasyHook.sln
 
 after_build:
-  - 7z a EasyHook-%VISUAL_STUDIO_NAME%-%CONFIGURATION%-%TEST_PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Build\$(configuration)\$(TEST_PLATFORM)\*.dll %APPVEYOR_BUILD_FOLDER%\Build\$(configuration)\$(TEST_PLATFORM)\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\$(configuration)\$(TEST_PLATFORM)\*.exe
+  - 7z a EasyHook-%_VISUAL_STUDIO_NAME%-%CONFIGURATION%-%TEST_PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%TEST_PLATFORM%\*.exe
 
 artifacts:
-- path: EasyHook-$(VISUAL_STUDIO_NAME)-$(configuration)-$(TEST_PLATFORM).zip
+- path: EasyHook-$(_VISUAL_STUDIO_NAME)-$(configuration)-$(TEST_PLATFORM).zip
   name: EasyHook

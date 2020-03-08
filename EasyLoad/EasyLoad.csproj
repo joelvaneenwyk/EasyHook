@@ -170,5 +170,5 @@
     <PostBuildEvent Condition="'$(Platform)' == 'x64'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x86" /Y</PostBuildEvent>
     <PostBuildEvent Condition="'$(Platform)' == 'x86'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x64" /Y</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="../packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets" Condition="Exists('../packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets')" />
+  <Import Project="../Packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets" Condition="Exists('../packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets')" />
 </Project>
