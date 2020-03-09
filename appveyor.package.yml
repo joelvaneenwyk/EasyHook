@@ -15,7 +15,7 @@ install:
   - Tools\ci_install.bat
 
 build_script:
-- cmd: Tools\build-package.bat
+  - Tools\build-package.bat
 
 artifacts:
 - path: .\*.nupkg

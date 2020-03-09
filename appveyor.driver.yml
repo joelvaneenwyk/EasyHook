@@ -9,7 +9,7 @@ image:
   - Visual Studio 2019
   - Visual Studio 2017
 
-configuration:
+Configuration:
   - Win10-Release
   - Win10-Debug
   - Win8.1-Release
@@ -19,7 +19,7 @@ configuration:
   - Win7-Release
   - Win7-Debug
 
-platform:
+Platform:
   - x64
   - Win32
 
@@ -38,8 +38,8 @@ build:
   project: EasyHookSys.sln
 
 after_build:
-  - 7z a "EasyHook.%VISUAL_STUDIO_NAME%.%CONFIGURATION%.%PLATFORM%.zip" %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%CONFIGURATION%\%PLATFORM%\*.exe
+  - 7z a "EasyHook.%VISUAL_STUDIO_NAME%.%Configuration%.%Platform%.zip" %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%Platform%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%Platform%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%Platform%\*.exe
 
 artifacts:
-- path: 'EasyHook.$(VISUAL_STUDIO_NAME).$(CONFIGURATION).$(PLATFORM).zip'
+- path: 'EasyHook.$(VISUAL_STUDIO_NAME).$(Configuration).$(Platform).zip'
   name: EasyHook

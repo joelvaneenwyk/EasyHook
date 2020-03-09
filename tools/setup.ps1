@@ -429,8 +429,8 @@ Function Initialize-Environment {
         $Configuration = "netfx3.5-Debug"
     } 
 
-    $Platform = $env:PLATFORM
-    if (!$Platform) {
+    $Platform = $env:Platform
+    if ($null -eq $Platform) {
         $Platform = "x64"
     } 
 
@@ -503,8 +503,8 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$Toolchain"
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
-    Add-Content $BatchEnvironment "set CONFIGURATION=$Configuration"
-    Add-Content $BatchEnvironment "set PLATFORM=$Platform"
+    Add-Content $BatchEnvironment "set Configuration=$Configuration"
+    Add-Content $BatchEnvironment "set Platform=$Platform"
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
 
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" NEQ ""[]"" SET LOGGER=/logger:""C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"""
@@ -523,7 +523,7 @@ Function Initialize-Environment {
     
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
     
-    $cmdout = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
+    $_ = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
     
     # Update environment path
     Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;C:\Program Files (x86)\Outercurve Foundation\Modules"
