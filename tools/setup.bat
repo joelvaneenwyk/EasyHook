@@ -5,7 +5,7 @@ set POWERSHELL_CONSOLE=-NoProfile -ExecutionPolicy Bypass -Command
 set POWERSHELL_NEW=-NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File ""%_BUILD_SCRIPT%""'}";
 set POWERSHELL_ADMIN=-NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File ""%_BUILD_SCRIPT%""' -Verb RunAs}";
 
-%POWERSHELL% %POWERSHELL_CONSOLE% "& '%~dp0\setup.ps1'" -Initialize
+%POWERSHELL% %POWERSHELL_CONSOLE% "& '%~dp0\setup.ps1'" -Target "%1" -Initialize
 
 :: PowerShell script generates this batch script that sets up the environment
 call %~dp0..\Bin\setup_environment.bat

@@ -4,6 +4,8 @@ by other scripts/tools here.
 #>
 
 param(
+    [Parameter(Position = 0)] 
+    [string] $Target = "vs2017",
     [switch] $Initialize = $false
 )
 
@@ -398,7 +400,7 @@ Function Initialize-Environment {
 
     $Platform = $env:PLATFORM
     if (!$Platform) {
-        $Platform = "Win32"
+        $Platform = "x64"
     } 
 
     if ($Platform -eq "Win32") {
@@ -409,7 +411,8 @@ Function Initialize-Environment {
     }
     
     Write-Diagnostic "Initializing EasyHook build environment."
-    Write-Diagnostic "EasyHook version = $AssemblyVersion"
+    Write-Diagnostic "EasyHook version: $AssemblyVersion"
+    Write-Diagnostic "Target: $Target"
 
     # Download local version of NuGet
     DownloadNuget
@@ -425,6 +428,36 @@ Function Initialize-Environment {
     
     $output = Get-ProcessOutput -FileName $script:VSWhere -Args '-latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe'
     $MSBuildExe = ($output.StandardOutput -split '\n')[0]
+
+    switch -Exact ($Toolchain) {
+        'v120' {
+            $VisualStudioVersion = '12.0'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+        }
+        'v140' {
+            $VisualStudioVersion = '14.0'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+        }
+        'v141' {
+            $VisualStudioVersion = '14.1'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+        }
+        'v142' {
+            $VisualStudioVersion = '14.2'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+        }
+    }
+
+    if ($null -eq $VXXCommonTools -or (-not (Test-Path($VXXCommonTools)))) {
+        Die 'Error unable to find any visual studio environment'
+    }
+
+    $VCVarsAll = Join-Path $VXXCommonTools vcvarsall.bat
+    if (-not (Test-Path $VCVarsAll)) {
+        Die "Unable to find $VCVarsAll"
+    }
+
+    $Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
 
     switch -Exact ($Target) {
         "vs2013" {
@@ -448,6 +481,8 @@ Function Initialize-Environment {
     Set-Content -Path $BatchEnvironment -Value "" -Force
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_NAME=$Target"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_PATH=$VSInstallationPath"
+    Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS=$VCVarsAll"
+    Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS_ARCH=$Arch"
     Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$Toolchain"
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
@@ -480,5 +515,5 @@ Function Initialize-Environment {
 }
 
 if ($Initialize) {
-    Initialize-Environment
+    Initialize-Environment -Target $Target
 }
