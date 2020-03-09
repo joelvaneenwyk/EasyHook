@@ -9,7 +9,7 @@ image:
   - Visual Studio 2019
   - Visual Studio 2017
 
-Configuration:
+configuration:
   - Win10-Release
   - Win10-Debug
   - Win8.1-Release
@@ -19,7 +19,7 @@ Configuration:
   - Win7-Release
   - Win7-Debug
 
-Platform:
+platform:
   - x64
   - Win32
 
