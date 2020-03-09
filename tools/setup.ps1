@@ -434,10 +434,10 @@ Function Initialize-Environment {
             $MSBuildToolVersion = "14.0"
         }
         "vs2017" {
-            $MSBuildToolVersion = "14.1"
+            $MSBuildToolVersion = "15.0"
         }
         "vs2019" {
-            $MSBuildToolVersion = "14.2"
+            $MSBuildToolVersion = "16.0"
         }
     }
 
