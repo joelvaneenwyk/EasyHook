@@ -519,11 +519,9 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
     Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
 
-    # Do not update the configuration or platform if running in CI mode
-    if (!$ContinuousIntegration) {
-        Add-Content $BatchEnvironment "set Configuration=$Configuration"
-        Add-Content $BatchEnvironment "set Platform=$Platform"
-    }
+    # We set these back in case Visual Studio or something else modified the setting
+    Add-Content $BatchEnvironment "set Configuration=$Configuration"
+    Add-Content $BatchEnvironment "set Platform=$Platform"
 
     Write-Diagnostic "Installing CoApp."
     $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
@@ -539,7 +537,6 @@ Function Initialize-Environment {
     Import-Module CoApp
 
     Add-Content $BatchEnvironment "echo Generated environment batch complete."
-    Add-Content $BatchEnvironment "echo ==========================================="
 
     Write-Diagnostic "Environment setup complete."
 }
