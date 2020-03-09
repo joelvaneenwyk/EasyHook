@@ -531,7 +531,7 @@ Function Initialize-Environment {
     
     # Update environment path
     Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;$coAppModulePath"
-    $env:PSModulePath = $env:PSModulePath + ';$coAppModulePath'
+    $env:PSModulePath = $env:PSModulePath + ";$coAppModulePath"
     
     # Import CoApp module (for packaging native NuGet)
     Import-Module CoApp
