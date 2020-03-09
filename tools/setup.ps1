@@ -406,10 +406,6 @@ Function Initialize-Environment {
     # Restore solution and download pakcages needed
     RestoreNugetPackages
 
-    $Toolchain = Get-Toolchain $Target
-
-    FindVisualStudio $Toolchain
-
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2013") {
         $Target = "vs2013"
     }
@@ -422,6 +418,10 @@ Function Initialize-Environment {
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         $Target = "vs2019"
     }
+
+    $Toolchain = Get-Toolchain $Target
+
+    FindVisualStudio $Toolchain
 
     $Configuration = $env:CONFIGURATION
     if (!$Configuration) {
