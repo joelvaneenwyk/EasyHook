@@ -516,11 +516,13 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set MSBUILD_EXE=""$MSBuildExe"""
     Add-Content $BatchEnvironment "set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%"
 
+    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+
+    # Do not update the configuration or platform if running in CI mode
     if (!$ContinuousIntegration) {
         Add-Content $BatchEnvironment "set Configuration=$Configuration"
         Add-Content $BatchEnvironment "set Platform=$Platform"
-        Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
-        Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
     }
 
     Write-Diagnostic "Installing CoApp."
