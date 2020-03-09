@@ -43,6 +43,7 @@ function DownloadNuget() {
 function RestoreNugetPackages() {
     . $script:Nuget restore -OutputDirectory $EasyHookPackages $EasyHookSln
     . $script:Nuget install -OutputDirectory $EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
+    . $script:Nuget install -OutputDirectory $EasyHookPackages Microsoft.Build -Version 16.4.0 | Out-Null
     . $script:Nuget install -OutputDirectory $EasyHookPackages vswhere -Version 2.8.4 | Out-Null
     . $script:Nuget install -OutputDirectory $EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
     . $script:Nuget install -OutputDirectory $EasyHookPackages Appveyor.TestLogger -Version 2.0.0 | Out-Null
@@ -510,7 +511,7 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" == ""[]"" SET LOGGER="
 
     Add-Content $BatchEnvironment "set MSBUILD_TOOL_VERSION=$MSBuildToolVersion"
-    Add-Content $BatchEnvironment "set MSBUILD_ARGS=/tv:%MSBUILD_TOOL_VERSION% /p:VisualStudioVersion=%VISUAL_STUDIO_TOOL_VERSION% %LOGGER%"
+    Add-Content $BatchEnvironment "set MSBUILD_ARGS=/p:VisualStudioVersion=%VISUAL_STUDIO_TOOL_VERSION% %LOGGER%"
     Add-Content $BatchEnvironment "set MSBUILD_EXE=""$MSBuildExe"""
     Add-Content $BatchEnvironment "set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%"
 
