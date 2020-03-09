@@ -444,22 +444,22 @@ Function Initialize-Environment {
         "vs2013" {
             $script:VisualStudioToolVersion = "12.0"
             $script:MSBuildToolVersion = "12.0"
-            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+            $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc'
         }
         "vs2015" {
             $script:VisualStudioToolVersion = "14.0"
             $script:MSBuildToolVersion = "14.0"
-            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+            $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc'
         }
         "vs2017" {
             $script:VisualStudioToolVersion = "15.0"
             $script:MSBuildToolVersion = "15.0"
-            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+            $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc\auxiliary\build'
         }
         "vs2019" {
             $script:VisualStudioToolVersion = "16.0"
             $script:MSBuildToolVersion = "Current"
-            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+            $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc\auxiliary\build'
         }
     }
 
