@@ -13,9 +13,6 @@ if "[%1]" == "[]" SET TARGET_ARG=
 :: PowerShell script generates this batch script that sets up the environment
 call %~dp0..\Bin\setup_environment.bat
 
-if "[%APPVEYOR_BUILD_ID%]" NEQ "[]" SET LOGGER=/logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-if "[%APPVEYOR_BUILD_ID%]" == "[]" SET LOGGER=
-
 set ADAPTER_PATH=%~dp0..\Packages\Appveyor.TestLogger.2.0.0\build\_common
 set TEST_PLATFORM_ROOT=%~dp0..\Packages\Microsoft.TestPlatform.16.5.0\tools\net451\Common7\IDE\Extensions\TestPlatform
 

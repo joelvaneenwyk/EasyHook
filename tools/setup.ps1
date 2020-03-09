@@ -453,12 +453,12 @@ Function Initialize-Environment {
         }
         "vs2017" {
             $script:VisualStudioToolVersion = "15.0"
-            $script:MSBuildToolVersion = "15.0"
+            $script:MSBuildToolVersion = "14.0"
             $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc\auxiliary\build'
         }
         "vs2019" {
             $script:VisualStudioToolVersion = "16.0"
-            $script:MSBuildToolVersion = "Current"
+            $script:MSBuildToolVersion = "14.0"
             $script:VXXCommonTools = Join-Path $script:VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -505,11 +505,17 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set CONFIGURATION=$Configuration"
     Add-Content $BatchEnvironment "set PLATFORM=$Platform"
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
-    Add-Content $BatchEnvironment "set MSBUILD=$MSBuildExe"
+
+    Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" NEQ ""[]"" SET LOGGER=/logger:""C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"""
+    Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" == ""[]"" SET LOGGER="
+
     Add-Content $BatchEnvironment "set MSBUILD_TOOL_VERSION=$MSBuildToolVersion"
+    Add-Content $BatchEnvironment "set MSBUILD_ARGS=/tv:%MSBUILD_TOOL_VERSION% /p:VisualStudioVersion=%VISUAL_STUDIO_TOOL_VERSION% %LOGGER%"
+    Add-Content $BatchEnvironment "set MSBUILD_EXE=""$MSBuildExe"""
+    Add-Content $BatchEnvironment "set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%"
+
     Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
     Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
-
     Write-Diagnostic "Installing CoApp."
 
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"

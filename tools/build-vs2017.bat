@@ -1,3 +1,3 @@
 @echo off
-%~dp0\build.bat vs2017
+call %~dp0\build.bat vs2017
 pause
