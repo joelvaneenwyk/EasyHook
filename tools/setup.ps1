@@ -129,23 +129,28 @@ function Msvs {
     Write-Diagnostic "Targeting $Toolchain using configuration $Configuration on platform $Platform"
 
     $VisualStudioToolVersion = $null
+    $MSBuildToolVersion = $null
     $VXXCommonTools = $null
 
     switch -Exact ($Toolchain) {
         'v120' {
             $VisualStudioToolVersion = '12.0'
+            $MSBuildToolVersion = '12.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v140' {
             $VisualStudioToolVersion = '14.0'
+            $MSBuildToolVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v141' {
             $VisualStudioToolVersion = '15.0'
+            $MSBuildToolVersion = '15.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
         'v142' {
             $VisualStudioToolVersion = '16.0'
+            $MSBuildToolVersion = 'Current'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -170,7 +175,7 @@ function Msvs {
     $Arguments = @(
         "$Sln",
         "/t:rebuild",
-        "/tv:$VisualStudioToolVersion",
+        "/tv:$MSBuildToolVersion",
         "/p:VisualStudioVersion=$VisualStudioToolVersion",
         "/p:Configuration=$Configuration",
         "/p:Platform=$Platform",
@@ -438,18 +443,22 @@ Function Initialize-Environment {
     switch -Exact ($Target) {
         "vs2013" {
             $script:VisualStudioToolVersion = "12.0"
+            $script:MSBuildToolVersion = "12.0"
             $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         "vs2015" {
             $script:VisualStudioToolVersion = "14.0"
+            $script:MSBuildToolVersion = "14.0"
             $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         "vs2017" {
             $script:VisualStudioToolVersion = "15.0"
+            $script:MSBuildToolVersion = "15.0"
             $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
         "vs2019" {
             $script:VisualStudioToolVersion = "16.0"
+            $script:MSBuildToolVersion = "Current"
             $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -459,7 +468,6 @@ Function Initialize-Environment {
     $script:Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
 
     # Refers to the framework version to use
-    $MSBuildToolVersion = "4.0"
 
     if ($null -eq $script:VXXCommonTools -or (-not (Test-Path($script:VXXCommonTools)))) {
         Die 'Error unable to find any visual studio environment'
@@ -490,6 +498,7 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_PATH=$VSInstallationPath"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS=$VCVarsAll"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS_ARCH=$Arch"
+    Add-Content $BatchEnvironment "set VISUAL_STUDIO_TOOL_VERSION=$script:VisualStudioToolVersion"
     Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$Toolchain"
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
