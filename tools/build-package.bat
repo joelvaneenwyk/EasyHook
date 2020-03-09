@@ -8,9 +8,6 @@ echo MSBuild: %MSBUILD% %MSBUILDS_ARGS%
 echo Build Tool Version: %MSBUILD_TOOL_VERSION%
 echo Visual Studio Tool Version: %VISUAL_STUDIO_TOOL_VERSION%
 
-echo Calling Visual Studio setup script: "%VISUAL_STUDIO_VARS%" %VISUAL_STUDIO_VARS_ARCH%
-call "%VISUAL_STUDIO_VARS%" %VISUAL_STUDIO_VARS_ARCH%
-
 "%MSBUILD%" %EASYHOOK_ROOT%\build-package.proj /t:Clean;BeforeBuild %MSBUILDS_ARGS%
 "%MSBUILD%" %EASYHOOK_ROOT%\build.proj /t:Build %MSBUILDS_ARGS%
 "%MSBUILD%" %EASYHOOK_ROOT%\build-package.proj /t:PreparePackage;Package %MSBUILDS_ARGS%

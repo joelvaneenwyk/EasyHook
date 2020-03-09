@@ -507,6 +507,8 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
     Add-Content $BatchEnvironment "set MSBUILD=$MSBuildExe"
     Add-Content $BatchEnvironment "set MSBUILD_TOOL_VERSION=$MSBuildToolVersion"
+    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
 
     Write-Diagnostic "Installing CoApp."
 

@@ -24,3 +24,12 @@ set APPVEYOR_TEST_LOGGER_DLL=Microsoft.VisualStudio.TestPlatform.Extension.Appve
 
 set VSTEST=%TEST_PLATFORM_ROOT%\vstest.console.exe
 set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%BUILD_PLATFORM% "%EASYHOOK_ROOT%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
+
+:: Printing this out to make sure the tool is findable
+ildasm.exe /? > nul 2>&1
+if "%ERRORLEVEL%" NEQ "0" goto :ERROR
+echo Found 'ildasm.exe'
+goto :EOF
+
+:ERROR
+echo Failed to find 'ildasm.exe'
