@@ -6,15 +6,14 @@
 
 call %~dp0\setup.bat
 
-PowerShell.exe -Command "& '%~dp0\ci_install.ps1'"
-
 echo.
 echo ===============================
 echo.
 
-:: Print out all environment variables for reference
-set
+echo AppVeyor Build Worker Image: %APPVEYOR_BUILD_WORKER_IMAGE%
+ECHO Visual Studio Name: %VISUAL_STUDIO_NAME%
+ECHO Visual Studio Path: %VISUAL_STUDIO_PATH%
+ECHO Build Tool Version: %BUILD_TOOL_VERSION%
 
 echo.
 echo ===============================
-echo.
