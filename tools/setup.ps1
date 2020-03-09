@@ -480,7 +480,7 @@ Function Initialize-Environment {
         Die "Unable to find $VCVarsAll"
     }
 
-    if ([string]::IsNullOrEmpty($script:VSInstallationPat)) {
+    if ([string]::IsNullOrEmpty($script:VSInstallationPath)) {
         Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
         Return
     }
