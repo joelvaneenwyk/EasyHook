@@ -20,8 +20,8 @@ configuration:
   - Win7-Debug
 
 platform:
-  - x64
   - Win32
+  - x64
 
 shallow_clone: true
 

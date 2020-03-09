@@ -171,8 +171,6 @@ function Msvs {
         $env:EASYHOOK_BUILD_IS_BOOTSTRAPPED = $true
     }
 
-    $Arch = TernaryReturn ($Platform -eq 'x64') 'x64' 'x86'
-
     $Arguments = @(
         "$Sln",
         "/t:rebuild",
@@ -430,9 +428,9 @@ Function Initialize-Environment {
     } 
 
     $Platform = $env:Platform
-    if ($null -eq $Platform) {
+    if ([string]::IsNullOrEmpty($Platform)) {
         $Platform = "x64"
-    } 
+    }
 
     if ($Platform -eq "Win32") {
         $BuildPlatform = "x86"
@@ -465,8 +463,6 @@ Function Initialize-Environment {
     }
 
     $VCVarsAll = Join-Path $script:VXXCommonTools vcvarsall.bat
-    
-    $script:Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
 
     # Refers to the framework version to use
 
@@ -489,6 +485,7 @@ Function Initialize-Environment {
     Write-Diagnostic "Visual Studio Tool Version: $script:VisualStudioToolVersion"
     Write-Diagnostic "Visual Studio Installation Path: $script:VSInstallationPath"
     Write-Diagnostic "MSBuild: $MSBuildExe"
+    Write-Diagnostic "Platform: $Platform"
 
     # Update assembly C# files with correct version  
     WriteAssemblyVersion
@@ -498,14 +495,14 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_NAME=$Target"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_PATH=$VSInstallationPath"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS=$VCVarsAll"
-    Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS_ARCH=$Arch"
+    Add-Content $BatchEnvironment "set VISUAL_STUDIO_VARS_ARCH=$BuildPlatform"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_TOOL_VERSION=$script:VisualStudioToolVersion"
     Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$Toolchain"
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
+    Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
     Add-Content $BatchEnvironment "set Configuration=$Configuration"
     Add-Content $BatchEnvironment "set Platform=$Platform"
-    Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
 
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" NEQ ""[]"" SET LOGGER=/logger:""C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"""
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" == ""[]"" SET LOGGER="
