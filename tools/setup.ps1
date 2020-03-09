@@ -448,7 +448,7 @@ Function Initialize-Environment {
     Set-Content -Path $BatchEnvironment -Value "" -Force
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_NAME=$Target"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_PATH=$VSInstallationPath"
-    Add-Content $BatchEnvironment "set BUILD_TOOL_VERSION=$Toolchain"
+    Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$Toolchain"
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
     Add-Content $BatchEnvironment "set CONFIGURATION=$Configuration"
