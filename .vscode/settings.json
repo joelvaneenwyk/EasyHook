@@ -19,7 +19,6 @@
         "**/Obj/**": true,
         "**/Build/**": true,
         "**/Deploy/**": true,
-        "**/Bin/**": true,
         "**/node_modules/**": true,
         "**/Win8*/**": true,
         "**/Win7*/**": true,
