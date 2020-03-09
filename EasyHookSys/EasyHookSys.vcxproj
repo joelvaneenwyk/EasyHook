@@ -243,98 +243,98 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)</IntDir>
+    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
+    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|Win32'">
     <ClCompile>

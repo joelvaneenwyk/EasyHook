@@ -428,18 +428,21 @@ Function Initialize-Environment {
 
     switch -Exact ($Target) {
         "vs2013" {
-            $MSBuildToolVersion = "12.0"
+            $VisualStudioToolVersion = "12.0"
         }
         "vs2015" {
-            $MSBuildToolVersion = "14.0"
+            $VisualStudioToolVersion = "14.0"
         }
         "vs2017" {
-            $MSBuildToolVersion = "15.0"
+            $VisualStudioToolVersion = "15.0"
         }
         "vs2019" {
-            $MSBuildToolVersion = "16.0"
+            $VisualStudioToolVersion = "16.0"
         }
     }
+
+    # Refers to the framework version to use
+    $MSBuildToolVersion = "4.0"
 
     $BatchEnvironment = Join-Path $EasyHookBin "setup_environment.bat"
     Set-Content -Path $BatchEnvironment -Value "" -Force
@@ -460,6 +463,7 @@ Function Initialize-Environment {
     }
     
     Write-Diagnostic "Visual Studio Installation Path: $VSInstallationPath"
+    Write-Diagnostic "Visual Studio Tool Version: $VisualStudioToolVersion"
     Write-Diagnostic "Toolchain: $Toolchain"
 
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
