@@ -10,12 +10,16 @@ param(
 )
 
 $script:ToolsDir = split-path -parent $MyInvocation.MyCommand.Definition
+
 $script:EasyHookRootDir = (Get-Item $ToolsDir).Parent
 $script:EasyHookRoot = $EasyHookRootDir.FullName
 $script:EasyHookSln = Join-Path $EasyHookRoot 'EasyHook.sln'
 $script:EasyHookPackages = Join-Path $EasyHookRoot 'Packages'
 $script:EasyHookBin = Join-Path $EasyHookRoot 'Bin'
+
+$script:Nuget = Join-Path $EasyHookBin nuget.exe
 $script:VSWhere = [IO.Path]::Combine($EasyHookPackages, 'vswhere.2.8.4', 'tools', 'vswhere.exe')
+
 $script:VSInstallationPath = $null
 
 function Write-Diagnostic {
@@ -28,9 +32,8 @@ function Write-Diagnostic {
 }
 
 function DownloadNuget() {
-    New-Item -ItemType Directory -Force -Path $EasyHookBin
-    $script:Nuget = Join-Path $EasyHookBin nuget.exe
-    Set-Alias nuget $script:Nuget -Scope Global -Verbose
+    New-Item -ItemType Directory -Force -Path $EasyHookBin | Out-Null
+    Set-Alias nuget $script:Nuget -Scope Global
     if (-not (Test-Path $script:Nuget)) {
         $Client = New-Object System.Net.WebClient;
         $Client.DownloadFile('http://nuget.org/nuget.exe', $script:Nuget);
@@ -38,12 +41,11 @@ function DownloadNuget() {
 }
 
 function RestoreNugetPackages() {
-    $Nuget = Join-Path $EasyHookBin nuget.exe
-    . $Nuget restore -OutputDirectory $EasyHookPackages $EasyHookSln
-    . $Nuget install -OutputDirectory $EasyHookPackages MSBuildTasks -Version 1.5.0.196
-    . $Nuget install -OutputDirectory $EasyHookPackages vswhere -Version 2.8.4
-    . $Nuget install -OutputDirectory $EasyHookPackages Microsoft.TestPlatform -Version 16.5.0
-    . $Nuget install -OutputDirectory $EasyHookPackages Appveyor.TestLogger -Version 2.0.0
+    . $script:Nuget restore -OutputDirectory $EasyHookPackages $EasyHookSln
+    . $script:Nuget install -OutputDirectory $EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
+    . $script:Nuget install -OutputDirectory $EasyHookPackages vswhere -Version 2.8.4 | Out-Null
+    . $script:Nuget install -OutputDirectory $EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
+    . $script:Nuget install -OutputDirectory $EasyHookPackages Appveyor.TestLogger -Version 2.0.0 | Out-Null
 }
 
 # https://github.com/jbake/Powershell_scripts/blob/master/Invoke-BatchFile.ps1
@@ -126,27 +128,24 @@ function Msvs {
 
     Write-Diagnostic "Targeting $Toolchain using configuration $Configuration on platform $Platform"
 
-    $VisualStudioVersion = $null
+    $VisualStudioToolVersion = $null
     $VXXCommonTools = $null
-
-    $output = Get-ProcessOutput -FileName $script:VSWhere -Args '-latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe'
-    $MSBuildExe = ($output.StandardOutput -split '\n')[0]
 
     switch -Exact ($Toolchain) {
         'v120' {
-            $VisualStudioVersion = '12.0'
+            $VisualStudioToolVersion = '12.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v140' {
-            $VisualStudioVersion = '14.0'
+            $VisualStudioToolVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
         'v141' {
-            $VisualStudioVersion = '14.1'
+            $VisualStudioToolVersion = '15.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
         'v142' {
-            $VisualStudioVersion = '14.2'
+            $VisualStudioToolVersion = '16.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -166,15 +165,15 @@ function Msvs {
         $env:EASYHOOK_BUILD_IS_BOOTSTRAPPED = $true
     }
 
-    $Arch = TernaryReturn ($Platform -eq 'x64') 'x64' 'win32'
+    $Arch = TernaryReturn ($Platform -eq 'x64') 'x64' 'x86'
 
     $Arguments = @(
         "$Sln",
         "/t:rebuild",
-        "/tv:Current",
-        "/p:VisualStudioVersion=$VisualStudioVersion",
+        "/tv:$VisualStudioToolVersion",
+        "/p:VisualStudioVersion=$VisualStudioToolVersion",
         "/p:Configuration=$Configuration",
-        "/p:Platform=$Arch",
+        "/p:Platform=$Platform",
         "/p:PlatformToolset=$Toolchain",
         "/p:PackageDir=.\Deploy;FX35BuildDir=.\Build\netfx3.5-Release\x64;FX4BuildDir=.\Build\netfx4-Release\x64",
         "/verbosity:quiet"
@@ -199,8 +198,13 @@ function Msvs {
 
     $Process = New-Object System.Diagnostics.Process
     $Process.StartInfo = $startInfo
-    $Process.Start()
+    $ProcessCreated = $Process.Start()
     
+    if (!$ProcessCreated)
+    {
+        Die "Failed to create process"
+    }
+
     $stdout = $Process.StandardOutput.ReadToEnd()
     $stderr = $Process.StandardError.ReadToEnd()
     
@@ -266,18 +270,25 @@ function FindVisualStudio {
         $args += '-version "[16.0,17.0)"'
     }
     
-    $args += ' -property installationPath'
-
-    $output = Get-ProcessOutput -FileName $script:VSWhere -Args $args
+    $output = Get-ProcessOutput -FileName $script:VSWhere -Args ($args + ' -property installationPath')
     $script:VSInstallationPath = $output.StandardOutput.Trim()
+
+    $output = Get-ProcessOutput -FileName $script:VSWhere -Args ($args + ' -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe')
+    $script:MSBuildExe = ($output.StandardOutput -split '\n')[0].Trim()
 }
 
 function VSX {
     param(
-        [ValidateSet('v120', 'v140', 'v141', 'v142')]
         [Parameter(Position = 0, ValueFromPipeline = $true)]
-        [string] $Toolchain
+        [string] $Target
     )
+
+    $Toolchain = Get-Toolchain $Target
+    if ($Toolchain -eq "")
+    {
+        Write-Diagnostic "Requires a target to be specified."
+        return
+    }
 
     FindVisualStudio "$Toolchain"
     
@@ -286,7 +297,7 @@ function VSX {
         Return
     }
     
-    Write-Diagnostic "Visual Studio Installation path: $VSInstallationPath"
+    Write-Diagnostic "Visual Studio Installation path: $script:VSInstallationPath"
     Write-Diagnostic "Starting build targeting toolchain $Toolchain"
 
     Msvs "$EasyHookSln" "$Toolchain" 'netfx3.5-Release' 'x64'
@@ -414,6 +425,13 @@ Function Initialize-Environment {
     Write-Diagnostic "EasyHook version: $AssemblyVersion"
     Write-Diagnostic "Target: $Target"
 
+    $Toolchain = Get-Toolchain $Target
+    FindVisualStudio $Toolchain
+
+    Write-Diagnostic "Toolchain: $Toolchain"
+    Write-Diagnostic "Visual Studio Path: $VSInstallationPath"
+    Write-Diagnostic "MSBuild: $MSBuildExe"
+
     # Download local version of NuGet
     DownloadNuget
 
@@ -421,58 +439,37 @@ Function Initialize-Environment {
     RestoreNugetPackages
 
     # Update assembly C# files with correct version  
-    WriteAssemblyVersion
+    WriteAssemblyVersion    
     
-    $Toolchain = Get-Toolchain $Target
-    FindVisualStudio $Toolchain
-    
-    $output = Get-ProcessOutput -FileName $script:VSWhere -Args '-latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe'
-    $MSBuildExe = ($output.StandardOutput -split '\n')[0]
-
-    switch -Exact ($Toolchain) {
-        'v120' {
-            $VisualStudioVersion = '12.0'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+    switch -Exact ($Target) {
+        "vs2013" {
+            $script:VisualStudioToolVersion = "12.0"
+            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
-        'v140' {
-            $VisualStudioVersion = '14.0'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+        "vs2015" {
+            $script:VisualStudioToolVersion = "14.0"
+            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
-        'v141' {
-            $VisualStudioVersion = '14.1'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+        "vs2017" {
+            $script:VisualStudioToolVersion = "15.0"
+            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
-        'v142' {
-            $VisualStudioVersion = '14.2'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+        "vs2019" {
+            $script:VisualStudioToolVersion = "16.0"
+            $script:VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
 
-    if ($null -eq $VXXCommonTools -or (-not (Test-Path($VXXCommonTools)))) {
+    if ($null -eq $script:VXXCommonTools -or (-not (Test-Path($script:VXXCommonTools)))) {
         Die 'Error unable to find any visual studio environment'
     }
 
-    $VCVarsAll = Join-Path $VXXCommonTools vcvarsall.bat
+    $VCVarsAll = Join-Path $script:VXXCommonTools vcvarsall.bat
     if (-not (Test-Path $VCVarsAll)) {
         Die "Unable to find $VCVarsAll"
     }
 
-    $Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
-
-    switch -Exact ($Target) {
-        "vs2013" {
-            $VisualStudioToolVersion = "12.0"
-        }
-        "vs2015" {
-            $VisualStudioToolVersion = "14.0"
-        }
-        "vs2017" {
-            $VisualStudioToolVersion = "15.0"
-        }
-        "vs2019" {
-            $VisualStudioToolVersion = "16.0"
-        }
-    }
+    $script:Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
 
     # Refers to the framework version to use
     $MSBuildToolVersion = "4.0"
@@ -497,21 +494,29 @@ Function Initialize-Environment {
         Return
     }
     
-    Write-Diagnostic "Visual Studio Installation Path: $VSInstallationPath"
-    Write-Diagnostic "Visual Studio Tool Version: $VisualStudioToolVersion"
+    Write-Diagnostic "Visual Studio Installation Path: $script:VSInstallationPath"
+    Write-Diagnostic "Visual Studio Tool Version: $script:VisualStudioToolVersion"
     Write-Diagnostic "Toolchain: $Toolchain"
+
+    Write-Diagnostic "Installing CoApp."
 
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
     
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
     
-    Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
+    $cmdout = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
     
     # Update environment path
+    Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;C:\Program Files (x86)\Outercurve Foundation\Modules"
     $env:PSModulePath = $env:PSModulePath + ';C:\Program Files (x86)\Outercurve Foundation\Modules'
     
     # Import CoApp module (for packaging native NuGet)
     Import-Module CoApp
+
+    Add-Content $BatchEnvironment "echo Generated environment batch complete."
+    Add-Content $BatchEnvironment "echo ==========================================="
+
+    Write-Diagnostic "Environment setup complete."
 }
 
 if ($Initialize) {

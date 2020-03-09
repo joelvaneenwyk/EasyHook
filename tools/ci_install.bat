@@ -4,6 +4,12 @@
 
 @echo off
 
+echo.
+echo ===============================
+echo. EasyHook CI Install Script 
+echo ===============================
+echo.
+
 call %~dp0\setup.bat
 
 echo.

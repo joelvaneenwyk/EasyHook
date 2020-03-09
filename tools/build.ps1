@@ -7,17 +7,9 @@ param(
 )
 
 $ToolsDir = split-path -parent $MyInvocation.MyCommand.Definition
-
 $SetupScript = Join-Path $ToolsDir 'setup.ps1'
 
-. $SetupScript
-
-Initialize-Environment
+. $SetupScript -Target $Target
 
 Nupkg
-
-$Toolchain = Get-Toolchain $Target
-if (-not ($Toolchain -eq ""))
-{
-    VSX $Toolchain
-}
+VSX $Target
