@@ -229,7 +229,7 @@ function Get-ProcessOutput {
     $process.StartInfo.RedirectStandardError = $true
     $process.StartInfo.FileName = $FileName
     if ($Args) { $process.StartInfo.Arguments = $Args }
-    $out = $process.Start()
+    $_ = $process.Start()
     
     $StandardError = $process.StandardError.ReadToEnd()
     $StandardOutput = $process.StandardOutput.ReadToEnd()
@@ -391,6 +391,20 @@ Function Initialize-Environment {
         [string] $AssemblyVersion = "2.8.0.0" 
     )
 
+    Write-Diagnostic "Initializing EasyHook build environment."
+    
+    Write-Diagnostic "Downloading latest version of NuGet and installing packages."
+
+    # Download local version of NuGet
+    DownloadNuget
+
+    # Restore solution and download pakcages needed
+    RestoreNugetPackages
+
+    $Toolchain = Get-Toolchain $Target
+
+    FindVisualStudio $Toolchain
+
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2013") {
         $Target = "vs2013"
     }
@@ -420,27 +434,7 @@ Function Initialize-Environment {
     else {
         $BuildPlatform = "x64"
     }
-    
-    Write-Diagnostic "Initializing EasyHook build environment."
-    Write-Diagnostic "EasyHook version: $AssemblyVersion"
-    Write-Diagnostic "Target: $Target"
 
-    $Toolchain = Get-Toolchain $Target
-    FindVisualStudio $Toolchain
-
-    Write-Diagnostic "Toolchain: $Toolchain"
-    Write-Diagnostic "Visual Studio Path: $VSInstallationPath"
-    Write-Diagnostic "MSBuild: $MSBuildExe"
-
-    # Download local version of NuGet
-    DownloadNuget
-
-    # Restore solution and download pakcages needed
-    RestoreNugetPackages
-
-    # Update assembly C# files with correct version  
-    WriteAssemblyVersion    
-    
     switch -Exact ($Target) {
         "vs2013" {
             $script:VisualStudioToolVersion = "12.0"
@@ -460,19 +454,35 @@ Function Initialize-Environment {
         }
     }
 
-    if ($null -eq $script:VXXCommonTools -or (-not (Test-Path($script:VXXCommonTools)))) {
-        Die 'Error unable to find any visual studio environment'
-    }
-
     $VCVarsAll = Join-Path $script:VXXCommonTools vcvarsall.bat
-    if (-not (Test-Path $VCVarsAll)) {
-        Die "Unable to find $VCVarsAll"
-    }
-
+    
     $script:Arch = TernaryReturn ($BuildPlatform -eq 'x64') 'x64' 'x86'
 
     # Refers to the framework version to use
     $MSBuildToolVersion = "4.0"
+
+    if ($null -eq $script:VXXCommonTools -or (-not (Test-Path($script:VXXCommonTools)))) {
+        Die 'Error unable to find any visual studio environment'
+    }
+
+    if (-not (Test-Path $VCVarsAll)) {
+        Die "Unable to find $VCVarsAll"
+    }
+
+    if ($null -eq $script:VSInstallationPath) {
+        Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
+        Return
+    }
+    
+    Write-Diagnostic "EasyHook version: $AssemblyVersion"
+    Write-Diagnostic "Target: $Target"
+    Write-Diagnostic "Toolchain: $Toolchain"
+    Write-Diagnostic "Visual Studio Tool Version: $script:VisualStudioToolVersion"
+    Write-Diagnostic "Visual Studio Installation Path: $script:VSInstallationPath"
+    Write-Diagnostic "MSBuild: $MSBuildExe"
+
+    # Update assembly C# files with correct version  
+    WriteAssemblyVersion
 
     $BatchEnvironment = Join-Path $EasyHookBin "setup_environment.bat"
     Set-Content -Path $BatchEnvironment -Value "" -Force
@@ -488,15 +498,6 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
     Add-Content $BatchEnvironment "set MSBUILD=$MSBuildExe"
     Add-Content $BatchEnvironment "set MSBUILD_TOOL_VERSION=$MSBuildToolVersion"
-
-    if ($null -eq $script:VSInstallationPath) {
-        Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
-        Return
-    }
-    
-    Write-Diagnostic "Visual Studio Installation Path: $script:VSInstallationPath"
-    Write-Diagnostic "Visual Studio Tool Version: $script:VisualStudioToolVersion"
-    Write-Diagnostic "Toolchain: $Toolchain"
 
     Write-Diagnostic "Installing CoApp."
 
