@@ -204,8 +204,7 @@ function Msvs {
     $Process.StartInfo = $startInfo
     $ProcessCreated = $Process.Start()
     
-    if (!$ProcessCreated)
-    {
+    if (!$ProcessCreated) {
         Die "Failed to create process"
     }
 
@@ -288,8 +287,7 @@ function VSX {
     )
 
     $Toolchain = Get-Toolchain $Target
-    if ($Toolchain -eq "")
-    {
+    if ([string]::IsNullOrEmpty($Toolchain)) {
         Write-Diagnostic "Requires a target to be specified."
         return
     }
@@ -397,6 +395,14 @@ Function Initialize-Environment {
 
     Write-Diagnostic "Initializing EasyHook build environment."
     
+    $ContinuousIntegration = ![string]::IsNullOrEmpty($env:CI)
+    if ($ContinuousIntegration) {
+        Write-Diagnostic "Continuous Integration build."
+    }
+    else {
+        Write-Diagnostic "Local (non-CI) build."
+    }
+
     Write-Diagnostic "Downloading latest version of NuGet and installing packages."
 
     # Download local version of NuGet
@@ -422,8 +428,8 @@ Function Initialize-Environment {
 
     FindVisualStudio $Toolchain
 
-    $Configuration = $env:CONFIGURATION
-    if (!$Configuration) {
+    $Configuration = $env:Configuration
+    if ([string]::IsNullOrEmpty($Configuration)) {
         $Configuration = "netfx3.5-Debug"
     } 
 
@@ -466,7 +472,7 @@ Function Initialize-Environment {
 
     # Refers to the framework version to use
 
-    if ($null -eq $script:VXXCommonTools -or (-not (Test-Path($script:VXXCommonTools)))) {
+    if ([string]::IsNullOrEmpty($script:VXXCommonTools) -or (-not (Test-Path($script:VXXCommonTools)))) {
         Die 'Error unable to find any visual studio environment'
     }
 
@@ -474,7 +480,7 @@ Function Initialize-Environment {
         Die "Unable to find $VCVarsAll"
     }
 
-    if ($null -eq $script:VSInstallationPath) {
+    if ([string]::IsNullOrEmpty($script:VSInstallationPat)) {
         Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
         Return
     }
@@ -501,8 +507,6 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set EASYHOOK_TOOLS=$ToolsDir"
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$BuildPlatform"
-    Add-Content $BatchEnvironment "set Configuration=$Configuration"
-    Add-Content $BatchEnvironment "set Platform=$Platform"
 
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" NEQ ""[]"" SET LOGGER=/logger:""C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"""
     Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" == ""[]"" SET LOGGER="
@@ -512,19 +516,22 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set MSBUILD_EXE=""$MSBuildExe"""
     Add-Content $BatchEnvironment "set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%"
 
-    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
-    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
-    Write-Diagnostic "Installing CoApp."
+    if (!$ContinuousIntegration) {
+        Add-Content $BatchEnvironment "set Configuration=$Configuration"
+        Add-Content $BatchEnvironment "set Platform=$Platform"
+        Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+        Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+    }
 
-    $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
-    
+    Write-Diagnostic "Installing CoApp."
+    $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
+    $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"    
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
-    
     $_ = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
     
     # Update environment path
-    Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;C:\Program Files (x86)\Outercurve Foundation\Modules"
-    $env:PSModulePath = $env:PSModulePath + ';C:\Program Files (x86)\Outercurve Foundation\Modules'
+    Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;$coAppModulePath"
+    $env:PSModulePath = $env:PSModulePath + ';$coAppModulePath'
     
     # Import CoApp module (for packaging native NuGet)
     Import-Module CoApp
