@@ -54,6 +54,7 @@ namespace EasyLoad
     {
         static object _lock = new object();
         static AppDomain _easyHookDomain;
+
         /// <summary>
         /// Keep track of injections to determine when it is safe to unload the AppDomain
         /// </summary>
