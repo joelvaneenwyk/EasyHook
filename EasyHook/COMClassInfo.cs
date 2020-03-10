@@ -24,7 +24,6 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 

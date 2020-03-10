@@ -24,7 +24,6 @@
 // about the project and latest updates.
 
 using System;
-using System.Text;
 using RGiesecke.DllExport;
 using System.Runtime.InteropServices;
 using System.Reflection;

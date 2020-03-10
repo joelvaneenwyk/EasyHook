@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Text;
-using EasyHook;
 
 namespace ProcessMonitor
 {

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Remoting;
-using System.Text;
 using System.IO;
 using EasyHook;
-using System.Windows.Forms;
 
 namespace FileMon
 {

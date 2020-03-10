@@ -31,7 +31,6 @@
 // Other fusion API documentation: https://support.microsoft.com/en-us/kb/317540
 //-------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 

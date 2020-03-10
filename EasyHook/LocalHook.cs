@@ -24,9 +24,7 @@
 // about the project and latest updates.
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;

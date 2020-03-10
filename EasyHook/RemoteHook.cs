@@ -30,11 +30,7 @@ using System.Reflection;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Security.Policy;
-using System.Security;
-using System.Security.Permissions;
 using System.Runtime.Remoting;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Remoting.Channels;
@@ -42,8 +38,6 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
-using System.IO.Compression;
 using System.Security.Cryptography;
 
 #pragma warning disable 0419 // XML comment: ambiguous reference

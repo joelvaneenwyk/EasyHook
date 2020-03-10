@@ -84,6 +84,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RGiesecke.DllExport">
+      <HintPath>..\Packages\UnmanagedExports.1.2.7\tools\RGiesecke.DllExport.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Runtime.Remoting" />
