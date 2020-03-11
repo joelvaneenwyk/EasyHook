@@ -40,5 +40,5 @@ after_build:
   - 7z a "EasyHook.%VISUAL_STUDIO_NAME%.%Configuration%.%BUILD_PLATFORM%.zip" %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%BUILD_PLATFORM%\*.dll %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%BUILD_PLATFORM%\*.pdb %APPVEYOR_BUILD_FOLDER%\Build\%Configuration%\%BUILD_PLATFORM%\*.exe
 
 artifacts:
-- path: 'EasyHook.$(VISUAL_STUDIO_NAME).$(Configuration).$(BUILD_PLATFORM).zip'
-  name: EasyHook
+  - path: "EasyHook.$(VISUAL_STUDIO_NAME).$(Configuration).$(BUILD_PLATFORM).zip"
+    name: EasyHook

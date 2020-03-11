@@ -18,7 +18,7 @@ build_script:
   - Tools\build-package.bat
 
 artifacts:
-- path: .\*.nupkg
-  name: EasyHook NuGet
-- path: .\Deploy\*.zip
-  name: EasyHook Binaries
+  - path: .\*.nupkg
+    name: EasyHook NuGet
+  - path: .\Deploy\*.zip
+    name: EasyHook Binaries
