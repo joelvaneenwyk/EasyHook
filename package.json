@@ -1,0 +1,33 @@
+{
+  "name": "easyhook",
+  "version": "2.8.0",
+  "description": "EasyHook makes it possible to extend (via hooking) unmanaged code APIs with pure managed functions, from within a fully managed environment.",
+  "main": "Tools\\build.bat",
+  "scripts": {
+    "precommit": "Tools\\format.bat",
+    "format": "Tools\\format.bat",
+    "test": "Tools\\build.bat",
+    "lint": "Tools\\lint.bat"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joelvaneenwyk/EasyHook.git"
+  },
+  "keywords": [
+    "hook",
+    "hooking",
+    "managed",
+    "easy"
+  ],
+  "author": "Christoph Husse",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EasyHook/EasyHook/issues"
+  },
+  "homepage": "https://github.com/EasyHook/EasyHook#readme",
+  "devDependencies": {
+    "clang-format": "^1.4.0",
+    "eclint": "^2.8.1",
+    "husky": "^4.2.3"
+  }
+}

@@ -6,7 +6,7 @@
 
 echo.
 echo ===============================
-echo. EasyHook CI Install Script 
+echo. EasyHook CI Install Script
 echo ===============================
 echo.
 

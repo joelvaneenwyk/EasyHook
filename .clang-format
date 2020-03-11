@@ -1,0 +1,76 @@
+---
+Language: Cpp
+#:==============================
+
+# Start with pure Chromium
+BasedOnStyle: Chromium
+
+# These are designed to keep as close as possible to our existing style
+Standard: Cpp11
+SortIncludes: true
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 150
+BreakBeforeBraces: Allman
+SpacesInParentheses: false
+SpaceBeforeParens: ControlStatements
+AccessModifierOffset: -4
+CommentPragmas:  '^\\.+'
+FixNamespaceComments: false
+NamespaceIndentation: All
+BreakConstructorInitializers: BeforeComma
+SpaceAfterTemplateKeyword: true
+IndentPPDirectives: AfterHash
+
+# Only inline and empty functions can be on a single line
+AllowShortFunctionsOnASingleLine: Inline
+
+# Only short ifs with no else can be on one line
+AllowShortIfStatementsOnASingleLine: true
+AlignEscapedNewlines: DontAlign
+AlignAfterOpenBracket: DontAlign
+
+# Function arguments are packed across multiple lines
+BinPackArguments: true
+
+# Function params are packed across multiple lines
+BinPackParameters: true
+
+# Start the params on the same line, then break
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# Initializers are different, all one one line or all split
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+
+# Keep strings as they are written,even if they would make a line too long
+BreakStringLiterals: false
+
+---
+Language: CSharp
+#:==============================
+
+BasedOnStyle: Microsoft
+
+ColumnLimit: 120
+TabWidth: 4
+IndentWidth: 4
+UseTab: Never
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterControlStatement: true
+  AfterEnum: true
+  AfterFunction: true
+  AfterNamespace: true
+  AfterObjCDeclaration: true
+  AfterStruct: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+PenaltyReturnTypeOnItsOwnLine: 1000
+AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+NamespaceIndentation: All

@@ -1,16 +1,15 @@
 <#
 Helper functions and setup scripts all stored here and used
-by other scripts/tools here. 
+by other scripts/tools here.
 #>
 
 param(
-    [Parameter(Position = 0)] 
+    [Parameter(Position = 0)]
     [string] $Target = "vs2017",
     [switch] $Initialize = $false
 )
 
 $script:ToolsDir = split-path -parent $MyInvocation.MyCommand.Definition
-
 $script:EasyHookRootDir = (Get-Item $ToolsDir).Parent
 $script:EasyHookRoot = $EasyHookRootDir.FullName
 $script:EasyHookSln = Join-Path $EasyHookRoot 'EasyHook.sln'
@@ -53,20 +52,20 @@ function RestoreNugetPackages() {
 function Invoke-BatchFile {
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
-        [string]$Path, 
+        [string]$Path,
         [Parameter(Position = 1, Mandatory = $true, ValueFromPipeline = $true)]
         [string]$Parameters
     )
 
-    $tempFile = [IO.Path]::GetTempFileName()  
+    $tempFile = [IO.Path]::GetTempFileName()
 
-    cmd.exe /c " `"$Path`" $Parameters && set > `"$tempFile`" " 
+    cmd.exe /c " `"$Path`" $Parameters && set > `"$tempFile`" "
 
-    Get-Content $tempFile | Foreach-Object {   
-        if ($_ -match "^(.*?)=(.*)$") { 
-            Set-Content "env:\$($matches[1])" $matches[2]  
-        } 
-    }  
+    Get-Content $tempFile | Foreach-Object {
+        if ($_ -match "^(.*?)=(.*)$") {
+            Set-Content "env:\$($matches[1])" $matches[2]
+        }
+    }
 
     Remove-Item $tempFile
 }
@@ -78,7 +77,7 @@ function Die {
     )
 
     Write-Host
-    Write-Error $Message 
+    Write-Error $Message
     exit 1
 }
 
@@ -106,7 +105,7 @@ function TernaryReturn {
     if ($Yes) {
         return $Value
     }
-    
+
     $Value2
 }
 
@@ -116,11 +115,11 @@ function Msvs {
         [string] $Sln = $null,
         [ValidateSet('v120', 'v140', 'v141', 'v142')]
         [Parameter(Position = 1, ValueFromPipeline = $true)]
-        [string] $Toolchain, 
+        [string] $Toolchain,
 
         [Parameter(Position = 2, ValueFromPipeline = $true)]
         [ValidateSet('netfx3.5-Debug', 'netfx3.5-Release', 'netfx4-Debug', 'netfx4-Release')]
-        [string] $Configuration, 
+        [string] $Configuration,
 
         [Parameter(Position = 3, ValueFromPipeline = $true)]
         [ValidateSet('Win32', 'x64')]
@@ -203,14 +202,14 @@ function Msvs {
     $Process = New-Object System.Diagnostics.Process
     $Process.StartInfo = $startInfo
     $ProcessCreated = $Process.Start()
-    
+
     if (!$ProcessCreated) {
         Die "Failed to create process"
     }
 
     $stdout = $Process.StandardOutput.ReadToEnd()
     $stderr = $Process.StandardError.ReadToEnd()
-    
+
     $Process.WaitForExit()
 
     if ($Process.ExitCode -ne 0) {
@@ -225,7 +224,7 @@ function Get-ProcessOutput {
         [Parameter(Mandatory = $true)]$FileName,
         $Args
     )
-    
+
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo.UseShellExecute = $false
     $process.StartInfo.RedirectStandardOutput = $true
@@ -233,10 +232,10 @@ function Get-ProcessOutput {
     $process.StartInfo.FileName = $FileName
     if ($Args) { $process.StartInfo.Arguments = $Args }
     $_ = $process.Start()
-    
+
     $StandardError = $process.StandardError.ReadToEnd()
     $StandardOutput = $process.StandardOutput.ReadToEnd()
-    
+
     $output = New-Object PSObject
     $output | Add-Member -type NoteProperty -name StandardOutput -Value $StandardOutput
     $output | Add-Member -type NoteProperty -name StandardError -Value $StandardError
@@ -257,22 +256,22 @@ function FindVisualStudio {
     if ($Toolchain -eq 'v120') {
         $args += '-legacy -version "[12.0,14.0)"'
     }
-    
+
     # VS2015
     if ($Toolchain -eq 'v140') {
         $args += '-legacy -version "[14.0,15.0)"'
     }
-    
+
     # VS2017
     if ($Toolchain -eq 'v141') {
         $args += '-version "[15.0,16.0)"'
     }
-    
+
     # VS2019
     if ($Toolchain -eq 'v142') {
         $args += '-version "[16.0,17.0)"'
     }
-    
+
     $output = Get-ProcessOutput -FileName $script:VSWhere -Args ($args + ' -property installationPath')
     $script:VSInstallationPath = $output.StandardOutput.Trim()
 
@@ -293,12 +292,12 @@ function VSX {
     }
 
     FindVisualStudio "$Toolchain"
-    
+
     if ($null -eq $script:VSInstallationPath) {
         Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
         Return
     }
-    
+
     Write-Diagnostic "Visual Studio Installation path: $script:VSInstallationPath"
     Write-Diagnostic "Starting build targeting toolchain $Toolchain"
 
@@ -306,7 +305,7 @@ function VSX {
     Msvs "$EasyHookSln" "$Toolchain" 'netfx3.5-Release' 'Win32'
     Msvs "$EasyHookSln" "$Toolchain" 'netfx4-Release' 'x64'
     Msvs "$EasyHookSln" "$Toolchain" 'netfx4-Release' 'Win32'
-    
+
     # <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx3.5-Debug;Platform=x64" />
     # <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx3.5-Debug;Platform=Win32" />
     # <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx3.5-Release;Platform=x64" />
@@ -324,13 +323,13 @@ function WriteAssemblyVersionForFile {
         [Parameter(Position = 0, ValueFromPipeline = $true)]
         [string] $File
     )
-    
+
     #$Regex = 'public const string AssemblyVersion = "(.*)"';
     $Regex = '\[assembly: AssemblyVersion\("(.*)"\)\]'
-    
+
     $AssemblyInfo = Get-Content $File
     $NewString = $AssemblyInfo -replace $Regex, "[assembly: AssemblyVersion(""$AssemblyVersion"")]"
-    
+
     $NewString | Set-Content $File -Encoding UTF8
 }
 
@@ -353,7 +352,7 @@ Function Add-PathVariable {
     )
     if (Test-Path $addPath) {
         $regexAddPath = [regex]::Escape($addPath)
-        $arrPath = $env:Path -split ';' | Where-Object { $_ -notMatch 
+        $arrPath = $env:Path -split ';' | Where-Object { $_ -notMatch
             "^$regexAddPath\\?" }
         $env:Path = ($arrPath + $addPath) -join ';'
     }
@@ -366,7 +365,7 @@ Function Get-Toolchain {
     param(
         [string] $Target
     )
-    
+
     switch -Exact ($Target) {
         "nupkg-only" {
             $toolchain = ""
@@ -390,11 +389,11 @@ Function Get-Toolchain {
 Function Initialize-Environment {
     param(
         [string] $Target = "vs2017",
-        [string] $AssemblyVersion = "2.8.0.0" 
+        [string] $AssemblyVersion = "2.8.0.0"
     )
 
     Write-Diagnostic "Initializing EasyHook build environment."
-    
+
     $ContinuousIntegration = ![string]::IsNullOrEmpty($env:CI)
     if ($ContinuousIntegration) {
         Write-Diagnostic "Continuous Integration build."
@@ -417,7 +416,7 @@ Function Initialize-Environment {
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
         $Target = "vs2015"
     }
-    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") { 
+    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2017") {
         $Target = "vs2017"
     }
     if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
@@ -431,7 +430,7 @@ Function Initialize-Environment {
     $Configuration = $env:Configuration
     if ([string]::IsNullOrEmpty($Configuration)) {
         $Configuration = "netfx3.5-Debug"
-    } 
+    }
 
     $Platform = $env:Platform
     if ([string]::IsNullOrEmpty($Platform)) {
@@ -484,7 +483,7 @@ Function Initialize-Environment {
         Warn "Toolchain $Toolchain is not installed on your development machine, skipping build."
         Return
     }
-    
+
     Write-Diagnostic "EasyHook version: $AssemblyVersion"
     Write-Diagnostic "Target: $Target"
     Write-Diagnostic "Toolchain: $Toolchain"
@@ -493,7 +492,7 @@ Function Initialize-Environment {
     Write-Diagnostic "MSBuild: $MSBuildExe"
     Write-Diagnostic "Platform: $Platform"
 
-    # Update assembly C# files with correct version  
+    # Update assembly C# files with correct version
     WriteAssemblyVersion
 
     $BatchEnvironment = Join-Path $EasyHookBin "setup_environment.bat"
@@ -525,14 +524,14 @@ Function Initialize-Environment {
 
     Write-Diagnostic "Installing CoApp."
     $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
-    $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"    
+    $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
     $_ = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
-    
+
     # Update environment path
     Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;$coAppModulePath"
     $env:PSModulePath = $env:PSModulePath + ";$coAppModulePath"
-    
+
     # Import CoApp module (for packaging native NuGet)
     Import-Module CoApp
 
