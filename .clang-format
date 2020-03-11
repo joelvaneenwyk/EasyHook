@@ -1,0 +1,54 @@
+# Start with pure Chromium
+BasedOnStyle: Chromium
+
+---
+Language: Cpp
+# ===============================
+
+# These are designed to keep as close as possible to our existing style
+Standard: Cpp11
+SortIncludes: true
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 0
+BreakBeforeBraces: Allman
+SpacesInParentheses: false
+SpaceBeforeParens: ControlStatements
+AccessModifierOffset: -4
+FixNamespaceComments: false
+NamespaceIndentation: All
+BreakConstructorInitializers: BeforeComma
+SpaceAfterTemplateKeyword: true
+IndentPPDirectives: AfterHash
+
+# Only inline and empty functions can be on a single line
+AllowShortFunctionsOnASingleLine: Inline
+
+# Only short ifs with no else can be on one line
+AllowShortIfStatementsOnASingleLine: true
+AlignEscapedNewlines: DontAlign
+AlignAfterOpenBracket: DontAlign
+
+# Function arguments are packed across multiple lines
+BinPackArguments: true
+
+# Function params are packed across multiple lines
+BinPackParameters: true
+
+# Start the params on the same line, then break
+AllowAllParametersOfDeclarationOnNextLine: false
+
+# Initializers are different, all one one line or all split
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+
+# Keep strings as they are written,even if they would make a line too long
+BreakStringLiterals: false
+
+---
+Language: CSharp
+# ===============================
+
+IndentWidth: 4
+UseTab: Never
+ColumnLimit: 100
+BreakBeforeBraces: Allman
