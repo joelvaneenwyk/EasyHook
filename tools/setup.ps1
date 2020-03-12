@@ -17,10 +17,17 @@ $script:EasyHookPackages = Join-Path $EasyHookRoot 'Packages'
 $script:EasyHookBin = Join-Path $EasyHookRoot 'Bin'
 
 $script:Nuget = Join-Path $EasyHookBin nuget.exe
-$script:VSWhere = [IO.Path]::Combine($EasyHookPackages, 'vswhere.2.8.4', 'tools', 'vswhere.exe')
+
+$script:NodeVersion = "13.10.1"
+$script:NodeUrl = "https://nodejs.org/dist/v13.10.1/node-v$script:NodeVersion-win-x64.zip"
+$script:NodeArchive = Join-Path $EasyHookBin "node-v$script:NodeVersion-win-x64.zip"
+$script:NodeRoot = Join-Path $EasyHookBin "node-v$script:NodeVersion-win-x64"
+$script:NPM = Join-Path $script:NodeRoot "npm.cmd"
+$script:Node = Join-Path $script:NodeRoot "node.exe"
+
+$script:VSWhere = [IO.Path]::Combine($script:EasyHookPackages, 'vswhere.2.8.4', 'tools', 'vswhere.exe')
 
 $script:VSInstallationPath = $null
-
 function Write-Diagnostic {
     param(
         [Parameter(Position = 0, Mandatory = $true, ValueFromPipeline = $true)]
@@ -31,21 +38,35 @@ function Write-Diagnostic {
 }
 
 function DownloadNuget() {
+    $Client = New-Object System.Net.WebClient;
+
     New-Item -ItemType Directory -Force -Path $EasyHookBin | Out-Null
-    Set-Alias nuget $script:Nuget -Scope Global
+
     if (-not (Test-Path $script:Nuget)) {
-        $Client = New-Object System.Net.WebClient;
+        Write-Diagnostic "Downloading latest version of NuGet."
         $Client.DownloadFile('http://nuget.org/nuget.exe', $script:Nuget);
     }
+
+    Set-Alias nuget $script:Nuget -Scope Global
+
+    if (-not (Test-Path $script:NPM)) {
+        Write-Diagnostic "Downloading NodeJS and NPM."
+        $Client.DownloadFile($script:NodeUrl, $script:NodeArchive);
+        Expand-Archive -Path $script:NodeArchive -DestinationPath $EasyHookBin
+    }
+
+    Write-Diagnostic "'npm install'"
+    #$_ = Invoke-BatchFile -Path $script:NPM -Parameters "install $script:EasyHookRoot"
 }
 
 function RestoreNugetPackages() {
-    . $script:Nuget restore -OutputDirectory $EasyHookPackages $EasyHookSln
-    . $script:Nuget install -OutputDirectory $EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
-    . $script:Nuget install -OutputDirectory $EasyHookPackages Microsoft.Build -Version 16.4.0 | Out-Null
-    . $script:Nuget install -OutputDirectory $EasyHookPackages vswhere -Version 2.8.4 | Out-Null
-    . $script:Nuget install -OutputDirectory $EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
-    . $script:Nuget install -OutputDirectory $EasyHookPackages Appveyor.TestLogger -Version 2.0.0 | Out-Null
+    Write-Diagnostic "Restoring and installing NuGet packages."
+    nuget restore -OutputDirectory $script:EasyHookPackages $script:EasyHookSln | Out-Null
+    nuget install -OutputDirectory $script:EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
+    nuget install -OutputDirectory $script:EasyHookPackages Microsoft.Build -Version 16.4.0 | Out-Null
+    nuget install -OutputDirectory $script:EasyHookPackages vswhere -Version 2.8.4 | Out-Null
+    nuget install -OutputDirectory $script:EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
+    nuget install -OutputDirectory $script:EasyHookPackages Appveyor.TestLogger -Version 2.0.0 | Out-Null
 }
 
 # https://github.com/jbake/Powershell_scripts/blob/master/Invoke-BatchFile.ps1
@@ -401,8 +422,6 @@ Function Initialize-Environment {
     else {
         Write-Diagnostic "Local (non-CI) build."
     }
-
-    Write-Diagnostic "Downloading latest version of NuGet and installing packages."
 
     # Download local version of NuGet
     DownloadNuget

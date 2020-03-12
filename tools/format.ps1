@@ -6,6 +6,9 @@ $script:ClangFormat = [IO.Path]::Combine(
 
 $script:SetupScript = Join-Path $script:ToolsDir 'setup.ps1'
 
+$script:EditorConfigLint = [IO.Path]::Combine(
+    $EasyHookRootDir.FullName, 'node_modules', '.bin', 'eclint.cmd')
+
 . $script:SetupScript -Target $Target
 
 function Run-Clang-Format-Directory() {
@@ -61,8 +64,9 @@ function Run-Clang-Format-Directory() {
     }
 }
 
-function Run-Clang-Format() {
-    Run-Clang-Format-Directory $script:EasyHookRootDir.FullName
-}
+Write-Diagnostic "eclint: Started."
+$_ = Invoke-BatchFile -Path $script:EditorConfigLint -Parameters "fix **/*.cs **/*.cpp **/*.h **/*.c **/*.ps1 **/*.yml **/*.bat"
+Write-Diagnostic "eclint: Done."
 
-Run-Clang-Format
+Run-Clang-Format-Directory $script:EasyHookRootDir.FullName
+Write-Diagnostic "clang-format: Done."
