@@ -18,9 +18,11 @@ namespace MultipleHooks
 
             if (int.TryParse(input, out processId))
             {
-                //hook now
-                var filePath1 = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + "SimpleHook1.dll";
-                var filePath2 = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + "SimpleHook2.dll";
+                // hook now
+                var filePath1 =
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + "SimpleHook1.dll";
+                var filePath2 =
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\" + "SimpleHook2.dll";
 
                 Console.WriteLine("Start hook SimpleHook1.dll");
                 RemoteHooking.Inject(processId, InjectionOptions.DoNotRequireStrongName, filePath1, filePath1);
@@ -30,7 +32,8 @@ namespace MultipleHooks
                 RemoteHooking.Inject(processId, InjectionOptions.DoNotRequireStrongName, filePath2, filePath2);
                 Console.WriteLine("Hook SimpleHook2.dll success");
             }
-            else Console.WriteLine("Invalid process id");
+            else
+                Console.WriteLine("Invalid process id");
 
             Console.WriteLine("End");
         }

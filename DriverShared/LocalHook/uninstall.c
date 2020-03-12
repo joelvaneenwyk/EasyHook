@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,48 +25,46 @@
 
 #include "stdafx.h"
 
-
 EASYHOOK_NT_EXPORT LhUninstallHook(TRACED_HOOK_HANDLE InHandle)
 {
-/*
-Description:
+    /*
+    Description:
 
-    Removes the given hook. To also release associated resources,
-    you will have to call LhWaitForPendingRemovals(). In any case
-    your hook handler will never be executed again, after calling this
-    method.
+        Removes the given hook. To also release associated resources,
+        you will have to call LhWaitForPendingRemovals(). In any case
+        your hook handler will never be executed again, after calling this
+        method.
 
-Parameters:
+    Parameters:
 
-    - InHandle
+        - InHandle
 
-        A traced hook handle. If the hook is already removed, this method
-        will still return STATUS_SUCCESS.
-*/
-    LOCAL_HOOK_INFO*        Hook = NULL;
-    LOCAL_HOOK_INFO*        List;
-    LOCAL_HOOK_INFO*        Prev;
-    NTSTATUS                NtStatus;
-    BOOLEAN                 IsAllocated = FALSE;
+            A traced hook handle. If the hook is already removed, this method
+            will still return STATUS_SUCCESS.
+    */
+    LOCAL_HOOK_INFO* Hook = NULL;
+    LOCAL_HOOK_INFO* List;
+    LOCAL_HOOK_INFO* Prev;
+    NTSTATUS NtStatus;
+    BOOLEAN IsAllocated = FALSE;
 
-     if(!IsValidPointer(InHandle, sizeof(HOOK_TRACE_INFO)))
-        return FALSE;
+    if (!IsValidPointer(InHandle, sizeof(HOOK_TRACE_INFO))) return FALSE;
 
     RtlAcquireLock(&GlobalHookLock);
     {
-        if((InHandle->Link != NULL) && LhIsValidHandle(InHandle, &Hook))
+        if ((InHandle->Link != NULL) && LhIsValidHandle(InHandle, &Hook))
         {
             InHandle->Link = NULL;
 
-            if(Hook->HookProc != NULL)
+            if (Hook->HookProc != NULL)
             {
-                Hook->HookProc = NULL;  
+                Hook->HookProc = NULL;
 
                 IsAllocated = TRUE;
             }
         }
 
-        if(!IsAllocated)
+        if (!IsAllocated)
         {
             RtlReleaseLock(&GlobalHookLock);
 
@@ -77,9 +75,9 @@ Parameters:
         List = GlobalHookListHead.Next;
         Prev = &GlobalHookListHead;
 
-        while(List != NULL)
+        while (List != NULL)
         {
-            if(List == Hook)
+            if (List == Hook)
             {
                 Prev->Next = Hook->Next;
 
@@ -97,40 +95,35 @@ Parameters:
 
     RETURN(STATUS_SUCCESS);
 
-//THROW_OUTRO:
+// THROW_OUTRO:
 FINALLY_OUTRO:
     return NtStatus;
 }
 
-
-
-
-
-
 EASYHOOK_NT_EXPORT LhUninstallAllHooks()
 {
-/*
-Description:
+    /*
+    Description:
 
-    Will remove ALL hooks. To also release associated resources,
-    you will have to call LhWaitForPendingRemovals().
-*/
-    LOCAL_HOOK_INFO*        Hook;
-    LOCAL_HOOK_INFO*        List;
-    NTSTATUS                NtStatus;
+        Will remove ALL hooks. To also release associated resources,
+        you will have to call LhWaitForPendingRemovals().
+    */
+    LOCAL_HOOK_INFO* Hook;
+    LOCAL_HOOK_INFO* List;
+    NTSTATUS NtStatus;
 
     RtlAcquireLock(&GlobalHookLock);
     {
         // remove from global list
         List = GlobalHookListHead.Next;
 
-        while(List != NULL)
+        while (List != NULL)
         {
             Hook = List;
             List = List->Next;
 
             // remove tracking
-            if(LhIsValidHandle(Hook->Tracking, NULL))
+            if (LhIsValidHandle(Hook->Tracking, NULL))
             {
                 Hook->Tracking->Link = NULL;
             }
@@ -142,7 +135,7 @@ Description:
             GlobalRemovalListHead.Next = Hook;
         }
 
-		GlobalHookListHead.Next = NULL;
+        GlobalHookListHead.Next = NULL;
     }
     RtlReleaseLock(&GlobalHookLock);
 
@@ -152,40 +145,35 @@ FINALLY_OUTRO:
     return NtStatus;
 }
 
-
-
-
-
-
 EASYHOOK_NT_EXPORT LhWaitForPendingRemovals()
 {
-/*
-Descriptions:
+    /*
+    Descriptions:
 
-    For stability reasons, all resources associated with a hook
-    have to be released if no thread is currently executing the
-    handler. Separating this wait loop from the uninstallation
-    method is a great performance gain, because you can release
-    all hooks first, and then wait for all removals simultaneously.
+        For stability reasons, all resources associated with a hook
+        have to be released if no thread is currently executing the
+        handler. Separating this wait loop from the uninstallation
+        method is a great performance gain, because you can release
+        all hooks first, and then wait for all removals simultaneously.
 
-*/
-    PLOCAL_HOOK_INFO        Hook;
-    NTSTATUS                NtStatus = STATUS_SUCCESS;
-    INT32                  Timeout = 1000;
+    */
+    PLOCAL_HOOK_INFO Hook;
+    NTSTATUS NtStatus = STATUS_SUCCESS;
+    INT32 Timeout = 1000;
 #ifdef X64_DRIVER
-    KIRQL                  CurrentIRQL = PASSIVE_LEVEL;
+    KIRQL CurrentIRQL = PASSIVE_LEVEL;
 #endif
 
-#pragma warning(disable: 4127)
-    while(TRUE)
-#pragma warning(default: 4127)
+#pragma warning(disable : 4127)
+    while (TRUE)
+#pragma warning(default : 4127)
     {
         // pop from removal list
         RtlAcquireLock(&GlobalHookLock);
         {
             Hook = GlobalRemovalListHead.Next;
-            
-            if(Hook == NULL)
+
+            if (Hook == NULL)
             {
                 RtlReleaseLock(&GlobalHookLock);
 
@@ -197,7 +185,7 @@ Descriptions:
         RtlReleaseLock(&GlobalHookLock);
 
         // restore entry point...
-        if(Hook->HookCopy == *((ULONGLONG*)Hook->TargetProc))
+        if (Hook->HookCopy == *((ULONGLONG*)Hook->TargetProc))
         {
 #ifdef X64_DRIVER
             CurrentIRQL = KeGetCurrentIrql();
@@ -210,9 +198,9 @@ Descriptions:
             RtlWPOn(CurrentIRQL);
 #endif
 
-#pragma warning(disable: 4127)
+#pragma warning(disable : 4127)
             while (TRUE)
-#pragma warning(default: 4127)
+#pragma warning(default : 4127)
             {
                 if (*Hook->IsExecutedPtr <= 0)
                 {
@@ -248,20 +236,17 @@ Descriptions:
     return NtStatus;
 }
 
-
-
-
 void LhCriticalFinalize()
 {
-/*
-Description:
+    /*
+    Description:
 
-    Will be called in the DLL_PROCESS_DETACH event and just uninstalls
-    all hooks. If it is possible also their memory is released. 
-*/
+        Will be called in the DLL_PROCESS_DETACH event and just uninstalls
+        all hooks. If it is possible also their memory is released.
+    */
     LhUninstallAllHooks();
 
     LhWaitForPendingRemovals();
 
-	RtlDeleteLock(&GlobalHookLock);
+    RtlDeleteLock(&GlobalHookLock);
 }

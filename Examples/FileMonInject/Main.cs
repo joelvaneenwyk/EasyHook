@@ -13,9 +13,7 @@ namespace FileMonInject
         LocalHook CreateFileHook;
         Stack<String> Queue = new Stack<String>();
 
-        public Main(
-            RemoteHooking.IContext InContext,
-            String InChannelName)
+        public Main(RemoteHooking.IContext InContext, String InChannelName)
         {
             // connect to host...
             Interface = RemoteHooking.IpcConnectClient<FileMon.FileMonInterface>(InChannelName);
@@ -23,20 +21,16 @@ namespace FileMonInject
             Interface.Ping();
         }
 
-        public void Run(
-            RemoteHooking.IContext InContext,
-            String InChannelName)
+        public void Run(RemoteHooking.IContext InContext, String InChannelName)
         {
             // install hook...
             try
             {
 
-                CreateFileHook = LocalHook.Create(
-                    LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
-                    new DCreateFile(CreateFile_Hooked),
-                    this);
+                CreateFileHook = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
+                                                  new DCreateFile(CreateFile_Hooked), this);
 
-                CreateFileHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                CreateFileHook.ThreadACL.SetExclusiveACL(new Int32[]{0});
             }
             catch (Exception ExtInfo)
             {
@@ -61,7 +55,7 @@ namespace FileMonInject
                     {
                         String[] Package = null;
 
-                        lock (Queue)
+                        lock(Queue)
                         {
                             Package = Queue.ToArray();
 
@@ -80,51 +74,32 @@ namespace FileMonInject
             }
         }
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall,
-            CharSet = CharSet.Unicode,
-            SetLastError = true)]
-        delegate IntPtr DCreateFile(
-            String InFileName,
-            UInt32 InDesiredAccess,
-            UInt32 InShareMode,
-            IntPtr InSecurityAttributes,
-            UInt32 InCreationDisposition,
-            UInt32 InFlagsAndAttributes,
-            IntPtr InTemplateFile);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode,
+                                  SetLastError = true)] delegate IntPtr
+        DCreateFile(String InFileName, UInt32 InDesiredAccess, UInt32 InShareMode, IntPtr InSecurityAttributes,
+                    UInt32 InCreationDisposition, UInt32 InFlagsAndAttributes, IntPtr InTemplateFile);
 
         // just use a P-Invoke implementation to get native API access from C# (this step is not necessary for C++.NET)
-        [DllImport("kernel32.dll",
-            CharSet = CharSet.Unicode,
-            SetLastError = true,
-            CallingConvention = CallingConvention.StdCall)]
-        static extern IntPtr CreateFile(
-            String InFileName,
-            UInt32 InDesiredAccess,
-            UInt32 InShareMode,
-            IntPtr InSecurityAttributes,
-            UInt32 InCreationDisposition,
-            UInt32 InFlagsAndAttributes,
-            IntPtr InTemplateFile);
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true,
+                   CallingConvention = CallingConvention.StdCall)]
+        static extern IntPtr CreateFile(String InFileName, UInt32 InDesiredAccess, UInt32 InShareMode,
+                                        IntPtr InSecurityAttributes, UInt32 InCreationDisposition,
+                                        UInt32 InFlagsAndAttributes, IntPtr InTemplateFile);
 
         // this is where we are intercepting all file accesses!
-        static IntPtr CreateFile_Hooked(
-            String InFileName,
-            UInt32 InDesiredAccess,
-            UInt32 InShareMode,
-            IntPtr InSecurityAttributes,
-            UInt32 InCreationDisposition,
-            UInt32 InFlagsAndAttributes,
-            IntPtr InTemplateFile)
+        static IntPtr CreateFile_Hooked(String InFileName, UInt32 InDesiredAccess, UInt32 InShareMode,
+                                        IntPtr InSecurityAttributes, UInt32 InCreationDisposition,
+                                        UInt32 InFlagsAndAttributes, IntPtr InTemplateFile)
         {
-            
+
             try
             {
                 Main This = (Main)HookRuntimeInfo.Callback;
 
-                lock (This.Queue)
+                lock(This.Queue)
                 {
-                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" + 
-                        RemoteHooking.GetCurrentThreadId() +  "]: \"" + InFileName + "\"");
+                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" +
+                                    RemoteHooking.GetCurrentThreadId() + "]: \"" + InFileName + "\"");
                 }
             }
             catch
@@ -132,14 +107,8 @@ namespace FileMonInject
             }
 
             // call original API...
-            return CreateFile(
-                InFileName,
-                InDesiredAccess,
-                InShareMode,
-                InSecurityAttributes,
-                InCreationDisposition,
-                InFlagsAndAttributes,
-                InTemplateFile);
+            return CreateFile(InFileName, InDesiredAccess, InShareMode, InSecurityAttributes, InCreationDisposition,
+                              InFlagsAndAttributes, InTemplateFile);
         }
     }
 }

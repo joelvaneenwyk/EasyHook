@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -25,66 +25,67 @@ using EasyHook.Domain;
 
 namespace EasyHook.IPC
 {
-  /// <summary>
-  /// Represents the endpoint in an inter domain connection.
-  /// </summary>
-  internal sealed class DomainConnectionEndPoint : DuplexChannelEndPointObject
-  {
-
-    #region Variables
-
     /// <summary>
-    /// The identifier of the current application domain.
+    /// Represents the endpoint in an inter domain connection.
     /// </summary>
-    private static readonly DomainIdentifier _id;
-
-    #endregion
-
-    #region Properties
-
-    /// <summary>
-    /// Gets the identifier for the endpoint.
-    /// </summary>
-    public DomainIdentifier Id
+    internal sealed class DomainConnectionEndPoint : DuplexChannelEndPointObject
     {
-      get { return _id; }
+
+#region Variables
+
+        /// <summary>
+        /// The identifier of the current application domain.
+        /// </summary>
+        private static readonly DomainIdentifier _id;
+
+#endregion
+
+#region Properties
+
+        /// <summary>
+        /// Gets the identifier for the endpoint.
+        /// </summary>
+        public DomainIdentifier Id
+        {
+            get
+            {
+                return _id;
+            }
+        }
+
+#endregion
+
+#region Constructors
+
+        static DomainConnectionEndPoint()
+        {
+            _id = DomainIdentifier.GetLocalDomainIdentifier();
+        }
+
+#endregion
+
+#region Public Methods
+
+        /// <summary>
+        /// Creates or opens a connection to an instance of <typeparamref name="TEndPoint"/>.
+        /// </summary>
+        /// <typeparam name="TEndPoint">The type of the endpoint to create or open.</typeparam>
+        /// <returns>The url to the endpoint of the connection.</returns>
+        public string CreateChannel<TEndPoint>() where TEndPoint : EndPointObject
+        {
+            return DummyCore.ConnectionManager.CreateChannel<TEndPoint>();
+        }
+
+#endregion
+
+#region Public Overrides
+
+        public override object InitializeLifetimeService()
+        {
+            // Returning null ensures the endpoint stays available during the complete domain's lifetime.
+            return null;
+        }
+
+#endregion
     }
-
-    #endregion
-
-    #region Constructors
-
-    static DomainConnectionEndPoint()
-    {
-      _id = DomainIdentifier.GetLocalDomainIdentifier();
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    /// <summary>
-    /// Creates or opens a connection to an instance of <typeparamref name="TEndPoint"/>.
-    /// </summary>
-    /// <typeparam name="TEndPoint">The type of the endpoint to create or open.</typeparam>
-    /// <returns>The url to the endpoint of the connection.</returns>
-    public string CreateChannel<TEndPoint>()
-      where TEndPoint : EndPointObject
-    {
-      return DummyCore.ConnectionManager.CreateChannel<TEndPoint>();
-    }
-
-    #endregion
-
-    #region Public Overrides
-
-    public override object InitializeLifetimeService()
-    {
-      // Returning null ensures the endpoint stays available during the complete domain's lifetime.
-      return null;
-    }
-
-    #endregion
-
-  }
 }

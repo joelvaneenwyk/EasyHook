@@ -4,100 +4,99 @@
 #include <conio.h>
 
 #ifndef _M_X64
-    #pragma comment(lib, "EasyHook32.lib")
+#    pragma comment(lib, "EasyHook32.lib")
 #else
-    #pragma comment(lib, "EasyHook64.lib")
+#    pragma comment(lib, "EasyHook64.lib")
 #endif
 
-#pragma warning(disable: 4100 4127)
+#pragma warning(disable : 4100 4127)
 
-#define FORCE(expr)     {if(!SUCCEEDED(NtStatus = (expr))) goto ERROR_ABORT;}
+#define FORCE(expr) \
+    { \
+        if (!SUCCEEDED(NtStatus = (expr))) goto ERROR_ABORT; \
+    }
 
 BOOL WINAPI MessageBeepHook(__in UINT uType)
 {
     /*
         Test barrier methods...
     */
-	PVOID					CallStack[64];
-	MODULE_INFORMATION		Mod;
-	ULONG					MethodCount;
+    PVOID CallStack[64];
+    MODULE_INFORMATION Mod;
+    ULONG MethodCount;
 
-	LhUpdateModuleInformation();
+    LhUpdateModuleInformation();
 
-	LhEnumModules((HMODULE*)CallStack, 64, &MethodCount);
+    LhEnumModules((HMODULE*)CallStack, 64, &MethodCount);
 
-	for(ULONG i = 0; i < MethodCount; i++)
-	{
-		LhBarrierPointerToModule(CallStack[i], &Mod);
-	}
+    for (ULONG i = 0; i < MethodCount; i++)
+    {
+        LhBarrierPointerToModule(CallStack[i], &Mod);
+    }
 
-	LhBarrierCallStackTrace(CallStack, 64, &MethodCount);
+    LhBarrierCallStackTrace(CallStack, 64, &MethodCount);
 
-	LhBarrierGetCallingModule(&Mod);
+    LhBarrierGetCallingModule(&Mod);
 
     return TRUE;
 }
 
 DWORD __stdcall HijackEntry(void* InParams)
 {
-	if(InParams != (PVOID)0x12345678)
-		throw;
+    if (InParams != (PVOID)0x12345678) throw;
 
-	printf("\nHello from stealth thread! Thread ID: %d\n", GetCurrentThreadId());
+    printf("\nHello from stealth thread! Thread ID: %d\n", GetCurrentThreadId());
 
-	return 0;
+    return 0;
 }
 
 DWORD __stdcall TestThread(void* InParams)
 {
-	HANDLE					hRemoteThread;
-	RhCreateStealthRemoteThread(GetCurrentProcessId(), HijackEntry, (PVOID)0x12345678, &hRemoteThread);
+    HANDLE hRemoteThread;
+    RhCreateStealthRemoteThread(GetCurrentProcessId(), HijackEntry, (PVOID)0x12345678, &hRemoteThread);
 
-	while (TRUE) Sleep(100);
+    while (TRUE)
+        Sleep(100);
 
-	return 0;
+    return 0;
 }
 
 extern "C" int main(int argc, wchar_t* argv[])
 {
-    HMODULE                 hUser32 = LoadLibraryA("user32.dll");
-    TRACED_HOOK_HANDLE      hHook = new HOOK_TRACE_INFO();
-    NTSTATUS                NtStatus;
-    ULONG                   ACLEntries[1] = {0};
-    UNICODE_STRING*         NameBuffer = NULL;
-	HANDLE					hRemoteThread;
+    HMODULE hUser32 = LoadLibraryA("user32.dll");
+    TRACED_HOOK_HANDLE hHook = new HOOK_TRACE_INFO();
+    NTSTATUS NtStatus;
+    ULONG ACLEntries[1] = {0};
+    UNICODE_STRING* NameBuffer = NULL;
+    HANDLE hRemoteThread;
 
-	// test driver...
-	/*printf("Installing support driver...\n");
+    // test driver...
+    /*printf("Installing support driver...\n");
 
-	FORCE(RhInstallSupportDriver());
+    FORCE(RhInstallSupportDriver());
 
-	printf("Installing test driver...\n");
+    printf("Installing test driver...\n");
 
-	if(RhIsX64System())
-		FORCE(RhInstallDriver(L"TestDriver64.sys", L"TestDriver64.sys"))
-	else
-		FORCE(RhInstallDriver(L"TestDriver32.sys", L"TestDriver32.sys"));
+    if(RhIsX64System())
+            FORCE(RhInstallDriver(L"TestDriver64.sys", L"TestDriver64.sys"))
+    else
+            FORCE(RhInstallDriver(L"TestDriver32.sys", L"TestDriver32.sys"));
 */
-	
-	printf("Main thread Id: %d\n", GetCurrentThreadId());
 
-	// test stealth thread creation...
-	printf("Testing stealth thread creation...\n");
+    printf("Main thread Id: %d\n", GetCurrentThreadId());
 
-	// The thread will attempt to install a hook using RhCreateStealthRemoteThread
-	hRemoteThread = CreateThread(NULL, 0, TestThread, NULL, 0, NULL);
+    // test stealth thread creation...
+    printf("Testing stealth thread creation...\n");
 
-	Sleep(500);
+    // The thread will attempt to install a hook using RhCreateStealthRemoteThread
+    hRemoteThread = CreateThread(NULL, 0, TestThread, NULL, 0, NULL);
+
+    Sleep(500);
 
     /*
         The following shows how to install and remove local hooks...
     */
-    FORCE(LhInstallHook(
-            GetProcAddress(hUser32, "MessageBeep"),
-            MessageBeepHook,
-            (PVOID)0x12345678,
-            hHook));
+    FORCE(LhInstallHook(GetProcAddress(hUser32, "MessageBeep"), MessageBeepHook, (PVOID)0x12345678, hHook));
 
     // won't invoke the hook handler because hooks are inactive after installation
     MessageBeep(123);
@@ -125,14 +124,13 @@ extern "C" int main(int argc, wchar_t* argv[])
     /*
         In many situations you will need the handler utilities.
     */
-    HANDLE          Handle = CreateEventA(NULL, TRUE, FALSE, "MyEvent");
-    ULONG           RequiredSize;
-    ULONG           RealThreadId;
-    ULONG           ThreadId;
+    HANDLE Handle = CreateEventA(NULL, TRUE, FALSE, "MyEvent");
+    ULONG RequiredSize;
+    ULONG RealThreadId;
+    ULONG ThreadId;
 
     // handle to name
-    if(!SUCCEEDED(NtStatus = DbgHandleToObjectName(Handle, NULL, 0, &RequiredSize)))
-        goto ERROR_ABORT;
+    if (!SUCCEEDED(NtStatus = DbgHandleToObjectName(Handle, NULL, 0, &RequiredSize))) goto ERROR_ABORT;
 
     NameBuffer = (UNICODE_STRING*)malloc(RequiredSize);
 
@@ -145,25 +143,21 @@ extern "C" int main(int argc, wchar_t* argv[])
 
     FORCE(DbgGetThreadIdByHandle(Handle, &ThreadId));
 
-    if(ThreadId != RealThreadId)
-        return EXIT_FAILURE;
+    if (ThreadId != RealThreadId) return EXIT_FAILURE;
 
-	_getch();
+    _getch();
 
-	return 0;
+    return 0;
 
 ERROR_ABORT:
 
-    if(hHook != NULL)
-        delete hHook;
+    if (hHook != NULL) delete hHook;
 
-    if(NameBuffer != NULL)
-        free(NameBuffer );
+    if (NameBuffer != NULL) free(NameBuffer);
 
-	printf("\n[Error(0x%p)]: \"%S\" (code: %d {0x%p})\n", (PVOID)NtStatus, RtlGetLastErrorString(), RtlGetLastError(), (PVOID)RtlGetLastError());
+    printf("\n[Error(0x%p)]: \"%S\" (code: %d {0x%p})\n", (PVOID)NtStatus, RtlGetLastErrorString(), RtlGetLastError(), (PVOID)RtlGetLastError());
 
     _getch();
 
     return NtStatus;
 }
-

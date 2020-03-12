@@ -18,43 +18,41 @@ namespace Examples
         static IntPtr LHTestMethodA;
         static IntPtr LHTestMethodB;
 
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate bool DMethodA(Int32 InParam1);
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate bool DMethodA(Int32 InParam1);
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-        delegate Int64 DMethodB(Int32 InParam1, Int32 InParam2, String InParam3);
+        [UnmanagedFunctionPointer(CallingConvention.StdCall)] delegate Int64 DMethodB(Int32 InParam1, Int32 InParam2,
+                                                                                      String InParam3);
 
         static void CheckRuntimeInfo()
-        {/*
-            ProcessModule Mod = HookRuntimeInfo.CallingUnmanagedModule;
-            System.Reflection.Assembly asm = HookRuntimeInfo.CallingManagedModule;
-            Stopwatch w = new Stopwatch();
-            System.Reflection.Module[] StackTraceA = HookRuntimeInfo.ManagedStackTrace;
-            ProcessModule[] StackTraceB = HookRuntimeInfo.UnmanagedStackTrace;
-            Object Callback = HookRuntimeInfo.Callback;
-            IntPtr ReturnAddr = HookRuntimeInfo.ReturnAddress;
-            IntPtr AddrOfReturnAddr = HookRuntimeInfo.AddressOfReturnAddress;
-            Boolean IsHandler = HookRuntimeInfo.IsHandlerContext;
+        { /*
+             ProcessModule Mod = HookRuntimeInfo.CallingUnmanagedModule;
+             System.Reflection.Assembly asm = HookRuntimeInfo.CallingManagedModule;
+             Stopwatch w = new Stopwatch();
+             System.Reflection.Module[] StackTraceA = HookRuntimeInfo.ManagedStackTrace;
+             ProcessModule[] StackTraceB = HookRuntimeInfo.UnmanagedStackTrace;
+             Object Callback = HookRuntimeInfo.Callback;
+             IntPtr ReturnAddr = HookRuntimeInfo.ReturnAddress;
+             IntPtr AddrOfReturnAddr = HookRuntimeInfo.AddressOfReturnAddress;
+             Boolean IsHandler = HookRuntimeInfo.IsHandlerContext;
 
-            w.Start();
+             w.Start();
 
-            Mod = HookRuntimeInfo.CallingUnmanagedModule;
+             Mod = HookRuntimeInfo.CallingUnmanagedModule;
 
-            w.Stop();
-            Int64 t1 = w.ElapsedTicks;
+             w.Stop();
+             Int64 t1 = w.ElapsedTicks;
 
-            w.Reset();
-            
-            w.Start();
+             w.Reset();
 
-            Callback = HookRuntimeInfo.Callback;
-            ReturnAddr = HookRuntimeInfo.ReturnAddress;
-            AddrOfReturnAddr = HookRuntimeInfo.AddressOfReturnAddress;
-            IsHandler = HookRuntimeInfo.IsHandlerContext;
+             w.Start();
 
-            w.Stop();
-            Int64 t2 = w.ElapsedTicks;*/
+             Callback = HookRuntimeInfo.Callback;
+             ReturnAddr = HookRuntimeInfo.ReturnAddress;
+             AddrOfReturnAddr = HookRuntimeInfo.AddressOfReturnAddress;
+             IsHandler = HookRuntimeInfo.IsHandlerContext;
+
+             w.Stop();
+             Int64 t2 = w.ElapsedTicks;*/
         }
 
         static bool MethodAHooked(Int32 InParam1)
@@ -86,7 +84,6 @@ namespace Examples
             return true;
         }
 
-
         static Int64 MethodB(Int32 InParam1, Int32 InParam2, String InParam3)
         {
             LHTestMethodADelegate.Invoke(0);
@@ -105,7 +102,6 @@ namespace Examples
 
             Interlocked.Increment(ref LHTestThreadCounter);
 
-
             if (LHTestThreadCounter == LHTestThreadCount)
                 LHTestCompleted.Set();
         }
@@ -118,7 +114,6 @@ namespace Examples
         static ManualResetEvent LHTestCompleted = new ManualResetEvent(false);
 
         const Int32 LHTestThreadCount = 30;
-
 
         public static void Run()
         {
@@ -134,19 +129,11 @@ namespace Examples
             LocalHook.EnableRIPRelocation();
 
             // install hooks
-            LocalHook[] MyHooks = new LocalHook[]
-            {
-                LocalHook.Create(
-                   LHTestMethodA,
-                   LHTestHookA,
-                   1),
+            LocalHook[] MyHooks = new LocalHook[]{
+                LocalHook.Create(LHTestMethodA, LHTestHookA, 1),
 
-                LocalHook.Create(
-                    LHTestMethodB,
-                    LHTestHookB,
-                    2),
+                LocalHook.Create(LHTestMethodB, LHTestHookB, 2),
             };
-
 
             LHTestMethodADelegate = (DMethodA)Marshal.GetDelegateForFunctionPointer(LHTestMethodA, typeof(DMethodA));
             LHTestMethodBDelegate = (DMethodB)Marshal.GetDelegateForFunctionPointer(LHTestMethodB, typeof(DMethodB));
@@ -155,12 +142,12 @@ namespace Examples
             MyHooks[0].ThreadACL.SetInclusiveACL(new Int32[1]);
             MyHooks[1].ThreadACL.SetInclusiveACL(new Int32[1]);
 
-           // LHTestMethodBDelegate.Invoke(0, 0, "");
+            // LHTestMethodBDelegate.Invoke(0, 0, "");
 
             MyHooks[0].ThreadACL.SetExclusiveACL(new Int32[1]);
             MyHooks[1].ThreadACL.SetExclusiveACL(new Int32[1]);
 
-           // LHTestMethodBDelegate.Invoke(0, 0, "");
+            // LHTestMethodBDelegate.Invoke(0, 0, "");
 
             /*
              * This is just to make sure that all related objects are referenced.
@@ -179,7 +166,6 @@ namespace Examples
             for (int i = 0; i < LHTestThreadCount; i++)
             {
                 new Thread(new ThreadStart(LHTestThread)).Start();
-
             }
 
             LHTestCompleted.WaitOne();
@@ -188,7 +174,7 @@ namespace Examples
 
             // verify results
             if ((LHTestCounterMA != LHTestCounterMAH) || (LHTestCounterMAH != LHTestCounterMB) ||
-                    (LHTestCounterMB != LHTestCounterMBH) || (LHTestCounterMB != LHTestThreadCount * 10000))
+                (LHTestCounterMB != LHTestCounterMBH) || (LHTestCounterMB != LHTestThreadCount * 10000))
                 throw new Exception("LocalHook test failed.");
 
             Console.WriteLine("Localhook test passed in {0} ms.", t1);

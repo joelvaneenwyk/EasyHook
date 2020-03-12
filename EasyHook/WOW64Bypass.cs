@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,7 +40,7 @@ namespace EasyHook
 
         private static void Install()
         {
-            lock (ThreadSafe)
+            lock(ThreadSafe)
             {
                 // Ensure we create a new one if the existing
                 // channel cannot be pinged
@@ -57,17 +57,16 @@ namespace EasyHook
                 if (m_Interface == null)
                 {
                     String ChannelName = RemoteHooking.GenerateName();
-                    String SvcExecutablePath = (Config.DependencyPath.Length > 0 ? Config.DependencyPath : Config.GetProcessPath()) + Config.GetWOW64BypassExecutableName();
+                    String SvcExecutablePath =
+                        (Config.DependencyPath.Length > 0 ? Config.DependencyPath : Config.GetProcessPath()) +
+                        Config.GetWOW64BypassExecutableName();
 
                     Process Proc = new Process();
-                    ProcessStartInfo StartInfo = new ProcessStartInfo(
-                            SvcExecutablePath, "\"" + ChannelName + "\"");
+                    ProcessStartInfo StartInfo = new ProcessStartInfo(SvcExecutablePath, "\"" + ChannelName + "\"");
 
                     // create sync objects
-                    EventWaitHandle Listening = new EventWaitHandle(
-                        false,
-                        EventResetMode.ManualReset,
-                        "Global\\Event_" + ChannelName);
+                    EventWaitHandle Listening =
+                        new EventWaitHandle(false, EventResetMode.ManualReset, "Global\\Event_" + ChannelName);
 
                     m_TermMutex = new Mutex(true, "Global\\Mutex_" + ChannelName);
 
@@ -82,7 +81,8 @@ namespace EasyHook
                     if (!Listening.WaitOne(5000, true))
                         throw new ApplicationException("Unable to wait for service application due to timeout.");
 
-                    HelperServiceInterface Interface = RemoteHooking.IpcConnectClient<HelperServiceInterface>(ChannelName);
+                    HelperServiceInterface Interface =
+                        RemoteHooking.IpcConnectClient<HelperServiceInterface>(ChannelName);
 
                     Interface.Ping();
 
@@ -91,29 +91,14 @@ namespace EasyHook
             }
         }
 
-        public static void Inject(
-            Int32 InHostPID,
-            Int32 InTargetPID,
-            Int32 InWakeUpTID,
-            Int32 InNativeOptions,
-            String InLibraryPath_x86,
-            String InLibraryPath_x64,
-            Boolean InRequireStrongName,
-            params Object[] InPassThruArgs)
+        public static void Inject(Int32 InHostPID, Int32 InTargetPID, Int32 InWakeUpTID, Int32 InNativeOptions,
+                                  String InLibraryPath_x86, String InLibraryPath_x64, Boolean InRequireStrongName,
+                                  params Object[] InPassThruArgs)
         {
             Install();
 
-            m_Interface.InjectEx(
-                InHostPID,
-                InTargetPID, 
-                InWakeUpTID,
-                InNativeOptions,
-                InLibraryPath_x86, 
-                InLibraryPath_x64,
-                false,
-                true,
-                InRequireStrongName,
-                InPassThruArgs);
+            m_Interface.InjectEx(InHostPID, InTargetPID, InWakeUpTID, InNativeOptions, InLibraryPath_x86,
+                                 InLibraryPath_x64, false, true, InRequireStrongName, InPassThruArgs);
         }
     }
 }

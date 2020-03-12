@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -50,24 +50,20 @@ namespace EasyHookSvc
         public InjectionService(String InServiceName)
         {
             InitializeComponent();
-            
+
             ServiceName = InServiceName;
         }
 
         private void DebugPrint(String InMessage)
         {
 #if DEBUG
-            this.EventLog.WriteEntry(
-                "[EasyHookSvc]: " + InMessage,
-                EventLogEntryType.Information);
+            this.EventLog.WriteEntry("[EasyHookSvc]: " + InMessage, EventLogEntryType.Information);
 #endif
         }
 
         private void LogError(String InMessage)
         {
-            this.EventLog.WriteEntry(
-                "[EasyHookSvc]: " + InMessage,
-                EventLogEntryType.Error);
+            this.EventLog.WriteEntry("[EasyHookSvc]: " + InMessage, EventLogEntryType.Error);
         }
 
         protected override void OnStart(string[] args)
@@ -89,9 +85,7 @@ namespace EasyHookSvc
                     SidType = WellKnownSidType.WorldSid;
 
                 IpcServerChannel Channel = RemoteHooking.IpcCreateServer<HelperServiceInterface>(
-                                                ref ChannelName,
-                                                WellKnownObjectMode.SingleCall,
-                                                SidType);
+                    ref ChannelName, WellKnownObjectMode.SingleCall, SidType);
 
                 // signal that service is listening
                 EventWaitHandle Listening = EventWaitHandle.OpenExisting("Global\\Event_" + ChannelName);
@@ -113,7 +107,6 @@ namespace EasyHookSvc
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
                 GC.Collect();
-
             }
             catch (Exception e)
             {

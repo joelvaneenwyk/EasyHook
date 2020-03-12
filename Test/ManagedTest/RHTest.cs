@@ -11,14 +11,13 @@ namespace Examples
     {
         public TestInjection(RemoteHooking.IContext InContext, Int32 InValue)
         {
-
         }
 
         public void Run(RemoteHooking.IContext InContext, Int32 InValue)
         {
             System.Windows.Forms.MessageBox.Show("Hello from injected library!");
 
-            //RemoteHooking.WakeUpProcess();
+            // RemoteHooking.WakeUpProcess();
 
             Console.WriteLine("Hello world!");
         }
@@ -52,7 +51,7 @@ namespace Examples
                     Info.Id = Proc.Id;
                     Info.Is64Bit = RemoteHooking.IsX64Process(Proc.Id);
                     Info.Identity = RemoteHooking.GetProcessIdentity(Proc.Id).Owner.ToString();
-                    
+
                     Result.Add(Info);
                 }
                 catch
@@ -65,14 +64,11 @@ namespace Examples
 
         public static void Run()
         {
-            Config.Register(
-                "A simple ProcessMonitor based on EasyHook!",
-                "ProcMonInject.dll",
-                "ProcessMonitor.exe");
+            Config.Register("A simple ProcessMonitor based on EasyHook!", "ProcMonInject.dll", "ProcessMonitor.exe");
             /*
             Config.Register("EasyHook managed test application",
                 "..\\x64\\ManagedTest.exe");
-            
+
             /*
             RemoteHooking.CreateAndInject(
                 @"..\x86\ManagedTarget.exe",
@@ -82,16 +78,11 @@ namespace Examples
                 "..\\x64\\ManagedTest.exe",
                 out ProcessId,
                 0x12345678);*/
-            
-          
-          //  ProcessInfo[] Result = (ProcessInfo[])RemoteHooking.ExecuteAsService<RHTest>("Enum");
-            
-            RemoteHooking.Inject(
-                RemoteHooking.GetCurrentProcessId(),
-                "..\\x86\\ManagedTest.exe",
-                "..\\x64\\ManagedTest.exe",
-                null,
-                0x12345678);
+
+            //  ProcessInfo[] Result = (ProcessInfo[])RemoteHooking.ExecuteAsService<RHTest>("Enum");
+
+            RemoteHooking.Inject(RemoteHooking.GetCurrentProcessId(), "..\\x86\\ManagedTest.exe",
+                                 "..\\x64\\ManagedTest.exe", null, 0x12345678);
         }
     }
 }

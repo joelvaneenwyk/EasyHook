@@ -17,9 +17,18 @@ namespace FileMonitorController
 {
     public partial class FormMain : Form
     {
-        private IpcInterface IpcInterface { get; set; }
-        private List<ProcessEntry> ProcessEntries { get; set; }
-        private string channelName = String.Format("FileMonitorControll - {0} {1}", DateTime.Now.ToLongDateString(), DateTime.Now.ToLongTimeString());
+        private IpcInterface IpcInterface
+        {
+            get;
+            set;
+        }
+        private List<ProcessEntry> ProcessEntries
+        {
+            get;
+            set;
+        }
+        private string channelName = String.Format("FileMonitorControll - {0} {1}", DateTime.Now.ToLongDateString(),
+                                                   DateTime.Now.ToLongTimeString());
         private IpcServerChannel channel;
 
         public FormMain()
@@ -42,21 +51,14 @@ namespace FileMonitorController
 
         private void FormMain_Load(object sender, EventArgs e)
         {
-            channel = RemoteHooking.IpcCreateServer(
-                ref channelName,
-                WellKnownObjectMode.Singleton,
-                IpcInterface,
-                WellKnownSidType.WorldSid);
+            channel = RemoteHooking.IpcCreateServer(ref channelName, WellKnownObjectMode.Singleton, IpcInterface,
+                                                    WellKnownSidType.WorldSid);
         }
 
         private void PushFileEntryEvent(ProcessEntry whichProcess, List<FileEntry> fileEntry)
         {
-            fileEntry.ForEach((entry) => this.ListViewLog.Items.Add(new ListViewItem(new[]
-                {
-                    whichProcess.ImageName,
-                    entry.Timestamp.ToLongTimeString(),
-                    entry.FullPath
-                })));
+            fileEntry.ForEach((entry) => this.ListViewLog.Items.Add(new ListViewItem(
+                                  new[]{whichProcess.ImageName, entry.Timestamp.ToLongTimeString(), entry.FullPath})));
         }
 
         private void Timer_UpdateMonitorLog_Tick(object sender, EventArgs e)
@@ -95,21 +97,21 @@ namespace FileMonitorController
             var lastSelectedIndex = selectedIndicies.Count > 0 ? selectedIndicies[selectedIndicies.Count - 1] : 0;
 
             this.ProcessEntries.Clear();
-            this.ProcessEntries.AddRange((ProcessEntry[]) RemoteHooking.ExecuteAsService<FormMain>("EnumerateProcesses"));
+            this.ProcessEntries.AddRange(
+                (ProcessEntry[])RemoteHooking.ExecuteAsService<FormMain>("EnumerateProcesses"));
 
             this.ListViewProcesses.BeginUpdate();
             this.ListViewProcesses.Items.Clear();
 
             foreach (var process in this.ProcessEntries)
             {
-                this.ListViewProcesses.Items.Add(new ListViewItem(new[]
-                    {
-                        process.Id.ToString(),
-                        process.IsX64 ? "64-bit" : "32-bit",
-                        process.ImageName,  
-                        process.Owner,
-                        process.FullPath
-                    }));
+                this.ListViewProcesses.Items.Add(new ListViewItem(new[]{
+                    process.Id.ToString(),
+                    process.IsX64 ? "64-bit" : "32-bit",
+                    process.ImageName,
+                    process.Owner,
+                    process.FullPath
+                }));
             }
 
             // Restore the scrollbar position
@@ -130,14 +132,10 @@ namespace FileMonitorController
             {
                 try
                 {
-                    processEntries.Add(new ProcessEntry()
-                        {
-                            FullPath = process.MainModule.FileName,
-                            ImageName = process.ProcessName,
-                            Id = process.Id,
-                            IsX64 = RemoteHooking.IsX64Process(process.Id),
-                            Owner = RemoteHooking.GetProcessIdentity(process.Id).Name
-                        });
+                    processEntries.Add(new ProcessEntry(){FullPath = process.MainModule.FileName,
+                                                          ImageName = process.ProcessName, Id = process.Id,
+                                                          IsX64 = RemoteHooking.IsX64Process(process.Id),
+                                                          Owner = RemoteHooking.GetProcessIdentity(process.Id).Name});
                 }
                 catch
                 {
@@ -157,17 +155,20 @@ namespace FileMonitorController
             {
                 try
                 {
-                    //hookedProcessIds.Add(process.Id);
-                    RemoteHooking.Inject(process.Id, 
-                        "FileMonitorInterceptor.dll", /* the 32-bit dll */
-                        "FileMonitorInterceptor.dll", /* the 64-bit dll ; notice both are identical because the dll is compiled as AnyCPU */
-                        channelName); /* the optional parameter list ; the length and type of which must be identical to FileMonitorInterceptor's ctor() and Run() */
+                    // hookedProcessIds.Add(process.Id);
+                    RemoteHooking.Inject(
+                        process.Id, "FileMonitorInterceptor.dll", /* the 32-bit dll */
+                        "FileMonitorInterceptor.dll", /* the 64-bit dll ; notice both are identical because the dll is
+                                                         compiled as AnyCPU */
+                        channelName); /* the optional parameter list ; the length and type of which must be identical to
+                                         FileMonitorInterceptor's ctor() and Run() */
                 }
                 catch (Exception ex)
                 {
-                    //hookedProcessIds.Remove(processId);
+                    // hookedProcessIds.Remove(processId);
                     e.Item.Checked = false;
-                    MessageBox.Show(ex.ToString(), "Error Injecting to Process", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(ex.ToString(), "Error Injecting to Process", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                 }
             }
             else

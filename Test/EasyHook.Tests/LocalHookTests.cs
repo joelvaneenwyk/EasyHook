@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,15 +34,14 @@ namespace EasyHook.Tests
     public class LocalHookTests
     {
         [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [return : MarshalAs(UnmanagedType.Bool)]
         static extern bool Beep(uint dwFreq, uint dwDuration);
 
-        [return: MarshalAs(UnmanagedType.Bool)]
-        delegate bool BeepDelegate(uint dwFreq, uint dwDuration);
+        [return:MarshalAs(UnmanagedType.Bool)] delegate bool BeepDelegate(uint dwFreq, uint dwDuration);
 
         bool _beepHookCalled;
 
-        [return: MarshalAs(UnmanagedType.Bool)]
+        [return : MarshalAs(UnmanagedType.Bool)]
         bool BeepHook(uint dwFreq, uint dwDuration)
         {
             _beepHookCalled = true;
@@ -58,7 +57,7 @@ namespace EasyHook.Tests
 
         [TestMethod]
         [ExpectedException(typeof(InsufficientMemoryException),
-            "Adding too many hooks should result in System.InsufficientMemoryException.")]
+                           "Adding too many hooks should result in System.InsufficientMemoryException.")]
         public void InstallTooManyHooks_ThrowException()
         {
             int maxHookCount = 1024;
@@ -68,10 +67,8 @@ namespace EasyHook.Tests
             // Install MAX_HOOK_COUNT hooks (i.e. 1024)
             for (var i = 0; i < maxHookCount; i++)
             {
-                LocalHook lh = LocalHook.Create(
-                    LocalHook.GetProcAddress("kernel32.dll", "Beep"),
-                    new BeepDelegate(BeepHook),
-                    this);
+                LocalHook lh = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "Beep"),
+                                                new BeepDelegate(BeepHook), this);
                 hooks.Add(lh);
             }
 
@@ -84,10 +81,8 @@ namespace EasyHook.Tests
             try
             {
                 // Adding one more hook should result in System.InsufficientMemoryException
-                hooks.Add(LocalHook.Create(
-                    LocalHook.GetProcAddress("kernel32.dll", "Beep"),
-                    new BeepDelegate(BeepHook),
-                    this));
+                hooks.Add(LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "Beep"), new BeepDelegate(BeepHook),
+                                           this));
 
                 foreach (var h in hooks)
                     h.Dispose();
@@ -108,12 +103,10 @@ namespace EasyHook.Tests
         public void HookBypassAddress_DoesNotCallHook()
         {
             // Install MAX_HOOK_COUNT hooks (i.e. 1024)
-            LocalHook localHook = LocalHook.Create(
-                LocalHook.GetProcAddress("kernel32.dll", "Beep"),
-                new BeepDelegate(BeepHook),
-                this);
+            LocalHook localHook =
+                LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "Beep"), new BeepDelegate(BeepHook), this);
 
-            localHook.ThreadACL.SetInclusiveACL(new int[] { 0 });
+            localHook.ThreadACL.SetInclusiveACL(new int[]{0});
 
             Assert.IsFalse(Beep(100, 100));
 
@@ -121,8 +114,8 @@ namespace EasyHook.Tests
 
             _beepHookCalled = false;
 
-            BeepDelegate beepDelegate = (BeepDelegate)Marshal.GetDelegateForFunctionPointer(
-                localHook.HookBypassAddress, typeof(BeepDelegate));
+            BeepDelegate beepDelegate =
+                (BeepDelegate)Marshal.GetDelegateForFunctionPointer(localHook.HookBypassAddress, typeof(BeepDelegate));
 
             beepDelegate(100, 100);
             Assert.IsFalse(_beepHookCalled);

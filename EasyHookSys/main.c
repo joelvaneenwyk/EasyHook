@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,42 +27,33 @@
 
 typedef struct _DRIVER_NOTIFICATION_
 {
-    SLIST_ENTRY		ListEntry;
-    ULONG			ProcessId;
-}DRIVER_NOTIFICATION, *PDRIVER_NOTIFICATION;
+    SLIST_ENTRY ListEntry;
+    ULONG ProcessId;
+} DRIVER_NOTIFICATION, *PDRIVER_NOTIFICATION;
 
-NTSTATUS DriverEntry(
-    IN PDRIVER_OBJECT InDriverObject,
-    IN PUNICODE_STRING InRegistryPath);
+NTSTATUS DriverEntry(IN PDRIVER_OBJECT InDriverObject, IN PUNICODE_STRING InRegistryPath);
 
-NTSTATUS EasyHookDispatchCreate(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP	InIrp);
+NTSTATUS EasyHookDispatchCreate(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp);
 
-NTSTATUS EasyHookDispatchClose(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP InIrp);
+NTSTATUS EasyHookDispatchClose(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp);
 
-NTSTATUS EasyHookDispatchDeviceControl(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP InIrp);
+NTSTATUS EasyHookDispatchDeviceControl(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp);
 
 VOID EasyHookUnload(IN PDRIVER_OBJECT DriverObject);
 
 #ifdef ALLOC_PRAGMA
 
-#pragma alloc_text(INIT, DriverEntry)
-#pragma alloc_text(PAGE, EasyHookDispatchCreate)
-#pragma alloc_text(PAGE, EasyHookDispatchClose)
-#pragma alloc_text(PAGE, EasyHookDispatchDeviceControl)
-#pragma alloc_text(PAGE, EasyHookUnload)
+#    pragma alloc_text(INIT, DriverEntry)
+#    pragma alloc_text(PAGE, EasyHookDispatchCreate)
+#    pragma alloc_text(PAGE, EasyHookDispatchClose)
+#    pragma alloc_text(PAGE, EasyHookDispatchDeviceControl)
+#    pragma alloc_text(PAGE, EasyHookUnload)
 
 #endif
 
-void OnImageLoadNotification(
-    IN PUNICODE_STRING  FullImageName,
-    IN HANDLE  ProcessId, // where image is mapped
-    IN PIMAGE_INFO  ImageInfo)
+void OnImageLoadNotification(IN PUNICODE_STRING FullImageName,
+    IN HANDLE ProcessId,  // where image is mapped
+    IN PIMAGE_INFO ImageInfo)
 {
     UNREFERENCED_PARAMETER(FullImageName);
     UNREFERENCED_PARAMETER(ProcessId);
@@ -78,36 +69,32 @@ Description:
 Initializes the driver and also loads the system specific PatchGuard
 information.
 */
-NTSTATUS DriverEntry(
-    IN PDRIVER_OBJECT		InDriverObject,
-    IN PUNICODE_STRING		InRegistryPath)
+NTSTATUS DriverEntry(IN PDRIVER_OBJECT InDriverObject, IN PUNICODE_STRING InRegistryPath)
 {
     UNREFERENCED_PARAMETER(InRegistryPath);
 
-    NTSTATUS						Status;
-    UNICODE_STRING					NtDeviceName;
-    UNICODE_STRING					DosDeviceName;
-    PEASYHOOK_DEVICE_EXTENSION		DeviceExtension;
-    PDEVICE_OBJECT					DeviceObject = NULL;
-    BOOLEAN							SymbolicLink = FALSE;
+    NTSTATUS Status;
+    UNICODE_STRING NtDeviceName;
+    UNICODE_STRING DosDeviceName;
+    PEASYHOOK_DEVICE_EXTENSION DeviceExtension;
+    PDEVICE_OBJECT DeviceObject = NULL;
+    BOOLEAN SymbolicLink = FALSE;
 
     /*
     Create device...
     */
     RtlInitUnicodeString(&NtDeviceName, EASYHOOK_DEVICE_NAME);
 
-    Status = IoCreateDevice(
-        InDriverObject,
-        sizeof(EASYHOOK_DEVICE_EXTENSION),		// DeviceExtensionSize
-        &NtDeviceName,					// DeviceName
-        FILE_DEVICE_EASYHOOK,			// DeviceType
-        0,								// DeviceCharacteristics
-        TRUE,							// Exclusive
-        &DeviceObject					// [OUT]
-        );
+    Status = IoCreateDevice(InDriverObject,
+        sizeof(EASYHOOK_DEVICE_EXTENSION),  // DeviceExtensionSize
+        &NtDeviceName,                      // DeviceName
+        FILE_DEVICE_EASYHOOK,               // DeviceType
+        0,                                  // DeviceCharacteristics
+        TRUE,                               // Exclusive
+        &DeviceObject                       // [OUT]
+    );
 
-    if (!NT_SUCCESS(Status))
-        goto ERROR_ABORT;
+    if (!NT_SUCCESS(Status)) goto ERROR_ABORT;
 
     /*
     Expose interfaces...
@@ -116,7 +103,7 @@ NTSTATUS DriverEntry(
     DeviceExtension->MaxVersion = EASYHOOK_INTERFACE_v_1;
 
 // Disable warning C4276: no prototype provided; assumed no parameters
-#pragma warning(disable: 4276)
+#pragma warning(disable : 4276)
     DeviceExtension->API_v_1.RtlGetLastError = RtlGetLastError;
     DeviceExtension->API_v_1.RtlGetLastErrorString = RtlGetLastErrorString;
     DeviceExtension->API_v_1.LhInstallHook = LhInstallHook;
@@ -141,8 +128,7 @@ NTSTATUS DriverEntry(
     */
     RtlInitUnicodeString(&DosDeviceName, EASYHOOK_DOS_DEVICE_NAME);
 
-    if (!NT_SUCCESS(Status = IoCreateSymbolicLink(&DosDeviceName, &NtDeviceName)))
-        goto ERROR_ABORT;
+    if (!NT_SUCCESS(Status = IoCreateSymbolicLink(&DosDeviceName, &NtDeviceName))) goto ERROR_ABORT;
 
     SymbolicLink = TRUE;
 
@@ -152,8 +138,7 @@ NTSTATUS DriverEntry(
     InDriverObject->DriverUnload = EasyHookUnload;
 
     // initialize EasyHook
-    if (!NT_SUCCESS(Status = LhBarrierProcessAttach()))
-        goto ERROR_ABORT;
+    if (!NT_SUCCESS(Status = LhBarrierProcessAttach())) goto ERROR_ABORT;
 
     PsSetLoadImageNotifyRoutine(OnImageLoadNotification);
 
@@ -166,18 +151,14 @@ ERROR_ABORT:
     /*
     Rollback in case of errors...
     */
-    if (SymbolicLink)
-        IoDeleteSymbolicLink(&DosDeviceName);
+    if (SymbolicLink) IoDeleteSymbolicLink(&DosDeviceName);
 
-    if (DeviceObject != NULL)
-        IoDeleteDevice(DeviceObject);
+    if (DeviceObject != NULL) IoDeleteDevice(DeviceObject);
 
     return Status;
 }
 
-NTSTATUS EasyHookDispatchCreate(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP InIrp)
+NTSTATUS EasyHookDispatchCreate(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -189,9 +170,7 @@ NTSTATUS EasyHookDispatchCreate(
     return STATUS_SUCCESS;
 }
 
-NTSTATUS EasyHookDispatchClose(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP InIrp)
+NTSTATUS EasyHookDispatchClose(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -210,9 +189,7 @@ Description:
 Handles all device requests.
 
 */
-NTSTATUS EasyHookDispatchDeviceControl(
-    IN PDEVICE_OBJECT InDeviceObject,
-    IN PIRP	InIrp)
+NTSTATUS EasyHookDispatchDeviceControl(IN PDEVICE_OBJECT InDeviceObject, IN PIRP InIrp)
 {
     UNREFERENCED_PARAMETER(InDeviceObject);
 
@@ -232,7 +209,7 @@ Release all resources and remove the driver object.
 */
 VOID EasyHookUnload(IN PDRIVER_OBJECT InDriverObject)
 {
-    UNICODE_STRING			DosDeviceName;
+    UNICODE_STRING DosDeviceName;
 
     // remove all hooks and shutdown thread barrier...
     LhCriticalFinalize();
@@ -254,4 +231,3 @@ VOID EasyHookUnload(IN PDRIVER_OBJECT InDriverObject)
 
     IoDeleteDevice(InDriverObject->DeviceObject);
 }
-

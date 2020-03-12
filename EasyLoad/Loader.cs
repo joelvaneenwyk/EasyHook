@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -77,44 +77,53 @@ namespace EasyLoad
         {
             string folderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string assemblyPath = Path.Combine(folderPath, new AssemblyName(args.Name).Name + ".dll");
-            if (File.Exists(assemblyPath) == false) return null;
+            if (File.Exists(assemblyPath) == false)
+                return null;
             Assembly assembly = Assembly.LoadFrom(assemblyPath);
             return assembly;
         }
 
         /// <summary>
-        /// Loads EasyHook and commences the loading of user supplied assembly. This method is exported as a DllExport, making it consumable from native code.
+        /// Loads EasyHook and commences the loading of user supplied assembly. This method is exported as a DllExport,
+        /// making it consumable from native code.
         /// </summary>
         /// <param name="inParam"></param>
-        /// <returns>0 if successfully loaded into new AppDomain, 1 if could not use new AppDomain but successfully loaded into default, or -1 for fail</returns>
+        /// <returns>0 if successfully loaded into new AppDomain, 1 if could not use new AppDomain but successfully
+        /// loaded into default, or -1 for fail</returns>
         [DllExport("Load", System.Runtime.InteropServices.CallingConvention.StdCall)]
-        public static int Load([MarshalAs(UnmanagedType.LPWStr)]String inParam)
+        public static int Load([ MarshalAs(UnmanagedType.LPWStr) ] String inParam)
         {
             try
             {
-                lock (_lock)
+                lock(_lock)
                 {
                     try
                     {
                         _injectCount++;
                         if (_easyHookDomain == null)
                         {
-                            System.Security.PermissionSet ps = new System.Security.PermissionSet(System.Security.Permissions.PermissionState.Unrestricted);
-                            ps.AddPermission(new System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityPermissionFlag.AllFlags));
+                            System.Security.PermissionSet ps = new System.Security.PermissionSet(
+                                System.Security.Permissions.PermissionState.Unrestricted);
+                            ps.AddPermission(new System.Security.Permissions.SecurityPermission(
+                                System.Security.Permissions.SecurityPermissionFlag.AllFlags));
                             // Evidence of null means use the current appdomain evidence
-                            _easyHookDomain = AppDomain.CreateDomain("EasyHook", null, new AppDomainSetup()
-                            {
-                                ApplicationBase = Path.GetDirectoryName(typeof(Loader).Assembly.Location),
-                                // ShadowCopyFiles = "true", // copies assemblies from ApplicationBase into cache, leaving originals unlocked and updatable
-                            }, ps);
+                            _easyHookDomain = AppDomain.CreateDomain(
+                                "EasyHook", null,
+                                new AppDomainSetup(){
+                                    ApplicationBase = Path.GetDirectoryName(typeof(Loader).Assembly.Location),
+                                    // ShadowCopyFiles = "true", // copies assemblies from ApplicationBase into cache,
+                                    // leaving originals unlocked and updatable
+                                },
+                                ps);
                         }
                     }
                     catch (OutOfMemoryException)
                     {
-                        // Creation of AppDomain failed, so fall back to using default domain (means it cannot be unloaded)
-                        
+                        // Creation of AppDomain failed, so fall back to using default domain (means it cannot be
+                        // unloaded)
+
                         // The reason is there could be an issue with the target application's stack commit size.
-                        // The default stack commit size must be <= 253952 (or 0x3E000) - due to bug in .NET Framework, 
+                        // The default stack commit size must be <= 253952 (or 0x3E000) - due to bug in .NET Framework,
                         // this can be checked with dumpbin.exe and edited with editbin.exe.
 
                         // Load EasyHook and the target assembly
@@ -129,17 +138,17 @@ namespace EasyLoad
                 Type proxyType = typeof(LoadEasyHookProxy);
                 if (proxyType.Assembly != null)
                 {
-                    // This is where the currentDomain.AssemblyResolve that we setup within the static 
+                    // This is where the currentDomain.AssemblyResolve that we setup within the static
                     // constructor is required.
-                    var proxy = (LoadEasyHookProxy)_easyHookDomain.CreateInstanceFrom(
-                                    proxyType.Assembly.Location,
-                                    proxyType.FullName).Unwrap();
+                    var proxy = (LoadEasyHookProxy)_easyHookDomain
+                                    .CreateInstanceFrom(proxyType.Assembly.Location, proxyType.FullName)
+                                    .Unwrap();
 
                     // Loads EasyHook.dll into the AppDomain, which in turn loads the target assembly
                     result = proxy.Load(inParam);
                 }
 
-                //result = new LoadEasyHookProxy().Load(inParam);
+                // result = new LoadEasyHookProxy().Load(inParam);
                 return result;
             }
             catch (Exception e)
@@ -148,7 +157,7 @@ namespace EasyLoad
             }
             finally
             {
-                lock (_lock)
+                lock(_lock)
                 {
                     _injectCount--;
                 }
@@ -159,12 +168,13 @@ namespace EasyLoad
         }
 
         /// <summary>
-        /// Attempts to terminate the AppDomain that is hosting the injected assembly. This method is exported as a DllExport, making it consumable from native code.
+        /// Attempts to terminate the AppDomain that is hosting the injected assembly. This method is exported as a
+        /// DllExport, making it consumable from native code.
         /// </summary>
         [DllExport("Close", System.Runtime.InteropServices.CallingConvention.StdCall)]
         public static void Close()
         {
-            lock (_lock)
+            lock(_lock)
             {
                 if (_easyHookDomain != null && _injectCount == 0)
                 {
@@ -175,7 +185,8 @@ namespace EasyLoad
                     }
                     catch (System.CannotUnloadAppDomainException)
                     {
-                        // Usually means that one or more threads within the AppDomain haven't finished exiting (e.g. still within a finalize)
+                        // Usually means that one or more threads within the AppDomain haven't finished exiting (e.g.
+                        // still within a finalize)
                         var i = 0;
                         while (i < 3) // try up to 3 times to unload the AppDomain
                         {

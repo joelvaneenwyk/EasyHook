@@ -57,9 +57,10 @@ namespace FileMon
                     Console.WriteLine();
                     Console.Write("Please enter a process Id or path to executable: ");
 
-                    args = new string[] { Console.ReadLine() };
+                    args = new string[]{Console.ReadLine()};
 
-                    if (String.IsNullOrEmpty(args[0])) return;
+                    if (String.IsNullOrEmpty(args[0]))
+                        return;
                 }
                 else
                 {
@@ -72,20 +73,19 @@ namespace FileMon
             {
                 RemoteHooking.IpcCreateServer<FileMonInterface>(ref ChannelName, WellKnownObjectMode.SingleCall);
 
-                string injectionLibrary = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "FileMonInject.dll");
+                string injectionLibrary =
+                    Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                                 "FileMonInject.dll");
                 if (String.IsNullOrEmpty(targetExe))
                 {
-                    RemoteHooking.Inject(
-                        TargetPID,
-                        injectionLibrary,
-                        injectionLibrary,
-                        ChannelName);
+                    RemoteHooking.Inject(TargetPID, injectionLibrary, injectionLibrary, ChannelName);
 
                     Console.WriteLine("Injected to process {0}", TargetPID);
                 }
                 else
                 {
-                    RemoteHooking.CreateAndInject(targetExe, "", 0, InjectionOptions.DoNotRequireStrongName, injectionLibrary, injectionLibrary, out TargetPID, ChannelName);
+                    RemoteHooking.CreateAndInject(targetExe, "", 0, InjectionOptions.DoNotRequireStrongName,
+                                                  injectionLibrary, injectionLibrary, out TargetPID, ChannelName);
                     Console.WriteLine("Created and injected process {0}", TargetPID);
                 }
                 Console.WriteLine("<Press any key to exit>");

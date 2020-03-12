@@ -17,16 +17,17 @@ namespace ProcessMonitor
             // Default to not using the GAC
             bool noGAC = true;
 
-            //try
+            // try
             //{
             //    Config.Register(
             //        "A simple ProcessMonitor based on EasyHook!",
             //        "ProcMonInject.dll",
             //        "ProcessMonitor.exe");
             //}
-            //catch (ApplicationException)
+            // catch (ApplicationException)
             //{
-            //    MessageBox.Show("This is an administrative task! Attempting without GAC...", "Permission denied...", MessageBoxButtons.OK);
+            //    MessageBox.Show("This is an administrative task! Attempting without GAC...", "Permission denied...",
+            //    MessageBoxButtons.OK);
 
             //    noGAC = true;
             //    //System.Diagnostics.Process.GetCurrentProcess().Kill();

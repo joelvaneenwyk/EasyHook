@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,18 +27,18 @@
 
 void LhFreeMemory(PLOCAL_HOOK_INFO* RefHandle)
 {
-/*
-Description:
+    /*
+    Description:
 
-    Will release the memory for a given hook.
+        Will release the memory for a given hook.
 
-Parameters:
+    Parameters:
 
-    - RefHandle
+        - RefHandle
 
-        A pointer to a valid hook handle. It will be set to NULL
-        by this method!
-*/
+            A pointer to a valid hook handle. It will be set to NULL
+            by this method!
+    */
 
 #if defined(_M_X64) && !defined(DRIVER)
     VirtualFree(*RefHandle, 0, MEM_RELEASE);
@@ -54,27 +54,27 @@ Parameters:
 ///////////////////////////////////////////////////////////////////////////////////
 void* LhAllocateMemory(void* InEntryPoint)
 {
-/*
-Description:
+    /*
+    Description:
 
-    Allocates one page of hook specific memory.
+        Allocates one page of hook specific memory.
 
-Parameters:
+    Parameters:
 
-    - InEntryPoint
+        - InEntryPoint
 
-        Ignored for 32-Bit versions and drivers. In 64-Bit user mode, the returned
-        pointer will always be in a 31-bit boundary around this parameter. This way
-        a relative jumper can still be placed instead of having to consume much more entry
-        point bytes for an absolute jump!
+            Ignored for 32-Bit versions and drivers. In 64-Bit user mode, the returned
+            pointer will always be in a 31-bit boundary around this parameter. This way
+            a relative jumper can still be placed instead of having to consume much more entry
+            point bytes for an absolute jump!
 
-Returns:
+    Returns:
 
-    NULL if no memory could be allocated, a valid pointer otherwise.
+        NULL if no memory could be allocated, a valid pointer otherwise.
 
-*/
-	ULONG pageSize;
-	return LhAllocateMemoryEx(InEntryPoint, &pageSize);
+    */
+    ULONG pageSize;
+    return LhAllocateMemoryEx(InEntryPoint, &pageSize);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
@@ -82,50 +82,49 @@ Returns:
 ///////////////////////////////////////////////////////////////////////////////////
 void* LhAllocateMemoryEx(void* InEntryPoint, ULONG* OutPageSize)
 {
-/*
-Description:
+    /*
+    Description:
 
-    Allocates one page of hook specific memory. The page size is returned in OutPageSize
+        Allocates one page of hook specific memory. The page size is returned in OutPageSize
 
-Parameters:
+    Parameters:
 
-    - InEntryPoint
+        - InEntryPoint
 
-        Ignored for 32-Bit versions and drivers. In 64-Bit user mode, the returned
-        pointer will always be in a 31-bit boundary around this parameter. This way
-        a relative jumper can still be placed instead of having to consume much more entry
-        point bytes for an absolute jump!
+            Ignored for 32-Bit versions and drivers. In 64-Bit user mode, the returned
+            pointer will always be in a 31-bit boundary around this parameter. This way
+            a relative jumper can still be placed instead of having to consume much more entry
+            point bytes for an absolute jump!
 
-    - OutPageSize
+        - OutPageSize
 
-        Will be updated to contain the page size.
+            Will be updated to contain the page size.
 
-Returns:
+    Returns:
 
-    NULL if no memory could be allocated, a valid pointer otherwise.
+        NULL if no memory could be allocated, a valid pointer otherwise.
 
-*/
+    */
 
-    UCHAR*			    Res = NULL;
+    UCHAR* Res = NULL;
 
 #if defined(_M_X64) && !defined(DRIVER)
-    LONGLONG            Base;
-    LONGLONG		    iStart;
-    LONGLONG		    iEnd;
-    LONGLONG            Index;
+    LONGLONG Base;
+    LONGLONG iStart;
+    LONGLONG iEnd;
+    LONGLONG Index;
 
 #endif
-	
+
 #if !defined(DRIVER)
-    SYSTEM_INFO		    SysInfo;
-    ULONG               PAGE_SIZE;
+    SYSTEM_INFO SysInfo;
+    ULONG PAGE_SIZE;
 
     GetSystemInfo(&SysInfo);
 
     PAGE_SIZE = SysInfo.dwPageSize;
     *OutPageSize = PAGE_SIZE;
 #endif
-
 
     // reserve page with execution privileges
 #if defined(_M_X64) && !defined(DRIVER)
@@ -136,43 +135,37 @@ Returns:
     iStart = ((LONGLONG)InEntryPoint) - ((LONGLONG)0x7FFFFF00);
     iEnd = ((LONGLONG)InEntryPoint) + ((LONGLONG)0x7FFFFF00);
 
-    if(iStart < (LONGLONG)SysInfo.lpMinimumApplicationAddress)
-        iStart = (LONGLONG)SysInfo.lpMinimumApplicationAddress; // shall not be null, because then VirtualAlloc() will not work as expected
+    if (iStart < (LONGLONG)SysInfo.lpMinimumApplicationAddress)
+        iStart = (LONGLONG)SysInfo.lpMinimumApplicationAddress;  // shall not be null, because then VirtualAlloc() will not work as expected
 
-    if(iEnd > (LONGLONG)SysInfo.lpMaximumApplicationAddress)
-        iEnd = (LONGLONG)SysInfo.lpMaximumApplicationAddress;
+    if (iEnd > (LONGLONG)SysInfo.lpMaximumApplicationAddress) iEnd = (LONGLONG)SysInfo.lpMaximumApplicationAddress;
 
     // we are trying to get memory as near as possible to relocate most RIP-relative instructions
-    for(Base = (LONGLONG)InEntryPoint, Index = 0; ; Index += PAGE_SIZE)
+    for (Base = (LONGLONG)InEntryPoint, Index = 0;; Index += PAGE_SIZE)
     {
-		BOOLEAN end = TRUE;
-		if(Base + Index < iEnd)
-		{
-			if((Res = (UCHAR*)VirtualAlloc((void*)(Base + Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
-				break;
-			end = FALSE;
-		}
-
-        if(Base - Index > iStart)
+        BOOLEAN end = TRUE;
+        if (Base + Index < iEnd)
         {
-	        if((Res = (BYTE*)VirtualAlloc((void*)(Base - Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL)
-		        break;
-			end = FALSE;
+            if ((Res = (UCHAR*)VirtualAlloc((void*)(Base + Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL) break;
+            end = FALSE;
         }
 
-		if (end)
-			break;
+        if (Base - Index > iStart)
+        {
+            if ((Res = (BYTE*)VirtualAlloc((void*)(Base - Index), PAGE_SIZE, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE)) != NULL) break;
+            end = FALSE;
+        }
+
+        if (end) break;
     }
 
-    if(Res == NULL)
-	    return NULL;
+    if (Res == NULL) return NULL;
 #else
-    
-	*OutPageSize = PAGE_SIZE;
-	// in 32-bit mode the trampoline will always be reachable
-	// In 64-bit driver mode we use an absolute address so the trampoline will always be reachable
-    if((Res = (UCHAR*)RtlAllocateMemory(TRUE, PAGE_SIZE)) == NULL)
-        return NULL;
+
+    *OutPageSize = PAGE_SIZE;
+    // in 32-bit mode the trampoline will always be reachable
+    // In 64-bit driver mode we use an absolute address so the trampoline will always be reachable
+    if ((Res = (UCHAR*)RtlAllocateMemory(TRUE, PAGE_SIZE)) == NULL) return NULL;
 
 #endif
 

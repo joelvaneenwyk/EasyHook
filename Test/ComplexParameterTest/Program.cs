@@ -28,20 +28,21 @@ namespace ComplexParameterTest
             try
             {
                 bool noGAC = true;
-                //try
+                // try
                 //{
                 //    Config.Register(
                 //        "Test passing an object parameter",
                 //        "ComplexParameterInject.dll");
                 //}
-                //catch (ApplicationException ae)
+                // catch (ApplicationException ae)
                 //{
                 //    Console.WriteLine("This is an administrative task! Attempting without GAC...");
 
                 //    noGAC = true;
                 //}
                 string channelName = null;
-                RemoteHooking.IpcCreateServer<ComplexParameterInject.TestInterface>(ref channelName, WellKnownObjectMode.SingleCall);
+                RemoteHooking.IpcCreateServer<ComplexParameterInject.TestInterface>(ref channelName,
+                                                                                    WellKnownObjectMode.SingleCall);
 
                 InjectionOptions options = InjectionOptions.Default;
                 if (noGAC)
@@ -49,20 +50,15 @@ namespace ComplexParameterTest
                     options |= InjectionOptions.DoNotRequireStrongName;
                 }
 
-                ComplexParameterInject.TestComplexParameter parameter = new ComplexParameterInject.TestComplexParameter
-                {
+                ComplexParameterInject.TestComplexParameter parameter = new ComplexParameterInject.TestComplexParameter{
                     Message = "All your binary serializations are belong to us",
-                    HostProcessId = RemoteHooking.GetCurrentProcessId()
-                };
-                RemoteHooking.Inject(
-                    targetPID,
-                    options,
-                    typeof(ComplexParameterInject.TestComplexParameter).Assembly.Location, //"ComplexParameterInject.dll",
-                    typeof(ComplexParameterInject.TestComplexParameter).Assembly.Location, //"ComplexParameterInject.dll",
-                    channelName
-                    , parameter
-                );
-
+                    HostProcessId = RemoteHooking.GetCurrentProcessId()};
+                RemoteHooking.Inject(targetPID, options,
+                                     typeof(ComplexParameterInject.TestComplexParameter)
+                                         .Assembly.Location, //"ComplexParameterInject.dll",
+                                     typeof(ComplexParameterInject.TestComplexParameter)
+                                         .Assembly.Location, //"ComplexParameterInject.dll",
+                                     channelName, parameter);
             }
             catch (Exception e)
             {

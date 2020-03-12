@@ -43,12 +43,9 @@ namespace TestFuncHooks
 
             [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public static extern Int32 TestFuncHooks(
-                int pId,
-                [param: MarshalAs(UnmanagedType.LPStr)]
-                string module,
-                [param: MarshalAs(UnmanagedType.Struct)]
-                TEST_FUNC_HOOKS_OPTIONS options,
-                out IntPtr results, out int resultCount);
+                int pId, [ param : MarshalAs(UnmanagedType.LPStr) ] string module,
+                [ param : MarshalAs(UnmanagedType.Struct) ] TEST_FUNC_HOOKS_OPTIONS options, out IntPtr results,
+                out int resultCount);
 
             [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public static extern Int32 ReleaseTestFuncHookResults(IntPtr results, int resultCount);
@@ -60,12 +57,9 @@ namespace TestFuncHooks
 
             [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public static extern Int32 TestFuncHooks(
-                int pId,
-                [param: MarshalAs(UnmanagedType.LPStr)]
-                string module,
-                [param: MarshalAs(UnmanagedType.Struct)]
-                TEST_FUNC_HOOKS_OPTIONS options,
-                out IntPtr results, out int resultCount);
+                int pId, [ param : MarshalAs(UnmanagedType.LPStr) ] string module,
+                [ param : MarshalAs(UnmanagedType.Struct) ] TEST_FUNC_HOOKS_OPTIONS options, out IntPtr results,
+                out int resultCount);
 
             [DllImport(DllName, CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi)]
             public static extern Int32 ReleaseTestFuncHookResults(IntPtr results, int resultCount);
@@ -73,8 +67,8 @@ namespace TestFuncHooks
 
         static bool IsDisamSame(string disam1, string disam2)
         {
-            var d1 = disam1.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var d2 = disam2.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var d1 = disam1.Split(new char[]{'\n'}, StringSplitOptions.RemoveEmptyEntries);
+            var d2 = disam2.Split(new char[]{'\n'}, StringSplitOptions.RemoveEmptyEntries);
 
             if (d1.Length != d2.Length)
                 return false;
@@ -82,8 +76,12 @@ namespace TestFuncHooks
             {
                 for (var i = 0; i < d1.Length; i++)
                 {
-                    d1[i] = d1[i].Substring(0, d1[i].IndexOf("IP:"));
-                    d2[i] = d2[i].Substring(0, d2[i].IndexOf("IP:"));
+                    d1[i] = d1 [i]
+                                .Substring(0, d1 [i]
+                                                  .IndexOf("IP:"));
+                    d2[i] = d2 [i]
+                                .Substring(0, d2 [i]
+                                                  .IndexOf("IP:"));
 
                     if (d1[i] != d2[i])
                         return false;
@@ -109,7 +107,8 @@ namespace TestFuncHooks
                     noRedirect++;
             }
 
-            Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", moduleName, errorCount, containAddress, noRedirect, (errorCount + containAddress + noRedirect)));
+            Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", moduleName, errorCount, containAddress,
+                                            noRedirect, (errorCount + containAddress + noRedirect)));
         }
 
         static bool TryGetProcessById(int pid, out System.Diagnostics.Process process)
@@ -161,7 +160,7 @@ namespace TestFuncHooks
             }
 
             Console.WriteLine();
-            
+
             if (is64 != EasyHook.RemoteHooking.IsX64Process(p.Id))
             {
                 Console.WriteLine("Target process must be " + (is64 ? "64-bit" : "32-bit") + " like current process");
@@ -173,7 +172,8 @@ namespace TestFuncHooks
             Console.WriteLine("Test hooking of DLL exports within process: " + targetPID + " - " + p.ProcessName);
 
             Console.WriteLine("-------------------------------------------------------------------------------");
-            Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", "Module", "Unsupported", "Modified", "Unchanged", "Total"));
+            Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", "Module", "Unsupported", "Modified",
+                                            "Unchanged", "Total"));
             Console.WriteLine("-------------------------------------------------------------------------------");
 
             TEST_FUNC_HOOKS_RESULT[] results;
@@ -181,7 +181,7 @@ namespace TestFuncHooks
             int resultCount = 0;
             TEST_FUNC_HOOKS_OPTIONS options = new TEST_FUNC_HOOKS_OPTIONS();
 
-            #region 64-bit
+#region 64 - bit
             if (EasyHook.RemoteHooking.IsX64Process(EasyHook.RemoteHooking.GetCurrentProcessId()))
             {
                 if (!Directory.Exists("EntryPoints64"))
@@ -194,14 +194,16 @@ namespace TestFuncHooks
                     options.FilterByName = null;
                     options.Filename = @"EntryPoints64\_" + Path.GetFileNameWithoutExtension(module.FileName) + ".txt";
                     var moduleName = Path.GetFileName(module.FileName);
-                    
+
                     NativeAPI_Pub_x64.TestFuncHooks(targetPID, moduleName, options, out resultsPtr, out resultCount);
                     if (resultCount > 0)
                     {
                         results = new TEST_FUNC_HOOKS_RESULT[resultCount];
                         for (var i = 0; i < resultCount; i++)
                         {
-                            results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(new IntPtr(resultsPtr.ToInt64() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))), typeof(TEST_FUNC_HOOKS_RESULT));
+                            results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(
+                                new IntPtr(resultsPtr.ToInt64() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))),
+                                typeof(TEST_FUNC_HOOKS_RESULT));
                         }
 
                         NativeAPI_Pub_x64.ReleaseTestFuncHookResults(resultsPtr, resultCount);
@@ -210,9 +212,9 @@ namespace TestFuncHooks
                     }
                 }
             }
-            #endregion
+#endregion
 
-            #region 32-bit
+#region 32 - bit
             else
             {
                 if (!Directory.Exists("EntryPoints32"))
@@ -230,7 +232,9 @@ namespace TestFuncHooks
                         results = new TEST_FUNC_HOOKS_RESULT[resultCount];
                         for (var i = 0; i < resultCount; i++)
                         {
-                            results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(new IntPtr(resultsPtr.ToInt32() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))), typeof(TEST_FUNC_HOOKS_RESULT));
+                            results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(
+                                new IntPtr(resultsPtr.ToInt32() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))),
+                                typeof(TEST_FUNC_HOOKS_RESULT));
                         }
 
                         NativeAPI_Pub_x86.ReleaseTestFuncHookResults(resultsPtr, resultCount);
@@ -239,7 +243,7 @@ namespace TestFuncHooks
                     }
                 }
             }
-            #endregion
+#endregion
 
             Console.WriteLine("-------------------------------------------------------------------------------");
             Console.WriteLine(" Unsupported = # methods not hookable by EasyHook");

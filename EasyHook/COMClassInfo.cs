@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -31,18 +31,22 @@ using System.Runtime.InteropServices;
 namespace EasyHook
 {
     /// <summary>
-    /// <para>A helper class for determining the address of COM object functions for hooking given a COM class id (CLSID) and COM interface id (IID), or COM class type and COM interface type.</para>
+    /// <para>A helper class for determining the address of COM object functions for hooking given a COM class id
+    /// (CLSID) and COM interface id (IID), or COM class type and COM interface type.</para>
     /// </summary>
     /// <example>
     /// The following three examples result in the same output:
     /// <code>
     /// // 1. Use imported Class and Interface Types
-    /// COMClassInfo cci1 = new COMClassInfo(typeof(CLSID_DirectInputDevice8), typeof(IID_IDirectInputDevice8W), "GetCapabilities");
+    /// COMClassInfo cci1 = new COMClassInfo(typeof(CLSID_DirectInputDevice8), typeof(IID_IDirectInputDevice8W),
+    /// "GetCapabilities");
     /// // 2. Use Guid from class and interface types
-    /// COMClassInfo cci2 = new COMClassInfo(typeof(CLSID_DirectInputDevice8).GUID, typeof(IID_IDirectInputDevice8W).GUID, 3);
+    /// COMClassInfo cci2 = new COMClassInfo(typeof(CLSID_DirectInputDevice8).GUID,
+    /// typeof(IID_IDirectInputDevice8W).GUID, 3);
     /// // 3. Use class and interface Guids directly (no need to have class and interface types defined)
-    /// COMClassInfo cci3 = new COMClassInfo(new Guid("25E609E5-B259-11CF-BFC7-444553540000"), new Guid("54D41081-DC15-4833-A41B-748F73A38179"), 3);
-    /// 
+    /// COMClassInfo cci3 = new COMClassInfo(new Guid("25E609E5-B259-11CF-BFC7-444553540000"), new
+    /// Guid("54D41081-DC15-4833-A41B-748F73A38179"), 3);
+    ///
     /// // Will output False if dinput8.dll is not already loaded
     /// Console.WriteLine(cci1.IsModuleLoaded());
     /// cci1.Query();
@@ -50,27 +54,28 @@ namespace EasyHook
     /// cci3.Query();
     /// // Will output True as dinput8.dll will be loaded by .Query() if not already
     /// Console.WriteLine(cci1.IsModuleLoaded());
-    /// 
+    ///
     /// // Output the function pointers we queried
     /// Console.WriteLine(cci1.FunctionPointers[0]);
     /// Console.WriteLine(cci2.FunctionPointers[0]);
     /// Console.WriteLine(cci3.FunctionPointers[0]);
-    /// 
+    ///
     /// ...
-    /// 
+    ///
     /// [ComVisible(true)]
     /// [Guid("25E609E5-B259-11CF-BFC7-444553540000")]
     /// public class CLSID_DirectInputDevice8
     /// {
     /// }
-    /// 
+    ///
     /// [ComVisible(true)]
     /// [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     /// [Guid("54D41081-DC15-4833-A41B-748F73A38179")]
     /// public interface IID_IDirectInputDevice8W
     /// {
     ///     /*** IDirectInputDevice8W methods ***/
-    ///     int GetCapabilities(IntPtr deviceCaps); // fourth method due to IUnknown methods QueryInterface, AddRef and Release
+    ///     int GetCapabilities(IntPtr deviceCaps); // fourth method due to IUnknown methods QueryInterface, AddRef and
+    ///     Release
     ///     // other methods...
     /// }
     /// </code>
@@ -78,7 +83,8 @@ namespace EasyHook
     public class COMClassInfo
     {
         /// <summary>
-        /// Creates a new COMClassInfo using the COM class and interface types. The function names to retrieve the addresses for should be provided as strings
+        /// Creates a new COMClassInfo using the COM class and interface types. The function names to retrieve the
+        /// addresses for should be provided as strings
         /// </summary>
         /// <param name="classtype">The COM object's class type</param>
         /// <param name="interfacetype">The COM object's interface type</param>
@@ -98,11 +104,14 @@ namespace EasyHook
         }
 
         /// <summary>
-        /// Creates a new COMClassInfo instance using the COM class and interface Guids. The function indexes to retrieve the addresses for as defined by the order of the methods in the COM interface.
+        /// Creates a new COMClassInfo instance using the COM class and interface Guids. The function indexes to
+        /// retrieve the addresses for as defined by the order of the methods in the COM interface.
         /// </summary>
         /// <param name="clsid">The class id (CLSID) of the COM object</param>
-        /// <param name="iid">The interface id (IID) of the COM interface. This interface MUST inherit from IUnknown.</param>
-        /// <param name="vTableIndexes">One or more method indexes to retrieve the address for. Index 0 == QueryInterface, 1 == AddRef, 2 == Release, 3 == first method and so on, i.e. the order that the methods appear in the interface's C++ header file.</param>
+        /// <param name="iid">The interface id (IID) of the COM interface. This interface MUST inherit from
+        /// IUnknown.</param> <param name="vTableIndexes">One or more method indexes to retrieve the address for. Index
+        /// 0 == QueryInterface, 1 == AddRef, 2 == Release, 3 == first method and so on, i.e. the order that the methods
+        /// appear in the interface's C++ header file.</param>
         public COMClassInfo(Guid clsid, Guid iid, params int[] vTableIndexes)
         {
             if (vTableIndexes == null || vTableIndexes.Length == 0)
@@ -114,24 +123,54 @@ namespace EasyHook
             MethodPointers = new IntPtr[vTableIndexes.Length];
         }
 
-        #region CLSID / IID / VTable indexes approach
-        private Guid ClassId { get; set; }
-        private Guid InterfaceId { get; set; }
-        private int[] VTableIndexes { get; set; }
-        #endregion
+#region CLSID / IID / VTable indexes approach
+        private Guid ClassId
+        {
+            get;
+            set;
+        }
+        private Guid InterfaceId
+        {
+            get;
+            set;
+        }
+        private int[] VTableIndexes
+        {
+            get;
+            set;
+        }
+#endregion
 
-        #region ClassType / InterfaceType / Method names approach
+#region ClassType / InterfaceType / Method names approach
 
-        private Type ClassType { get; set; }
-        private Type InterfaceType { get; set; }
-        private MethodInfo[] Methods { get; set; }
+        private Type ClassType
+        {
+            get;
+            set;
+        }
+        private Type InterfaceType
+        {
+            get;
+            set;
+        }
+        private MethodInfo[] Methods
+        {
+            get;
+            set;
+        }
 
-        #endregion
+#endregion
 
         /// <summary>
-        /// Will contain the method addresses after a call to <see cref="Query"/>. The index corresponds to the order method names / indexes are passed into <see cref="COMClassInfo(Type,Type,string[])"/> or <see cref="COMClassInfo(Guid,Guid,int[])"/>.
+        /// Will contain the method addresses after a call to <see cref="Query"/>. The index corresponds to the order
+        /// method names / indexes are passed into <see cref="COMClassInfo(Type,Type,string[])"/> or <see
+        /// cref="COMClassInfo(Guid,Guid,int[])"/>.
         /// </summary>
-        public IntPtr[] MethodPointers { get; private set; }
+        public IntPtr[] MethodPointers
+        {
+            get;
+            private set;
+        }
 
         internal System.Diagnostics.ProcessModule m_ModuleHandle;
         /// <summary>
@@ -154,8 +193,10 @@ namespace EasyHook
             System.Diagnostics.Process pr = System.Diagnostics.Process.GetCurrentProcess();
             foreach (System.Diagnostics.ProcessModule pm in pr.Modules)
             {
-                if (MethodPointers[0].ToInt64() >= pm.BaseAddress.ToInt64() &&
-                    MethodPointers[0].ToInt64() <= pm.BaseAddress.ToInt64() + pm.ModuleMemorySize)
+                if (MethodPointers [0]
+                            .ToInt64() >= pm.BaseAddress.ToInt64() &&
+                    MethodPointers [0]
+                            .ToInt64() <= pm.BaseAddress.ToInt64() + pm.ModuleMemorySize)
                 {
                     m_ModuleHandle = pm;
                     return;
@@ -168,11 +209,14 @@ namespace EasyHook
         /// Query the COM class for the specified method addresses. If not already loaded the COM module will be loaded.
         /// </summary>
         /// <returns>True if the COM class exists, False otherwise.</returns>
-        /// <exception cref="AccessViolationException">Thrown if the method index extends beyond the interface and into protected memory.</exception>
-        /// <exception cref="ArgumentException">If the provided interface type is not an interface, or the class type is not visible to COM.</exception>
-        /// <exception cref="InvalidCastException">Thrown if the class instance does not support the specified interface.</exception>
+        /// <exception cref="AccessViolationException">Thrown if the method index extends beyond the interface and into
+        /// protected memory.</exception> <exception cref="ArgumentException">If the provided interface type is not an
+        /// interface, or the class type is not visible to COM.</exception> <exception
+        /// cref="InvalidCastException">Thrown if the class instance does not support the specified
+        /// interface.</exception>
         [System.Security.Permissions.RegistryPermission(System.Security.Permissions.SecurityAction.Assert)]
-        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode = true)]
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert,
+                                                        UnmanagedCode = true)]
         public unsafe bool Query()
         {
             Guid classGuid = Guid.Empty;
@@ -214,13 +258,13 @@ namespace EasyHook
 
             try
             {
-                int*** interfaceRawPtr = (int***)interfaceIntPtr.ToPointer();
+                int ***interfaceRawPtr = (int ***)interfaceIntPtr.ToPointer();
                 // get vtable
-                int** vTable = *interfaceRawPtr;
+                int **vTable = *interfaceRawPtr;
                 // get function-addresses from vtable
                 for (var i = 0; i < vTableOffsets.Length; i++)
                 {
-                    int* faddr = vTable[vTableOffsets[i]];
+                    int *faddr = vTable[vTableOffsets[i]];
                     MethodPointers[i] = new IntPtr(faddr);
                 }
             }
@@ -240,7 +284,8 @@ namespace EasyHook
         /// </summary>
         /// <returns>True if the module is loaded, otherwise False</returns>
         [System.Security.Permissions.RegistryPermission(System.Security.Permissions.SecurityAction.Assert)]
-        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode = true)]
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert,
+                                                        UnmanagedCode = true)]
         public bool IsModuleLoaded()
         {
             Guid classGuid = Guid.Empty;
@@ -250,7 +295,8 @@ namespace EasyHook
             else
                 classGuid = ClassId;
 
-            Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("CLSID\\{" + classGuid.ToString() + "}\\InprocServer32");
+            Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(
+                "CLSID\\{" + classGuid.ToString() + "}\\InprocServer32");
             if (rk == null)
                 return false;
             string classdllname = rk.GetValue(null).ToString();
@@ -261,10 +307,12 @@ namespace EasyHook
             return true;
         }
 
-        private delegate int DllGetClassObjectDelegate(ref Guid ClassId, ref Guid InterfaceId, [Out, MarshalAs(UnmanagedType.Interface)] out object ppunk);
+        private delegate int DllGetClassObjectDelegate(ref Guid ClassId, ref Guid InterfaceId,
+                                                       [ Out, MarshalAs(UnmanagedType.Interface) ] out object ppunk);
 
         [System.Security.Permissions.RegistryPermission(System.Security.Permissions.SecurityAction.Assert)]
-        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert, UnmanagedCode = true)]
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Assert,
+                                                        UnmanagedCode = true)]
         private object GetClassInstance(Guid classguid, Guid interfguid, Guid classfactoryguid, Guid classfactory2guid)
         {
             object classinstance = null;
@@ -278,7 +326,8 @@ namespace EasyHook
                     // Single do..while loop - to support "break;"
                     do
                     {
-                        Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey("CLSID\\{" + classguid.ToString() + "}\\InprocServer32");
+                        Microsoft.Win32.RegistryKey rk = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(
+                            "CLSID\\{" + classguid.ToString() + "}\\InprocServer32");
                         if (rk == null)
                             break;
                         string classdllname = rk.GetValue(null).ToString();
@@ -288,7 +337,9 @@ namespace EasyHook
                         IntPtr factoryFunc = KERNEL32.GetProcAddress(libH, "DllGetClassObject");
                         if (factoryFunc == IntPtr.Zero)
                             break;
-                        DllGetClassObjectDelegate factoryDel = (DllGetClassObjectDelegate)Marshal.GetDelegateForFunctionPointer(factoryFunc, typeof(DllGetClassObjectDelegate));
+                        DllGetClassObjectDelegate factoryDel =
+                            (DllGetClassObjectDelegate)Marshal.GetDelegateForFunctionPointer(
+                                factoryFunc, typeof(DllGetClassObjectDelegate));
                         object classfactoryO;
                         // Try with IClassFactory first
                         factoryDel(ref classguid, ref classfactoryguid, out classfactoryO);
@@ -311,7 +362,9 @@ namespace EasyHook
                     } while (false);
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return classinstance;
         }
@@ -329,49 +382,41 @@ namespace EasyHook
         }
     }
 
-    #region IClassFactory / IClassFactory2
+#region IClassFactory / IClassFactory2
     [ComImport()]
     [Guid("00000001-0000-0000-C000-000000000046")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IClassFactory
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)] interface IClassFactory
     {
-        [return: MarshalAs(UnmanagedType.I4)]
+        [return : MarshalAs(UnmanagedType.I4)]
         [PreserveSig]
-        int CreateInstance(
-            [In, MarshalAs(UnmanagedType.Interface)] object pUnkOuter,
-            ref Guid riid,
-            [Out, MarshalAs(UnmanagedType.Interface)] out object obj);
+        int CreateInstance([ In, MarshalAs(UnmanagedType.Interface) ] object pUnkOuter, ref Guid riid,
+                           [ Out, MarshalAs(UnmanagedType.Interface) ] out object obj);
 
-        [return: MarshalAs(UnmanagedType.I4)]
+        [return : MarshalAs(UnmanagedType.I4)]
         [PreserveSig]
-        int LockServer(
-            [In] bool fLock);
+        int LockServer([ In ] bool fLock);
     }
 
     [ComImport()]
     [Guid("B196B28F-BAB4-101A-B69C-00AA00341D07")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    interface IClassFactory2
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)] interface IClassFactory2
     {
-        [return: MarshalAs(UnmanagedType.Interface)]
-        Object CreateInstance(
-          [In, MarshalAs(UnmanagedType.Interface)] Object unused,
-          [In, MarshalAs(UnmanagedType.LPStruct)] Guid iid);
+        [return : MarshalAs(UnmanagedType.Interface)]
+        Object CreateInstance([ In, MarshalAs(UnmanagedType.Interface) ] Object unused,
+                              [ In, MarshalAs(UnmanagedType.LPStruct) ] Guid iid);
 
         void LockServer(Int32 fLock);
 
         IntPtr GetLicInfo(); // TODO : an enum called LICINFO
 
-        [return: MarshalAs(UnmanagedType.BStr)]
-        String RequestLicKey(
-          [In, MarshalAs(UnmanagedType.U4)] int reserved);
+        [return : MarshalAs(UnmanagedType.BStr)]
+        String RequestLicKey([ In, MarshalAs(UnmanagedType.U4) ] int reserved);
 
-        [return: MarshalAs(UnmanagedType.Interface)]
-        Object CreateInstanceLic(
-          [In, MarshalAs(UnmanagedType.Interface)] object pUnkOuter,
-          [In, MarshalAs(UnmanagedType.Interface)] object pUnkReserved,
-          [In, MarshalAs(UnmanagedType.LPStruct)] Guid iid,
-          [In, MarshalAs(UnmanagedType.BStr)] string bstrKey);
+        [return : MarshalAs(UnmanagedType.Interface)]
+        Object CreateInstanceLic([ In, MarshalAs(UnmanagedType.Interface) ] object pUnkOuter,
+                                 [ In, MarshalAs(UnmanagedType.Interface) ] object pUnkReserved,
+                                 [ In, MarshalAs(UnmanagedType.LPStruct) ] Guid iid,
+                                 [ In, MarshalAs(UnmanagedType.BStr) ] string bstrKey);
     }
-    #endregion
+#endregion
 }

@@ -34,7 +34,7 @@ namespace ProcessMonitor
          * So if you get client requests with a process ID don't try to open the process
          * as this will fail in some cases. Just search the ID in the following list and
          * extract information that is already there...
-         * 
+         *
          * Of course you can change the way this list is implemented and the information
          * it contains but you should keep the code semantic.
          */
@@ -55,14 +55,15 @@ namespace ProcessMonitor
             _noGAC = noGAC;
             InitializeComponent();
 
-            ProcessTimer = new System.Threading.Timer(new System.Threading.TimerCallback(OnProcessUpdate), null, 0, 5000);
+            ProcessTimer =
+                new System.Threading.Timer(new System.Threading.TimerCallback(OnProcessUpdate), null, 0, 5000);
 
             TIMER_Tick(null, null);
 
             /*
              * We will create a random named channel. This is where our injected
              * libraries will connect to!
-             * 
+             *
              * For people who don't know about NET-Remoting, please read some
              * valuable articles. In short, the client libraries will
              * just call the methods in "DemoInterface" and NET will pass
@@ -70,9 +71,7 @@ namespace ProcessMonitor
              * the result back. This is a great advantage; imagine how many
              * lines of native C++ code this would require!!!
              */
-            DemoServer = RemoteHooking.IpcCreateServer<DemoInterface>(
-                ref ChannelName,
-                WellKnownObjectMode.Singleton);
+            DemoServer = RemoteHooking.IpcCreateServer<DemoInterface>(ref ChannelName, WellKnownObjectMode.Singleton);
         }
 
         private static void OnProcessUpdate(Object InCallback)
@@ -93,7 +92,7 @@ namespace ProcessMonitor
                 SortedDictionary<String, ProcessInfo> Result = new SortedDictionary<string, ProcessInfo>();
 
                 // sort by name...
-                lock (ProcessList)
+                lock(ProcessList)
                 {
                     ActivePIDList.Clear();
 
@@ -171,14 +170,15 @@ namespace ProcessMonitor
                  */
                 LIST_Accesses.BeginUpdate();
 
-                lock (MonitorQueue)
+                lock(MonitorQueue)
                 {
                     while (MonitorQueue.Count > 0)
                     {
                         MonitorEntry Entry = MonitorQueue.Dequeue();
                         ListViewItem Item = LIST_Accesses.Items.Insert(0, Entry.ClientPID.ToString());
 
-                        Item.SubItems.Add(Entry.Timestamp.ToString("hh:mm:ss." + ((Entry.Timestamp.Ticks / 10000) % 1000).ToString()));
+                        Item.SubItems.Add(Entry.Timestamp.ToString(
+                            "hh:mm:ss." + ((Entry.Timestamp.Ticks / 10000) % 1000).ToString()));
                         Item.SubItems.Add(Entry.Access);
                     }
                 }
@@ -188,7 +188,7 @@ namespace ProcessMonitor
                 /*
                  * Update internal process list...
                  */
-                lock (ProcessList)
+                lock(ProcessList)
                 {
                     Boolean HasChanged = false;
 
@@ -240,11 +240,12 @@ namespace ProcessMonitor
                             SelIndex = LIST_Processes.Items.Count - 1;
 
                         LIST_Processes.Items[SelIndex].Selected = true;
-                        LIST_Processes.Items[SelIndex].EnsureVisible();
+                        LIST_Processes
+                            .Items [SelIndex]
+                            .EnsureVisible();
 
                         LIST_Processes.EndUpdate();
                     }
-
 
                     /*
                      * Update list of hooked processes...
@@ -287,19 +288,24 @@ namespace ProcessMonitor
 
                     RemoteHooking.Inject(
                         PID,
-                        (_noGAC ? InjectionOptions.DoNotRequireStrongName : InjectionOptions.Default), // if not using GAC allow assembly without strong name
-                        System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(DemoInterface).Assembly.Location), "ProcMonInject.dll"), // 32-bit version (the same because AnyCPU)
-                        System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(DemoInterface).Assembly.Location), "ProcMonInject.dll"), //"ProcMonInject.dll", // 64-bit version (the same because AnyCPU)
+                        (_noGAC ? InjectionOptions.DoNotRequireStrongName
+                         : InjectionOptions.Default), // if not using GAC allow assembly without strong name
+                        System.IO.Path.Combine(System.IO.Path.GetDirectoryName(typeof(DemoInterface).Assembly.Location),
+                                               "ProcMonInject.dll"), // 32-bit version (the same because AnyCPU)
+                        System.IO.Path.Combine(
+                            System.IO.Path.GetDirectoryName(typeof(DemoInterface).Assembly.Location),
+                            "ProcMonInject.dll"), //"ProcMonInject.dll", // 64-bit version (the same because AnyCPU)
                         // the optional parameter list...
                         ChannelName);
                 }
-                catch(Exception Msg)
+                catch (Exception Msg)
                 {
                     HookedProcesses.Remove(PID);
 
                     e.Item.Checked = false;
 
-                    MessageBox.Show(Msg.Message, "An error has occurred...", MessageBoxButtons.OK, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1);
+                    MessageBox.Show(Msg.Message, "An error has occurred...", MessageBoxButtons.OK, MessageBoxIcon.Error,
+                                    MessageBoxDefaultButton.Button1);
                 }
             }
             else
@@ -322,5 +328,4 @@ namespace ProcessMonitor
         }
     }
 
-    
 }

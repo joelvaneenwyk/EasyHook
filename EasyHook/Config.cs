@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -75,7 +75,7 @@ namespace EasyHook
         {
             get
             {
-                if(String.IsNullOrEmpty(helperLibraryLocation))
+                if (String.IsNullOrEmpty(helperLibraryLocation))
                 {
                     return Path.GetDirectoryName(typeof(Config).Assembly.Location);
                 }
@@ -146,24 +146,24 @@ namespace EasyHook
         /// to the GAC AFTER Visual Studio has initialized the debug session, there won't be
         /// any conflicts; at least so far...
         /// </para><para>
-        /// In debug versions of EasyHook, you may also check the "Application" event log, which holds additional information
-        /// about the GAC registration, after calling this method. In general this method works
+        /// In debug versions of EasyHook, you may also check the "Application" event log, which holds additional
+        /// information about the GAC registration, after calling this method. In general this method works
         /// transactionally. This means if something goes wrong, the GAC state of all related libraries
         /// won't be violated!
         /// </para><para>
         /// The problem with NET assemblies is that the CLR only searches the GAC and
         /// directories starting with the application base directory for assemblies.
-        /// To get injected assemblies working either all of them have to be located 
+        /// To get injected assemblies working either all of them have to be located
         /// under the target base directory (which is not suitable in most cases) or
-        /// reside in the GAC. 
+        /// reside in the GAC.
         /// </para><para>
         /// EasyHook provides a way to automatically register all of its own assemblies
         /// and custom ones temporarily in the GAC. It also ensures
-        /// that all of these assemblies are removed if the installing process exists. 
+        /// that all of these assemblies are removed if the installing process exists.
         /// So you don't need to care about and may write applications according to
         /// the XCOPY standard. If your application ships with an installer, you may
         /// statically install all of your assemblies and the ones of EasyHook into the
-        /// GAC. In this case just don't call <see cref="Register"/>. 
+        /// GAC. In this case just don't call <see cref="Register"/>.
         /// </para><para>
         /// Of course EasyHook does also take care of multiple processes using the same
         /// injection libraries. So if two processes are sharing some of those DLLs,
@@ -177,23 +177,21 @@ namespace EasyHook
         /// </para>
         /// </remarks>
         /// <param name="InDescription">
-        /// A description under which the installed files should be referenced. 
+        /// A description under which the installed files should be referenced.
         /// </param>
         /// <param name="InUserAssemblies">
-        /// A list of user assemblies as relative or absolute paths. 
+        /// A list of user assemblies as relative or absolute paths.
         /// </param>
         /// <exception cref="System.IO.FileNotFoundException">
         /// At least one of the files specified could not be found!
         /// </exception>
         /// <exception cref="BadImageFormatException">
-        /// Unable to load at least one of the given files for reflection. 
+        /// Unable to load at least one of the given files for reflection.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// At least one of the given files does not have a strong name.
         /// </exception>
-        public static void Register(
-            String InDescription,
-            params String[] InUserAssemblies)
+        public static void Register(String InDescription, params String[] InUserAssemblies)
         {
             List<Assembly> AsmList = new List<Assembly>();
             String RemovalList = "";
@@ -214,14 +212,19 @@ namespace EasyHook
                 String AsmPath = Path.GetFullPath(Files[i]);
 
                 if (!File.Exists(AsmPath))
-                    throw new System.IO.FileNotFoundException("The given assembly \"" + Files[i] + "\" (\"" + AsmPath + "\") does not exist.");
+                    throw new System.IO.FileNotFoundException("The given assembly \"" + Files[i] + "\" (\"" + AsmPath +
+                                                              "\") does not exist.");
 
                 // just validate that this is a NET assembly with valid metadata...
-                try { Entry = Assembly.ReflectionOnlyLoadFrom(AsmPath); }
+                try
+                {
+                    Entry = Assembly.ReflectionOnlyLoadFrom(AsmPath);
+                }
                 catch (Exception ExtInfo)
                 {
-                    throw new BadImageFormatException("Unable to load given assembly \"" + Files[i] + "\" (\"" + AsmPath +
-                        "\") for reflection. Is this a valid NET assembly?", ExtInfo);
+                    throw new BadImageFormatException("Unable to load given assembly \"" + Files[i] + "\" (\"" +
+                                                          AsmPath + "\") for reflection. Is this a valid NET assembly?",
+                                                      ExtInfo);
                 }
 
                 // is strongly named? (required for GAC)
@@ -248,16 +251,12 @@ namespace EasyHook
             // run cleanup service
             InDescription = InDescription.Replace('"', '\'');
 
-            Config.RunCommand(
-                "GACRemover", false, false, Config.GetDependantSvcExecutableName(), Process.GetCurrentProcess().Id.ToString() + " \"" +
-                    Convert.ToBase64String(IdentData) + "\" \"" + InDescription + "\"" + RemovalList);
+            Config.RunCommand("GACRemover", false, false, Config.GetDependantSvcExecutableName(),
+                              Process.GetCurrentProcess().Id.ToString() + " \"" + Convert.ToBase64String(IdentData) +
+                                  "\" \"" + InDescription + "\"" + RemovalList);
 
             // install assemblies
-            NativeAPI.GacInstallAssemblies(
-                    InstallList.ToArray(),
-                    InDescription,
-                    Convert.ToBase64String(IdentData));
-
+            NativeAPI.GacInstallAssemblies(InstallList.ToArray(), InDescription, Convert.ToBase64String(IdentData));
         }
 
 #pragma warning disable 1591
@@ -287,9 +286,15 @@ namespace EasyHook
 
             switch (InType)
             {
-                case EventLogEntryType.Error: Entry = "[error]: " + Entry; break;
-                case EventLogEntryType.Information: Entry = "[comment]: " + Entry; break;
-                case EventLogEntryType.Warning: Entry = "[warning]: " + Entry; break;
+            case EventLogEntryType.Error:
+                Entry = "[error]: " + Entry;
+                break;
+            case EventLogEntryType.Information:
+                Entry = "[comment]: " + Entry;
+                break;
+            case EventLogEntryType.Warning:
+                Entry = "[warning]: " + Entry;
+                break;
             }
 
             try
@@ -307,9 +312,9 @@ namespace EasyHook
                 }
                 {
 #if !DEBUG
-                if(InType == EventLogEntryType.Error)
+                    if (InType == EventLogEntryType.Error)
 #endif
-                    EventLog.WriteEntry("EasyHook", Entry, InType);
+                        EventLog.WriteEntry("EasyHook", Entry, InType);
                 }
             }
             catch
@@ -322,12 +327,8 @@ namespace EasyHook
         }
 
         [Obsolete("This method is exported for internal use only.")]
-        public static void RunCommand(
-            String InFriendlyName,
-            Boolean InWaitForExit,
-            Boolean InShellExecute,
-            String InPath,
-            String InArguments)
+        public static void RunCommand(String InFriendlyName, Boolean InWaitForExit, Boolean InShellExecute,
+                                      String InPath, String InArguments)
         {
             InPath = Path.GetFullPath(InPath);
 
@@ -372,6 +373,5 @@ namespace EasyHook
         }
 
 #pragma warning restore 1591
-
     }
 }

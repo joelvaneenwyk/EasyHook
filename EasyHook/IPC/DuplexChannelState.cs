@@ -1,6 +1,6 @@
 ﻿/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -25,27 +25,26 @@ using System;
 
 namespace EasyHook.IPC
 {
-  /// <summary>
-  /// Defines the state of a <see cref="DuplexChannel{T}"/>.
-  /// </summary>
-  [Flags]
-  internal enum DuplexChannelState
-  {
     /// <summary>
-    /// The channel is down.
+    /// Defines the state of a <see cref="DuplexChannel{T}"/>.
     /// </summary>
-    Down = 0x00,
-    /// <summary>
-    /// The remote endpoint is able to send messages to the local endpoint.
-    /// </summary>
-    ServerUp = 0x01,
-    /// <summary>
-    /// The local endpoint is able to send messages to the remote endpoint.
-    /// </summary>
-    ClientUp = 0x02,
-    /// <summary>
-    /// Both endpoints can communicate in either direction.
-    /// </summary>
-    FullDuplex = 0x03
-  }
+    [Flags]
+    internal enum DuplexChannelState {
+        /// <summary>
+        /// The channel is down.
+        /// </summary>
+        Down = 0x00,
+        /// <summary>
+        /// The remote endpoint is able to send messages to the local endpoint.
+        /// </summary>
+        ServerUp = 0x01,
+        /// <summary>
+        /// The local endpoint is able to send messages to the remote endpoint.
+        /// </summary>
+        ClientUp = 0x02,
+        /// <summary>
+        /// Both endpoints can communicate in either direction.
+        /// </summary>
+        FullDuplex = 0x03
+    }
 }

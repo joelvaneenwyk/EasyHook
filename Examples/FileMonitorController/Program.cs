@@ -17,18 +17,16 @@ namespace FileMonitorController
             bool noGAC = false;
             try
             {
-                Config.Register(
-                    "TestFileMonitorController",
-                    "FileMonitorController.exe",
-                    "FileMonitorInterceptor.dll",
-                    "FileMonitorInterface.dll");
+                Config.Register("TestFileMonitorController", "FileMonitorController.exe", "FileMonitorInterceptor.dll",
+                                "FileMonitorInterface.dll");
             }
             catch (ApplicationException)
             {
-                MessageBox.Show("This is an administrative task! Attempting without GAC...", "Permission denied...", MessageBoxButtons.OK);
+                MessageBox.Show("This is an administrative task! Attempting without GAC...", "Permission denied...",
+                                MessageBoxButtons.OK);
 
                 noGAC = true;
-                //System.Diagnostics.Process.GetCurrentProcess().Kill();
+                // System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
 
             Application.EnableVisualStyles();

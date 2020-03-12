@@ -6,8 +6,7 @@ using System.Windows.Forms;
 
 namespace FileMonitorController
 {
-    public enum ListViewExtendedStyles
-    {
+    public enum ListViewExtendedStyles {
         /// <summary>
         /// LVS_EX_GRIDLINES
         /// </summary>
@@ -94,8 +93,7 @@ namespace FileMonitorController
         SimpleSelect = 0x00100000
     }
 
-    public enum ListViewMessages
-    {
+    public enum ListViewMessages {
         First = 0x1000,
         SetExtendedStyle = (First + 54),
         GetExtendedStyle = (First + 55),

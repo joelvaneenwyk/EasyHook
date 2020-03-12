@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,7 +37,7 @@ namespace EasyHook
     /// Provides a managed interface to the native thread ACLs.
     /// </summary>
     /// <remarks>
-    /// Refer to the official guide to learn more about why thread ACLs are useful. 
+    /// Refer to the official guide to learn more about why thread ACLs are useful.
     /// They can be used to exclude/include dedicated threads from interception or to dynamically
     /// apply different kind of hooks to different threads. Even if you could do this
     /// in managed code, it is not that easy to implement and also EasyHook evaluates
@@ -53,11 +53,23 @@ namespace EasyHook
         /// <summary>
         /// Is this ACL an exclusive one? Refer to <see cref="SetExclusiveACL"/> for more information.
         /// </summary>
-        public Boolean IsExclusive { get { return m_IsExclusive; } }
+        public Boolean IsExclusive
+        {
+            get
+            {
+                return m_IsExclusive;
+            }
+        }
         /// <summary>
         /// Is this ACL an inclusive one? Refer to <see cref="SetInclusiveACL"/> for more information.
         /// </summary>
-        public Boolean IsInclusive { get { return !IsExclusive; } }
+        public Boolean IsInclusive
+        {
+            get
+            {
+                return !IsExclusive;
+            }
+        }
 
         /// <summary>
         /// Sets an inclusive ACL. This means all threads that are enumerated through <paramref name="InACL"/>
@@ -172,20 +184,22 @@ namespace EasyHook
         }
 
         ///	<summary>
-        ///	The user callback initially passed to either <see cref="LocalHook.Create"/> or <see cref="LocalHook.CreateUnmanaged"/>.
+        ///	The user callback initially passed to either <see cref="LocalHook.Create"/> or <see
+        ///cref="LocalHook.CreateUnmanaged"/>.
         /// Executes in max. one micro secound.
         ///	</summary>
         ///	<exception cref="NotSupportedException"> The current thread is not within a valid hook handler. </exception>
-        public static Object Callback 
-        { 
-            get 
+        public static Object Callback
+        {
+            get
             {
                 return Handle.Callback;
-            } 
+            }
         }
 
         ///	<summary>
-        ///	The hook handle initially returned by either <see cref="LocalHook.Create"/> or <see cref="LocalHook.CreateUnmanaged"/>.
+        ///	The hook handle initially returned by either <see cref="LocalHook.Create"/> or <see
+        ///cref="LocalHook.CreateUnmanaged"/>.
         /// Executes in max. one micro secound.
         ///	</summary>
         ///	<exception cref="NotSupportedException"> The current thread is not within a valid hook handler. </exception>
@@ -206,7 +220,7 @@ namespace EasyHook
 
         /// <summary>
         /// Allows you to explicitly update the unmanaged module list which is required for
-        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>. 
+        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>.
         /// Normally this is not necessary, but if you hook a process that frequently loads/unloads modules, you
         /// may call this method in a <c>LoadLibrary</c> hook to always operate on the latest module list.
         /// </summary>
@@ -259,13 +273,13 @@ namespace EasyHook
 
         /// <summary>
         /// Determines the first unmanaged module on the current call stack. This is always the module
-        /// that invoked the hook. 
+        /// that invoked the hook.
         /// Executes in max. 15 micro secounds.
         /// </summary>
         /// <remarks>
         /// The problem is that if the calling module is a NET assembly
         /// and invokes the hook through a P-Invoke binding, you will get
-        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example 
+        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example
         /// but I think you got the idea. To solve this issue, refer to <see cref="UnmanagedStackTrace"/>
         /// and <see cref="ManagedStackTrace"/>!
         /// </remarks>
@@ -279,7 +293,7 @@ namespace EasyHook
 
         /// <summary>
         /// Determines the first managed module on the current call stack. This is always the module
-        /// that invoked the hook. 
+        /// that invoked the hook.
         /// Executes in max. 40 micro secounds.
         /// </summary>
         /// <remarks>
@@ -403,9 +417,9 @@ namespace EasyHook
 
                 try
                 {
-                    if(StackBuffer == null)
+                    if (StackBuffer == null)
                         StackBuffer = new StackTraceBuffer();
-                    
+
                     Int16 Count = NativeAPI.RtlCaptureStackBackTrace(0, 32, StackBuffer.Unmanaged, IntPtr.Zero);
                     ProcessModule[] Result = new ProcessModule[Count];
 
@@ -413,7 +427,8 @@ namespace EasyHook
 
                     for (int i = 0; i < Count; i++)
                     {
-                        Result[i] = PointerToModule(StackBuffer.Managed[i]);
+                        Result [i]
+                        = PointerToModule(StackBuffer.Managed[i]);
                     }
 
                     return Result;
@@ -446,7 +461,9 @@ namespace EasyHook
 
                     for (int i = 0; i < Frames.Length; i++)
                     {
-                        Result[i] = Frames[i].GetMethod().Module;
+                        Result[i] = Frames [i]
+                                        .GetMethod()
+                                        .Module;
                     }
 
                     return Result;
@@ -482,12 +499,20 @@ namespace EasyHook
             Dispose();
         }
 
-        private LocalHook() { }
+        private LocalHook()
+        {
+        }
 
         /// <summary>
         /// The callback passed to <see cref="Create"/>.
         /// </summary>
-        public Object Callback { get { return m_Callback; } }
+        public Object Callback
+        {
+            get
+            {
+                return m_Callback;
+            }
+        }
 
         /// <summary>
         /// Returns the thread ACL associated with this hook. Refer to <see cref="IsThreadIntercepted"/>
@@ -496,7 +521,8 @@ namespace EasyHook
         /// <exception cref="ObjectDisposedException">
         /// The underlying hook is already disposed.
         /// </exception>
-        public HookAccessControl ThreadACL {
+        public HookAccessControl ThreadACL
+        {
             get
             {
                 if (IntPtr.Zero == m_Handle)
@@ -537,7 +563,7 @@ namespace EasyHook
         /// <code>
         /// if(InThreadID == 0)
         ///     InThreadID = GetCurrentThreadId();
-        /// 
+        ///
         /// if(GlobalACL.Contains(InThreadID))
         /// {
         ///     if(LocalACL.Contains(InThreadID))
@@ -549,7 +575,7 @@ namespace EasyHook
         /// 	{
         /// 		if(GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
@@ -565,12 +591,12 @@ namespace EasyHook
         /// 	{
         /// 		if(!GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
         /// }
-        /// 
+        ///
         /// return true;
         /// </code>
         /// </para>
@@ -596,22 +622,28 @@ namespace EasyHook
         /// Returns the gloabl thread ACL associated with ALL hooks. Refer to <see cref="IsThreadIntercepted"/>
         /// for more information about access negotiation.
         /// </summary>
-        public static HookAccessControl GlobalThreadACL { get { return m_GlobalThreadACL; } }
+        public static HookAccessControl GlobalThreadACL
+        {
+            get
+            {
+                return m_GlobalThreadACL;
+            }
+        }
 
         /// <summary>
         /// If you want to immediately uninstall a hook, the only way is to dispose it. A disposed
         /// hook is guaranteed to never invoke your handler again but may still consume
-        /// memory even for process life-time! 
+        /// memory even for process life-time!
         /// </summary>
         /// <remarks>
-        /// As we are living in a manged world, you don't have to dispose a hook because the next 
+        /// As we are living in a manged world, you don't have to dispose a hook because the next
         /// garbage collection will do it for you, assuming that your code does not reference it
         /// anymore. But there are times when you want to uninstall it excplicitly, with no delay.
         /// If you dispose a disposed or not installed hook, nothing will happen!
         /// </remarks>
         public void Dispose()
         {
-            lock (m_ThreadSafe)
+            lock(m_ThreadSafe)
             {
                 if (IntPtr.Zero == m_Handle)
                     return;
@@ -656,17 +688,16 @@ namespace EasyHook
         /// </remarks>
         /// <param name="InTargetProc">A target entry point that should be hooked.</param>
         /// <param name="InNewProc">A handler with the same signature as the original entry point
-        /// that will be invoked for every call that has passed the Fiber Deadlock Barrier and various integrity checks.</param>
-        /// <param name="InCallback">An uninterpreted callback that will later be available through <see cref="HookRuntimeInfo.Callback"/>.</param>
-        /// <returns>
-        /// A handle to the newly created hook.
+        /// that will be invoked for every call that has passed the Fiber Deadlock Barrier and various integrity
+        /// checks.</param> <param name="InCallback">An uninterpreted callback that will later be available through <see
+        /// cref="HookRuntimeInfo.Callback"/>.</param> <returns> A handle to the newly created hook.
         /// </returns>
         /// <exception cref="OutOfMemoryException">
         /// Not enough memory available to complete the operation. On 64-Bit this may also indicate
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">
@@ -675,10 +706,7 @@ namespace EasyHook
         /// <exception cref="InsufficientMemoryException">
         /// The maximum amount of hooks has been installed. This is currently set to MAX_HOOK_COUNT (1024).
         /// </exception>
-        public static LocalHook Create(
-            IntPtr InTargetProc,
-            Delegate InNewProc,
-            Object InCallback)
+        public static LocalHook Create(IntPtr InTargetProc, Delegate InNewProc, Object InCallback)
         {
             LocalHook Result = new LocalHook();
 
@@ -691,13 +719,10 @@ namespace EasyHook
 
             try
             {
-                NativeAPI.LhInstallHook(
-                    InTargetProc,
-                    Marshal.GetFunctionPointerForDelegate(Result.m_HookProc),
-                    GCHandle.ToIntPtr(Result.m_SelfHandle),
-                    Result.m_Handle);
+                NativeAPI.LhInstallHook(InTargetProc, Marshal.GetFunctionPointerForDelegate(Result.m_HookProc),
+                                        GCHandle.ToIntPtr(Result.m_SelfHandle), Result.m_Handle);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Marshal.FreeCoTaskMem(Result.m_Handle);
                 Result.m_Handle = IntPtr.Zero;
@@ -713,9 +738,9 @@ namespace EasyHook
         }
 
         /// <summary>
-        /// Installs an unmanaged hook. After this you'll have to activate it by setting a proper <see cref="ThreadACL"/>.
-        /// <see cref="HookRuntimeInfo"/> WON'T be supported! Refer to the native "LhBarrierXxx" APIs to
-        /// access unmanaged hook runtime information.
+        /// Installs an unmanaged hook. After this you'll have to activate it by setting a proper <see
+        /// cref="ThreadACL"/>. <see cref="HookRuntimeInfo"/> WON'T be supported! Refer to the native "LhBarrierXxx"
+        /// APIs to access unmanaged hook runtime information.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -729,27 +754,26 @@ namespace EasyHook
         /// you will get a high-performance interface, because
         /// a switch from unmanaged to managed code seems to be rather time consuming without doing anything
         /// useful (at least nothing visible); so a hook omitting this switch will be handled one or two
-        /// orders of magnitudes faster until finally your handler gains execution. But as a managed hook is still executed
-        /// within at last 1000 nano-seconds, even the "slow" managed implementation will be fast enough in most
-        /// cases. With C++.NET you would be able to provide such native high-speed hooks for frequently
-        /// called API methods, while still using managed ones for usual API methods, within a single assembly!
-        /// A pure unmanaged, empty hook executes in approx. 70 nano-seconds, which is incredible fast
-        /// considering the thread deadlock barrier and thread ACL negotiation that are already included in this benchmark!
+        /// orders of magnitudes faster until finally your handler gains execution. But as a managed hook is still
+        /// executed within at last 1000 nano-seconds, even the "slow" managed implementation will be fast enough in
+        /// most cases. With C++.NET you would be able to provide such native high-speed hooks for frequently called API
+        /// methods, while still using managed ones for usual API methods, within a single assembly! A pure unmanaged,
+        /// empty hook executes in approx. 70 nano-seconds, which is incredible fast considering the thread deadlock
+        /// barrier and thread ACL negotiation that are already included in this benchmark!
         /// </para>
         /// </remarks>
         /// <param name="InTargetProc">A target entry point that should be hooked.</param>
         /// <param name="InNewProc">A handler with the same signature as the original entry point
-        /// that will be invoked for every call that has passed the Thread Deadlock Barrier and various integrity checks.</param>
-        /// <param name="InCallback">An uninterpreted callback that will later be available through <c>LhBarrierGetCallback()</c>.</param>
-        /// <returns>
-        /// A handle to the newly created hook.
+        /// that will be invoked for every call that has passed the Thread Deadlock Barrier and various integrity
+        /// checks.</param> <param name="InCallback">An uninterpreted callback that will later be available through
+        /// <c>LhBarrierGetCallback()</c>.</param> <returns> A handle to the newly created hook.
         /// </returns>
         /// <exception cref="OutOfMemoryException">
         /// Not enough memory available to complete the operation. On 64-Bit this may also indicate
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">
@@ -758,10 +782,7 @@ namespace EasyHook
         /// <exception cref="InsufficientMemoryException">
         /// The maximum amount of hooks has been installed. This is currently set to MAX_HOOK_COUNT (1024).
         /// </exception>
-        public static LocalHook CreateUnmanaged(
-            IntPtr InTargetProc,
-            IntPtr InNewProc,
-            IntPtr InCallback)
+        public static LocalHook CreateUnmanaged(IntPtr InTargetProc, IntPtr InNewProc, IntPtr InCallback)
         {
             LocalHook Result = new LocalHook();
 
@@ -774,11 +795,7 @@ namespace EasyHook
 
             try
             {
-                NativeAPI.LhInstallHook(
-                    InTargetProc,
-                    InNewProc,
-                    InCallback,
-                    Result.m_Handle);
+                NativeAPI.LhInstallHook(InTargetProc, InNewProc, InCallback, Result.m_Handle);
             }
             catch (Exception e)
             {
@@ -816,9 +833,7 @@ namespace EasyHook
         /// <exception cref="MissingMethodException">
         /// The given module does not export the desired method.
         /// </exception>
-        public static IntPtr GetProcAddress(
-            String InModule,
-            String InSymbolName)
+        public static IntPtr GetProcAddress(String InModule, String InSymbolName)
         {
             IntPtr Module = NativeAPI.GetModuleHandle(InModule);
 
@@ -854,15 +869,15 @@ namespace EasyHook
         /// <exception cref="MissingMethodException">
         /// The given module does not export the given method.
         /// </exception>
-        public static TDelegate GetProcDelegate<TDelegate>(
-            String InModule,
-            String InSymbolName)
+        public static TDelegate GetProcDelegate<TDelegate>(String InModule, String InSymbolName)
         {
-            return (TDelegate)(Object)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InModule, InSymbolName), typeof(TDelegate));
+            return (TDelegate)(Object)Marshal.GetDelegateForFunctionPointer(GetProcAddress(InModule, InSymbolName),
+                                                                            typeof(TDelegate));
         }
 
         /// <summary>
-        /// Processes any pending hook removals. Warning! This method can be quite slow (1 second) under certain circumstances.
+        /// Processes any pending hook removals. Warning! This method can be quite slow (1 second) under certain
+        /// circumstances.
         /// </summary>
         /// <see cref="NativeAPI.LhWaitForPendingRemovals()"/>
         public static void Release()

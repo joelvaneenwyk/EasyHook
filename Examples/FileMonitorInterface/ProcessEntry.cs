@@ -8,17 +8,29 @@ namespace FileMonitorInterface
         /// <summary>
         /// Gets the full path to the image.
         /// </summary>
-        public string FullPath { get; set; }
+        public string FullPath
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets the short name to the image.
         /// </summary>
-        public string ImageName { get; set; }
+        public string ImageName
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets the process ID.
         /// </summary>
-        public int Id { get; set; }
+        public int Id
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Gets whether this process is 64-bit.
@@ -28,6 +40,10 @@ namespace FileMonitorInterface
         /// <summary>
         /// Gets the owner of this process.
         /// </summary>
-        public string Owner { get; set; }
+        public string Owner
+        {
+            get;
+            set;
+        }
     }
 }

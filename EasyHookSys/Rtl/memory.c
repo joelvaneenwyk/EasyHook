@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -27,49 +27,45 @@
 
 void RtlInitializeLock(RTL_SPIN_LOCK* OutLock)
 {
-	KeInitializeSpinLock(&OutLock->Lock);
+    KeInitializeSpinLock(&OutLock->Lock);
 
-	OutLock->OldIrql = PASSIVE_LEVEL;
+    OutLock->OldIrql = PASSIVE_LEVEL;
 }
 
 void RtlAcquireLock(RTL_SPIN_LOCK* InLock)
 {
-	KeAcquireSpinLock(&InLock->Lock, &InLock->OldIrql);
+    KeAcquireSpinLock(&InLock->Lock, &InLock->OldIrql);
 }
 
 void RtlReleaseLock(RTL_SPIN_LOCK* InLock)
 {
-	KeReleaseSpinLock(&InLock->Lock, InLock->OldIrql);
+    KeReleaseSpinLock(&InLock->Lock, InLock->OldIrql);
 }
 
 void RtlDeleteLock(RTL_SPIN_LOCK* InLock)
 {
-	RtlZeroMemory(InLock, sizeof(RTL_SPIN_LOCK));
+    RtlZeroMemory(InLock, sizeof(RTL_SPIN_LOCK));
 }
 
 void RtlSleep(ULONG InTimeout)
 {
-	KEVENT				Event;
-	LARGE_INTEGER		DueTime;
+    KEVENT Event;
+    LARGE_INTEGER DueTime;
 
-	DueTime.QuadPart = -10 * 1000 * InTimeout;
+    DueTime.QuadPart = -10 * 1000 * InTimeout;
 
-	KeInitializeEvent(&Event, NotificationEvent, FALSE);
+    KeInitializeEvent(&Event, NotificationEvent, FALSE);
 
     KeWaitForSingleObject(&Event, Executive, KernelMode, FALSE, &DueTime);
 }
 
-
-void RtlCopyMemory(
-            PVOID InDest,
-            PVOID InSource,
-            ULONG InByteCount)
+void RtlCopyMemory(PVOID InDest, PVOID InSource, ULONG InByteCount)
 {
-    ULONG       Index;
-    UCHAR*      Dest = (UCHAR*)InDest;
-    UCHAR*      Src = (UCHAR*)InSource;
+    ULONG Index;
+    UCHAR* Dest = (UCHAR*)InDest;
+    UCHAR* Src = (UCHAR*)InSource;
 
-    for(Index = 0; Index < InByteCount; Index++)
+    for (Index = 0; Index < InByteCount; Index++)
     {
         *Dest = *Src;
 
@@ -78,35 +74,29 @@ void RtlCopyMemory(
     }
 }
 
-BOOL RtlMoveMemory(
-            PVOID InDest,
-            PVOID InSource,
-            ULONG InByteCount)
+BOOL RtlMoveMemory(PVOID InDest, PVOID InSource, ULONG InByteCount)
 {
-    PVOID       Buffer = RtlAllocateMemory(FALSE, InByteCount);
+    PVOID Buffer = RtlAllocateMemory(FALSE, InByteCount);
 
-    if(Buffer == NULL)
-        return FALSE;
+    if (Buffer == NULL) return FALSE;
 
     RtlCopyMemory(Buffer, InSource, InByteCount);
     RtlCopyMemory(InDest, Buffer, InByteCount);
 
-	RtlFreeMemory(Buffer);
+    RtlFreeMemory(Buffer);
 
     return TRUE;
 }
 
 #ifndef _DEBUG
-    #pragma optimize ("", off) // suppress _memset
+#    pragma optimize("", off)  // suppress _memset
 #endif
-void RtlZeroMemory(
-            PVOID InTarget,
-            ULONG InByteCount)
+void RtlZeroMemory(PVOID InTarget, ULONG InByteCount)
 {
-    ULONG           Index;
-    UCHAR*          Target = (UCHAR*)InTarget;
+    ULONG Index;
+    UCHAR* Target = (UCHAR*)InTarget;
 
-    for(Index = 0; Index < InByteCount; Index++)
+    for (Index = 0; Index < InByteCount; Index++)
     {
         *Target = 0;
 
@@ -114,16 +104,14 @@ void RtlZeroMemory(
     }
 }
 #ifndef _DEBUG
-    #pragma optimize ("", on) 
+#    pragma optimize("", on)
 #endif
-
 
 void* RtlAllocateMemory(BOOL InZeroMemory, ULONG InSize)
 {
-    void*       Result = ExAllocatePoolWithTag(NonPagedPool, InSize, 'HOOK');
+    void* Result = ExAllocatePoolWithTag(NonPagedPool, InSize, 'HOOK');
 
-    if(InZeroMemory && (Result != NULL))
-        RtlZeroMemory(Result, InSize);
+    if (InZeroMemory && (Result != NULL)) RtlZeroMemory(Result, InSize);
 
     return Result;
 }
@@ -135,13 +123,12 @@ LONG RtlProtectMemory(void* InPointer, ULONG InSize, ULONG InNewProtection)
 
 void RtlFreeMemory(void* InPointer)
 {
-	ExFreePool(InPointer);
+    ExFreePool(InPointer);
 }
 
 BOOL RtlIsValidPointer(PVOID InPtr, ULONG InSize)
 {
-    if((InPtr == NULL) || (InPtr == (PVOID)~0))
-        return FALSE;
+    if ((InPtr == NULL) || (InPtr == (PVOID)~0)) return FALSE;
 
     return TRUE;
 }
@@ -150,26 +137,26 @@ BOOL RtlIsValidPointer(PVOID InPtr, ULONG InSize)
 // Write Protection Off
 KIRQL RtlWPOff()
 {
-	// prevent rescheduling 
-	KIRQL irql = KeRaiseIrqlToDpcLevel();
-	// disable memory protection (disable WP bit of CR0)   
-	UINT64 cr0 = __readcr0();
-	cr0 &= ~0x10000;
-	__writecr0(cr0);
-	// disable interrupts
-	_disable();
-	return irql;
+    // prevent rescheduling
+    KIRQL irql = KeRaiseIrqlToDpcLevel();
+    // disable memory protection (disable WP bit of CR0)
+    UINT64 cr0 = __readcr0();
+    cr0 &= ~0x10000;
+    __writecr0(cr0);
+    // disable interrupts
+    _disable();
+    return irql;
 }
-//Write Protection On
+// Write Protection On
 void RtlWPOn(KIRQL irql)
 {
-	// re-enable memory protection (enable WP bit of CR0)   
-	UINT64 cr0 = __readcr0();
-	cr0 |= 0x10000;
-	// enable interrupts
-	_enable();
-	__writecr0(cr0);
-	// lower irql again
-	KeLowerIrql(irql);
+    // re-enable memory protection (enable WP bit of CR0)
+    UINT64 cr0 = __readcr0();
+    cr0 |= 0x10000;
+    // enable interrupts
+    _enable();
+    __writecr0(cr0);
+    // lower irql again
+    KeLowerIrql(irql);
 }
 #endif

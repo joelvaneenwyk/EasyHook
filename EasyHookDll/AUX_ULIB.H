@@ -19,120 +19,108 @@ Abstract:
 #include <windows.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/*++
+    /*++
 
-Routine Description:
+    Routine Description:
 
-    This routine must be successfully called by an application before any
-    other routine in the library may be called. It serves to initialize any global
-    state that may be required by other routines in the file.
+        This routine must be successfully called by an application before any
+        other routine in the library may be called. It serves to initialize any global
+        state that may be required by other routines in the file.
 
-    It is safe to call this routine in a multi-threaded environment.
-    
-Arguments:
+        It is safe to call this routine in a multi-threaded environment.
 
-    None.
+    Arguments:
 
-Return Value:
+        None.
 
-    Boolean status. Error code available via GetLastError ().
+    Return Value:
 
---*/
+        Boolean status. Error code available via GetLastError ().
 
-BOOL
-WINAPI
-AuxUlibInitialize (
-    VOID
-    );
+    --*/
 
-/*++
+    BOOL WINAPI AuxUlibInitialize(VOID);
 
-Routine Description:
+    /*++
 
-    This routine is used to set the current file system cache working set size. It 
-    requires that the caller has enabled the SE_INCREASE_QUOTA_PRIVILEGE 
-    in the currently active token prior to invoking this routine.
+    Routine Description:
 
-    This API is supported on Windows 2000 and later.
-    
-Arguments:
+        This routine is used to set the current file system cache working set size. It
+        requires that the caller has enabled the SE_INCREASE_QUOTA_PRIVILEGE
+        in the currently active token prior to invoking this routine.
 
-    MinimumFileCacheSize - The minimum file cache size. Use (SIZE_T)-1 if 
-        the file cache is being flushed.
+        This API is supported on Windows 2000 and later.
 
-    MaximumFileCacheSize - The maximum file cache size. Use (SIZE_T)-1 
-        if the file cache is being flushed.
+    Arguments:
 
-    Flags - Flags relevant to the file cache size adjustment. Currently this must 
-        be zero.
+        MinimumFileCacheSize - The minimum file cache size. Use (SIZE_T)-1 if
+            the file cache is being flushed.
 
-Return Value:
+        MaximumFileCacheSize - The maximum file cache size. Use (SIZE_T)-1
+            if the file cache is being flushed.
 
-    Boolean status. Error code available via GetLastError (). If the routine is
-        invoked prior to invoking the initialization routine, the returned error code
-        will be ERROR_INVALID_FUNCTION.
+        Flags - Flags relevant to the file cache size adjustment. Currently this must
+            be zero.
 
---*/
+    Return Value:
 
-BOOL 
-WINAPI
-AuxUlibSetSystemFileCacheSize (
-    IN SIZE_T MinimumFileCacheSize,
-    IN SIZE_T MaximumFileCacheSize,
-    IN DWORD Flags
-   );
+        Boolean status. Error code available via GetLastError (). If the routine is
+            invoked prior to invoking the initialization routine, the returned error code
+            will be ERROR_INVALID_FUNCTION.
 
-/*++
+    --*/
 
-Routine Description:
+    BOOL WINAPI AuxUlibSetSystemFileCacheSize(IN SIZE_T MinimumFileCacheSize, IN SIZE_T MaximumFileCacheSize, IN DWORD Flags);
 
-    This routine is used to determine whether or not the caller is executing
-    code while holding a system synchronization primitive. Such a situation
-    can arise when the OS temporarily calls into user-specified code as part 
-    of the DLL load procedure.
+    /*++
 
-    A caller can benefit from this information by avoiding operations that 
-    could potentially lead to deadlocks, e.g., acquiring a process private lock.
+    Routine Description:
 
-    For example, consider the following case:
+        This routine is used to determine whether or not the caller is executing
+        code while holding a system synchronization primitive. Such a situation
+        can arise when the OS temporarily calls into user-specified code as part
+        of the DLL load procedure.
 
-        Thread A runs the THREAD_ATTACH routine for DLL X. This routine
-            is invoked with OS DLL synchronization held. Suppose further that
-            as part of this routine Thread A acquires some lock in DLL X (Lx).
+        A caller can benefit from this information by avoiding operations that
+        could potentially lead to deadlocks, e.g., acquiring a process private lock.
 
-        Thread B runs some code in DLL X that, while holding Lx, calls the OS
-            library loader to, e.g. GetModuleHandle. As this routine acquires
-            OS DLL synchronization, Thread B will deadlock with Thread A.
+        For example, consider the following case:
 
-        This is an inherent limitation in the design of the OS loader as it
-        performs such callouts as THREAD_ATTACH while holding loader
-        synchronization. It can be partially ameliorated if Thread A detects
-        that it is running with DLL synchronization held and only try-acquires
-        other locks (such as Lx) that it may wish to take
-    
-Arguments:
+            Thread A runs the THREAD_ATTACH routine for DLL X. This routine
+                is invoked with OS DLL synchronization held. Suppose further that
+                as part of this routine Thread A acquires some lock in DLL X (Lx).
 
-    SynchronizationHeld - Boolean value which indicates whether or not
-        synchronization is held.
+            Thread B runs some code in DLL X that, while holding Lx, calls the OS
+                library loader to, e.g. GetModuleHandle. As this routine acquires
+                OS DLL synchronization, Thread B will deadlock with Thread A.
 
-Return Value:
+            This is an inherent limitation in the design of the OS loader as it
+            performs such callouts as THREAD_ATTACH while holding loader
+            synchronization. It can be partially ameliorated if Thread A detects
+            that it is running with DLL synchronization held and only try-acquires
+            other locks (such as Lx) that it may wish to take
 
-    Boolean status. Error code available via GetLastError (). If the routine is
-        invoked prior to invoking the initialization routine, the returned error code
-        will be ERROR_INVALID_FUNCTION.
+    Arguments:
 
---*/
+        SynchronizationHeld - Boolean value which indicates whether or not
+            synchronization is held.
 
-BOOL WINAPI
-AuxUlibIsDLLSynchronizationHeld (
-    OUT PBOOL SynchronizationHeld
-    );
+    Return Value:
+
+        Boolean status. Error code available via GetLastError (). If the routine is
+            invoked prior to invoking the initialization routine, the returned error code
+            will be ERROR_INVALID_FUNCTION.
+
+    --*/
+
+    BOOL WINAPI AuxUlibIsDLLSynchronizationHeld(OUT PBOOL SynchronizationHeld);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // _AUX_SHLD_LIB_H
+#endif  // _AUX_SHLD_LIB_H

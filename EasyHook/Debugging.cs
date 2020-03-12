@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -51,14 +51,14 @@ namespace EasyHook
         /// </summary>
         /// <remarks>
         /// This is not always possible. The handle has to be opened with <c>THREAD_QUERY_INFORMATION</c>
-        /// access. 
+        /// access.
         /// </remarks>
         /// <param name="InThreadHandle">A valid thread handle.</param>
         /// <returns>A valid thread ID associated with the given thread handle.</returns>
         /// <exception cref="AccessViolationException">
         /// The given handle was not opened with <c>THREAD_QUERY_INFORMATION</c> access.</exception>
         /// <exception cref="ArgumentException">
-        /// The handle is invalid. 
+        /// The handle is invalid.
         /// </exception>
         /// <exception cref="NotSupportedException">
         /// Should never occur and just notifies you that a handle to thread ID conversion is not
@@ -78,14 +78,14 @@ namespace EasyHook
         /// </summary>
         /// <remarks>
         /// This is not always possible. The handle has to be opened with <c>PROCESS_QUERY_INFORMATION</c>
-        /// access. 
+        /// access.
         /// </remarks>
         /// <param name="InProcessHandle">A valid process handle.</param>
         /// <returns>A valid process ID associated with the given process handle.</returns>
         /// <exception cref="AccessViolationException">
         /// The given handle was not opened with <c>PROCESS_QUERY_INFORMATION</c> access.</exception>
         /// <exception cref="ArgumentException">
-        /// The handle is invalid. 
+        /// The handle is invalid.
         /// </exception>
         /// <exception cref="NotSupportedException">
         /// Should never occur and just notifies you that a handle to thread ID conversion is not
@@ -100,7 +100,7 @@ namespace EasyHook
             return Result;
         }
 
-        [StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private class UNICODE_STRING
         {
             public Int16 Length;
@@ -135,7 +135,7 @@ namespace EasyHook
 
             ~NameBuffer()
             {
-                if(Buffer != IntPtr.Zero)
+                if (Buffer != IntPtr.Zero)
                     Marshal.FreeCoTaskMem(Buffer);
 
                 Buffer = IntPtr.Zero;
@@ -167,22 +167,13 @@ namespace EasyHook
         {
             Int32 RequiredSize;
 
-            NativeAPI.DbgHandleToObjectName(
-                InHandle,
-                IntPtr.Zero,
-                0,
-                out RequiredSize);
+            NativeAPI.DbgHandleToObjectName(InHandle, IntPtr.Zero, 0, out RequiredSize);
 
-
-            lock (Buffer)
+            lock(Buffer)
             {
                 Buffer.Alloc(RequiredSize + 1);
 
-                NativeAPI.DbgHandleToObjectName(
-                    InHandle,
-                    Buffer.Buffer,
-                    RequiredSize,
-                    out RequiredSize);
+                NativeAPI.DbgHandleToObjectName(InHandle, Buffer.Buffer, RequiredSize, out RequiredSize);
 
                 UNICODE_STRING Result = new UNICODE_STRING();
 
