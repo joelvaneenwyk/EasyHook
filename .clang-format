@@ -7,7 +7,7 @@ BasedOnStyle: Chromium
 
 # These are designed to keep as close as possible to our existing style
 Standard: Cpp11
-SortIncludes: true
+SortIncludes: false
 IndentWidth: 4
 UseTab: Never
 ColumnLimit: 150
