@@ -49,7 +49,7 @@ Use the build.bat to build binaries for all configurations (.NET 3.5/4.0, Debug/
 
 ### Packaging for Release - build-package.bat
 
-Use the build-package.bat to set version information, build binaries for all 
+Use the build-package.bat to set version information, build binaries for all
 configurations and ZIP Release builds and Source within .\Deploy.
 
 Generates a ZIP archive:
@@ -61,6 +61,17 @@ Containing the following files:
 .\Deploy\NetFX4.0\*
 .\Deploy\Source\*
 
+### Installing and Building EasyHook with `vcpkg`
+
+You can download and install easyhook using the vcpkg(https://github.com/Microsoft/vcpkg) dependency manager:
+
+* `git clone https://github.com/Microsoft/vcpkg.git`
+* `cd vcpkg`
+* `./bootstrap-vcpkg.sh`
+* `./vcpkg integrate install`
+* `vcpkg install easyhook`
+
+The easyhook port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please create an issue or pull request(<https://github.com/Microsoft/vcpkg>) on the vcpkg repository.
 
 ## License
 
@@ -72,10 +83,10 @@ Containing the following files:
     to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
     copies of the Software, and to permit persons to whom the Software is
     furnished to do so, subject to the following conditions:
-    
+
     The above copyright notice and this permission notice shall be included in
     all copies or substantial portions of the Software.
-    
+
     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
     IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
     FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
