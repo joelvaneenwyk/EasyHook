@@ -1,5 +1,5 @@
 @ECHO OFF
 
-call %~dp0\setup.bat %*
+call "%~dp0setup.bat" %*
 
 %POWERSHELL% %POWERSHELL_CONSOLE% "& '%EASYHOOK_TOOLS%\build.ps1' %*";
