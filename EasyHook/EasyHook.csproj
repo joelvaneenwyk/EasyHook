@@ -145,5 +145,7 @@
   <Target Name="AfterBuild">
     <Copy SourceFiles="..\Build\$(Configuration)\x64\$(AssemblyName).dll" DestinationFolder="..\Build\$(Configuration)\x86\">
     </Copy>
+    <Copy SourceFiles="..\Build\$(Configuration)\x64\$(AssemblyName).pdb" DestinationFolder="..\Build\$(Configuration)\x86\">
+    </Copy>
   </Target>
 </Project>
