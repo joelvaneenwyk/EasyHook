@@ -43,7 +43,7 @@ exit /b 0
 :CheckDisassembler
     :: Printing this out to make sure the tool is findable
     ildasm.exe /? > nul 2>&1
-    if "%ERRORLEVEL%" NEQ "0" goto:$CheckDisassembler.error
+    if errorlevel 1 goto:$CheckDisassembler.error
     echo Found 'ildasm.exe'
     goto:$CheckDisassembler.done
 
