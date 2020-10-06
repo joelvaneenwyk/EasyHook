@@ -24,17 +24,17 @@
 // about the project and latest updates.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Security.Policy;
 using System.Security;
 using System.Security.Permissions;
 using System.Runtime.Remoting;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Remoting.Channels;
@@ -42,14 +42,16 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Microsoft.Win32;
-using System.IO.Compression;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
+using Microsoft.Win32.SafeHandles;
+using System.Runtime.ConstrainedExecution;
 
 #pragma warning disable 0419 // XML comment: ambiguous reference
 
 namespace EasyHook
 {
+
     [Serializable]
     internal class ManagedRemoteInfo
     {
@@ -386,16 +388,16 @@ namespace EasyHook
         /// Unable to create remote object or invalid channel name...
         /// </exception>
         public static TRemoteObject IpcConnectClient<TRemoteObject>(String InChannelName) where TRemoteObject : MarshalByRefObject
-        { 
+        {
             // connect to bypass service
             TRemoteObject Interface = (TRemoteObject)Activator.GetObject(
                 typeof(TRemoteObject),
                 "ipc://" + InChannelName + "/" + InChannelName);
 
             if (Interface == null)
-		        throw new ArgumentException("Unable to create remote interface.");
+                throw new ArgumentException("Unable to create remote interface.");
 
-	        return Interface;
+            return Interface;
         }
 
         /// <summary>
@@ -505,7 +507,7 @@ namespace EasyHook
             InjectEx(
                 GetCurrentProcessId(),
                 InTargetPID,
-                0, 
+                0,
                 0,
                 InLibraryPath_x86,
                 InLibraryPath_x64,
@@ -541,10 +543,10 @@ namespace EasyHook
         {
             InjectEx(
                 GetCurrentProcessId(),
-                InTargetPID, 
+                InTargetPID,
                 0,
                 0x20000000,
-                InLibraryPath_x86, 
+                InLibraryPath_x86,
                 InLibraryPath_x64,
                 true,
                 true,
@@ -640,27 +642,27 @@ namespace EasyHook
             {
                 ManagedRemoteInfo RemoteInfo = new ManagedRemoteInfo();
                 RemoteInfo.HostPID = InHostPID;
-				// We first serialise parameters so that they can be deserialised AFTER the UserLibrary is loaded
+                // We first serialise parameters so that they can be deserialised AFTER the UserLibrary is loaded
                 BinaryFormatter format = new BinaryFormatter();
                 List<object> args = new List<object>();
                 if (InPassThruArgs != null)
                 {
-                    foreach (var arg in InPassThruArgs)
+                    foreach (object arg in InPassThruArgs)
                     {
-                        using(MemoryStream ms = new MemoryStream())
-						{
+                        using (MemoryStream ms = new MemoryStream())
+                        {
                             format.Serialize(ms, arg);
                             args.Add(ms.ToArray());
-						}
+                        }
                     }
                 }
                 RemoteInfo.UserParams = args.ToArray();
 
-				RemoteInfo.RequireStrongName = InRequireStrongName;
+                RemoteInfo.RequireStrongName = InRequireStrongName;
 
                 GCHandle hPassThru = PrepareInjection(
                     RemoteInfo,
-                    ref InLibraryPath_x86, 
+                    ref InLibraryPath_x86,
                     ref InLibraryPath_x64,
                     PassThru);
 
@@ -699,7 +701,8 @@ namespace EasyHook
                                 else
                                     throw new AccessViolationException("Unable to inject library into target process.");
 
-                            } break;
+                            }
+                            break;
 
                         case NativeAPI.STATUS_ACCESS_DENIED:
                             {
@@ -720,18 +723,21 @@ namespace EasyHook
                                         InPassThruArgs);
                                 else
                                     NativeAPI.Force(NtStatus);
-                            } break;
+                            }
+                            break;
 
                         case NativeAPI.STATUS_SUCCESS:
                             {
                                 // wait for injection completion
                                 HelperServiceInterface.WaitForInjection(InTargetPID);
-                            } break;
+                            }
+                            break;
 
                         default:
                             {
                                 NativeAPI.Force(NtStatus);
-                            } break;
+                            }
+                            break;
                     }
                 }
                 finally
@@ -907,14 +913,16 @@ namespace EasyHook
         /// <param name="OutProcessId">
         /// The process ID of the newly created process.
         /// </param>
+        /// <param name="standardError"></param>
         /// <param name="InPassThruArgs">
         /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
         /// constructor (see <see cref="IEntryPoint"/>).
         /// </param>
+        /// <param name="standardOutput"></param>
         /// <exception cref="ArgumentException">
         /// The given EXE path could not be found.
         /// </exception>
-        public static void CreateAndInject(
+        public static RemoteHookProcess CreateAndInject(
             String InEXEPath,
             String InCommandLine,
             Int32 InProcessCreationFlags,
@@ -924,23 +932,27 @@ namespace EasyHook
             out Int32 OutProcessId,
             params Object[] InPassThruArgs)
         {
-            Int32 RemotePID;
-            Int32 RemoteTID;
+            RemoteHookProcess process = new RemoteHookProcess();
 
             // create suspended process...
             NativeAPI.RtlCreateSuspendedProcess(
                 InEXEPath,
                 InCommandLine,
                 InProcessCreationFlags,
-                out RemotePID,
-                out RemoteTID);
+                new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false), 
+                process.hStdOutput,
+                process.hStdError,
+                out process.RemotePID,
+                out process.RemoteTID);
 
+            process.Create();
+            
             try
             {
                 InjectEx(
                     NativeAPI.GetCurrentProcessId(),
-                    RemotePID,
-                    RemoteTID,
+                    process.RemotePID,
+                    process.RemoteTID,
                     0x20000000,
                     InLibraryPath_x86,
                     InLibraryPath_x64,
@@ -949,18 +961,27 @@ namespace EasyHook
                     ((InOptions & InjectionOptions.DoNotRequireStrongName) == 0),
                     InPassThruArgs);
 
-                OutProcessId = RemotePID;
+                process.Start();
+
+                OutProcessId = process.RemotePID;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 try
                 {
-                    Process.GetProcessById(RemotePID).Kill();
+                    Process.GetProcessById(process.RemotePID).Kill();
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    // Many reasons this can fail so we are just trying our best to kill the process if
+                    // it fails along the way during injection.
+                }
 
-                throw e;
+                // Once we are done trying to kill process go ahead and rethrow the error
+                throw;
             }
+
+            return process;
         }
 
         /// <summary>
@@ -1011,7 +1032,7 @@ namespace EasyHook
         /// <exception cref="ArgumentException">
         /// The given EXE path could not be found.
         /// </exception>
-        public static void CreateAndInject(
+        public static RemoteHookProcess CreateAndInject(
             String InEXEPath,
             String InCommandLine,
             Int32 InProcessCreationFlags,
@@ -1020,21 +1041,21 @@ namespace EasyHook
             out Int32 OutProcessId,
             params Object[] InPassThruArgs)
         {
-            CreateAndInject(
-                InEXEPath, 
-                InCommandLine, 
-                InProcessCreationFlags, 
-                InjectionOptions.NoService, 
-                InLibraryPath_x86, 
-                InLibraryPath_x64, 
-                out OutProcessId, 
+            return CreateAndInject(
+                InEXEPath,
+                InCommandLine,
+                InProcessCreationFlags,
+                InjectionOptions.NoService,
+                InLibraryPath_x86,
+                InLibraryPath_x64,
+                out OutProcessId,
                 InPassThruArgs);
         }
 
         /// <summary>
         /// Returns <c>true</c> if the operating system is 64-Bit Windows, <c>false</c> otherwise.
         /// </summary>
-        public static Boolean IsX64System { get { return NativeAPI.RhIsX64System(); } }
+        public static bool IsX64System => NativeAPI.RhIsX64System();
 
         /// <summary>
         /// Installs the EasyHook support driver. After this step you may use
@@ -1054,9 +1075,9 @@ namespace EasyHook
         /// <param name="InDriverName"></param>
         public static void InstallDriver(
             String InDriverPath,
-            String InDriverName) 
-        { 
-            NativeAPI.RhInstallDriver(InDriverPath, InDriverName); 
+            String InDriverName)
+        {
+            NativeAPI.RhInstallDriver(InDriverPath, InDriverName);
         }
     }
 }

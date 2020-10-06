@@ -149,14 +149,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EasyHook\EasyHook.csproj">
-      <Project>{AB53862B-3B5C-4EFC-9787-1F01199EBFBF}</Project>
-      <Name>EasyHook</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
     <None Include="StrongName.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyHook\EasyHook.csproj">
+      <Project>{ab53862b-3b5c-4efc-9787-1f01199ebfbf}</Project>
+      <Name>EasyHook</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

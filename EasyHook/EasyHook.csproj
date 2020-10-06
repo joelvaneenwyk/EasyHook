@@ -90,6 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncStreamReader.cs" />
     <Compile Include="COMClassInfo.cs" />
     <Compile Include="GACWrap.cs" />
     <Compile Include="Config.cs" />
@@ -98,8 +99,10 @@
     <Compile Include="HelperServiceInterface.cs" />
     <Compile Include="InjectionLoader.cs" />
     <Compile Include="LocalHook.cs" />
+    <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteHook.cs" />
+    <Compile Include="RemoteHookProcess.cs" />
     <Compile Include="ServiceMgmt.cs" />
     <Compile Include="WOW64Bypass.cs" />
   </ItemGroup>

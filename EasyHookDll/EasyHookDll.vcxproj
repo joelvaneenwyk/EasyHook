@@ -709,10 +709,6 @@ ml.exe /D_WIN32 /c /Cx "%(FullPath)"
       <Project>{b9a68e47-237f-4045-a371-d5cceb896f7f}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\EasyHook\EasyHook.csproj">
-      <Project>{ab53862b-3b5c-4efc-9787-1f01199ebfbf}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EasyHookDll_64.rc">

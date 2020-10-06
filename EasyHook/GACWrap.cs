@@ -585,7 +585,7 @@ namespace System.GACManagedAccess
             hr = Utils.CreateAssemblyCache(out ac, 0);
             if (hr >= 0)
             {
-                foreach (var assemblyPath in assemblyPaths)
+                foreach (string assemblyPath in assemblyPaths)
                 {
                     hr = ac.InstallAssembly((int)flags, assemblyPath, reference);
                     if (hr < 0)
@@ -648,7 +648,7 @@ namespace System.GACManagedAccess
             int hr = Utils.CreateAssemblyCache(out ac, 0);
             if (hr >= 0)
             {
-                for (var i = 0; i < assemblyNames.Length; i++)
+                for (int i = 0; i < assemblyNames.Length; i++)
                 {
                     hr = ac.UninstallAssembly(0, assemblyNames[i], reference, out dispResult);
                     if (hr < 0)

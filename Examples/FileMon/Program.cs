@@ -85,7 +85,12 @@ namespace FileMon
                 }
                 else
                 {
-                    RemoteHooking.CreateAndInject(targetExe, "", 0, InjectionOptions.DoNotRequireStrongName, injectionLibrary, injectionLibrary, out TargetPID, ChannelName);
+                    RemoteHooking.CreateAndInject(
+                        targetExe, "", 
+                        0, InjectionOptions.DoNotRequireStrongName,
+                        injectionLibrary, injectionLibrary, 
+                        out TargetPID, 
+                        ChannelName);
                     Console.WriteLine("Created and injected process {0}", TargetPID);
                 }
                 Console.WriteLine("<Press any key to exit>");

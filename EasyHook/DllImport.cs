@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace EasyHook
 {
@@ -500,12 +501,19 @@ namespace EasyHook
             String InEXEPath,
             String InCommandLine,
             Int32 InProcessCreationFlags,
+            IntPtr InStdInput,
+            IntPtr InStdOutput,
+            IntPtr InStdError,
             out Int32 OutProcessId,
             out Int32 OutThreadId);
+
         public static Int32 RtlCreateSuspendedProcess(
             String InEXEPath,
             String InCommandLine,
             Int32 InProcessCreationFlags,
+            SafeFileHandle InStdInput,
+            SafeFileHandle InStdOutput,
+            SafeFileHandle InStdError,
             out Int32 OutProcessId,
             out Int32 OutThreadId)
         {
@@ -514,6 +522,9 @@ namespace EasyHook
                 InEXEPath,
                 InCommandLine,
                 InProcessCreationFlags,
+                InStdInput.DangerousGetHandle(),
+                InStdOutput.DangerousGetHandle(),
+                InStdError.DangerousGetHandle(),
                 out OutProcessId,
                 out OutThreadId);
         }
@@ -636,7 +647,7 @@ namespace EasyHook
         [DllImport("kernel32.dll")]
         public static extern int GetCurrentProcessId();
 
-        [DllImport("kernel32.dll", CharSet=CharSet.Ansi)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
         public static extern IntPtr GetProcAddress(IntPtr InModule, String InProcName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
@@ -658,17 +669,17 @@ namespace EasyHook
 
         public const Int32 STATUS_SUCCESS = unchecked((Int32)0);
         public const Int32 STATUS_INVALID_PARAMETER = unchecked((Int32)0xC000000DL);
-        public const Int32 STATUS_INVALID_PARAMETER_1= unchecked((Int32)0xC00000EFL);
-        public const Int32 STATUS_INVALID_PARAMETER_2= unchecked((Int32)0xC00000F0L);
-        public const Int32 STATUS_INVALID_PARAMETER_3= unchecked((Int32)0xC00000F1L);
-        public const Int32 STATUS_INVALID_PARAMETER_4= unchecked((Int32)0xC00000F2L);
-        public const Int32 STATUS_INVALID_PARAMETER_5= unchecked((Int32)0xC00000F3L);
-        public const Int32 STATUS_NOT_SUPPORTED= unchecked((Int32)0xC00000BBL);
+        public const Int32 STATUS_INVALID_PARAMETER_1 = unchecked((Int32)0xC00000EFL);
+        public const Int32 STATUS_INVALID_PARAMETER_2 = unchecked((Int32)0xC00000F0L);
+        public const Int32 STATUS_INVALID_PARAMETER_3 = unchecked((Int32)0xC00000F1L);
+        public const Int32 STATUS_INVALID_PARAMETER_4 = unchecked((Int32)0xC00000F2L);
+        public const Int32 STATUS_INVALID_PARAMETER_5 = unchecked((Int32)0xC00000F3L);
+        public const Int32 STATUS_NOT_SUPPORTED = unchecked((Int32)0xC00000BBL);
 
-        public const Int32 STATUS_INTERNAL_ERROR= unchecked((Int32)0xC00000E5L);
-        public const Int32 STATUS_INSUFFICIENT_RESOURCES= unchecked((Int32)0xC000009AL);
-        public const Int32 STATUS_BUFFER_TOO_SMALL= unchecked((Int32)0xC0000023L);
-        public const Int32 STATUS_NO_MEMORY= unchecked((Int32)0xC0000017L);
+        public const Int32 STATUS_INTERNAL_ERROR = unchecked((Int32)0xC00000E5L);
+        public const Int32 STATUS_INSUFFICIENT_RESOURCES = unchecked((Int32)0xC000009AL);
+        public const Int32 STATUS_BUFFER_TOO_SMALL = unchecked((Int32)0xC0000023L);
+        public const Int32 STATUS_NO_MEMORY = unchecked((Int32)0xC0000017L);
         public const Int32 STATUS_WOW_ASSERTION = unchecked((Int32)0xC0009898L);
         public const Int32 STATUS_ACCESS_DENIED = unchecked((Int32)0xC0000022L);
 
@@ -721,17 +732,17 @@ namespace EasyHook
             IntPtr InCallback,
             IntPtr OutHandle)
         {
-            Force( NativeAPI_EasyHook.LhInstallHook(InEntryPoint, InHookProc, InCallback, OutHandle));
+            Force(NativeAPI_EasyHook.LhInstallHook(InEntryPoint, InHookProc, InCallback, OutHandle));
         }
 
         public static void LhUninstallHook(IntPtr RefHandle)
         {
-            Force( NativeAPI_EasyHook.LhUninstallHook(RefHandle));
+            Force(NativeAPI_EasyHook.LhUninstallHook(RefHandle));
         }
 
         public static void LhWaitForPendingRemovals()
         {
-            Force( NativeAPI_EasyHook.LhWaitForPendingRemovals());
+            Force(NativeAPI_EasyHook.LhWaitForPendingRemovals());
         }
 
         public static void LhIsThreadIntercepted(
@@ -747,7 +758,7 @@ namespace EasyHook
                     Int32 InThreadCount,
                     IntPtr InHandle)
         {
-            Force( NativeAPI_EasyHook.LhSetInclusiveACL(InThreadIdList, InThreadCount, InHandle));
+            Force(NativeAPI_EasyHook.LhSetInclusiveACL(InThreadIdList, InThreadCount, InHandle));
         }
 
         public static void LhSetExclusiveACL(
@@ -755,21 +766,21 @@ namespace EasyHook
                     Int32 InThreadCount,
                     IntPtr InHandle)
         {
-            Force( NativeAPI_EasyHook.LhSetExclusiveACL(InThreadIdList, InThreadCount, InHandle));
+            Force(NativeAPI_EasyHook.LhSetExclusiveACL(InThreadIdList, InThreadCount, InHandle));
         }
 
         public static void LhSetGlobalInclusiveACL(
                     Int32[] InThreadIdList,
                     Int32 InThreadCount)
         {
-            Force( NativeAPI_EasyHook.LhSetGlobalInclusiveACL(InThreadIdList, InThreadCount));
+            Force(NativeAPI_EasyHook.LhSetGlobalInclusiveACL(InThreadIdList, InThreadCount));
         }
 
         public static void LhSetGlobalExclusiveACL(
                     Int32[] InThreadIdList,
                     Int32 InThreadCount)
         {
-            Force( NativeAPI_EasyHook.LhSetGlobalExclusiveACL(InThreadIdList, InThreadCount));
+            Force(NativeAPI_EasyHook.LhSetGlobalExclusiveACL(InThreadIdList, InThreadCount));
         }
 
         public static void LhBarrierGetCallingModule(out IntPtr OutValue)
@@ -779,27 +790,27 @@ namespace EasyHook
 
         public static void LhBarrierGetCallback(out IntPtr OutValue)
         {
-            Force( NativeAPI_EasyHook.LhBarrierGetCallback(out OutValue));
+            Force(NativeAPI_EasyHook.LhBarrierGetCallback(out OutValue));
         }
 
         public static void LhBarrierGetReturnAddress(out IntPtr OutValue)
         {
-            Force( NativeAPI_EasyHook.LhBarrierGetReturnAddress(out OutValue));
+            Force(NativeAPI_EasyHook.LhBarrierGetReturnAddress(out OutValue));
         }
 
         public static void LhBarrierGetAddressOfReturnAddress(out IntPtr OutValue)
         {
-            Force( NativeAPI_EasyHook.LhBarrierGetAddressOfReturnAddress(out OutValue));
+            Force(NativeAPI_EasyHook.LhBarrierGetAddressOfReturnAddress(out OutValue));
         }
 
         public static void LhBarrierBeginStackTrace(out IntPtr OutBackup)
         {
-            Force( NativeAPI_EasyHook.LhBarrierBeginStackTrace(out OutBackup));
+            Force(NativeAPI_EasyHook.LhBarrierBeginStackTrace(out OutBackup));
         }
 
         public static void LhBarrierEndStackTrace(IntPtr OutBackup)
         {
-            Force( NativeAPI_EasyHook.LhBarrierEndStackTrace(OutBackup));
+            Force(NativeAPI_EasyHook.LhBarrierEndStackTrace(OutBackup));
         }
 
         public static void LhGetHookBypassAddress(IntPtr handle, out IntPtr address)
@@ -809,21 +820,21 @@ namespace EasyHook
 
         public static void DbgAttachDebugger()
         {
-            Force( NativeAPI_EasyHook.DbgAttachDebugger());
+            Force(NativeAPI_EasyHook.DbgAttachDebugger());
         }
 
         public static void DbgGetThreadIdByHandle(
             IntPtr InThreadHandle,
             out Int32 OutThreadId)
         {
-            Force( NativeAPI_EasyHook.DbgGetThreadIdByHandle(InThreadHandle, out OutThreadId));
+            Force(NativeAPI_EasyHook.DbgGetThreadIdByHandle(InThreadHandle, out OutThreadId));
         }
 
         public static void DbgGetProcessIdByHandle(
             IntPtr InProcessHandle,
             out Int32 OutProcessId)
         {
-            Force( NativeAPI_EasyHook.DbgGetProcessIdByHandle(InProcessHandle, out OutProcessId));
+            Force(NativeAPI_EasyHook.DbgGetProcessIdByHandle(InProcessHandle, out OutProcessId));
         }
 
         public static void DbgHandleToObjectName(
@@ -832,10 +843,10 @@ namespace EasyHook
             Int32 InBufferSize,
             out Int32 OutRequiredSize)
         {
-            Force( NativeAPI_EasyHook.DbgHandleToObjectName(InNamedHandle, OutNameBuffer, InBufferSize, out OutRequiredSize));
+            Force(NativeAPI_EasyHook.DbgHandleToObjectName(InNamedHandle, OutNameBuffer, InBufferSize, out OutRequiredSize));
         }
 
-        public static Int32 EASYHOOK_INJECT_DEFAULT   =      0x00000000;
+        public static Int32 EASYHOOK_INJECT_DEFAULT = 0x00000000;
         public static Int32 EASYHOOK_INJECT_MANAGED = 0x00000001;
 
         public static Int32 RhInjectLibraryEx(
@@ -860,18 +871,23 @@ namespace EasyHook
             IntPtr InPassThruBuffer,
             Int32 InPassThruSize)
         {
-            Force( NativeAPI_EasyHook.RhInjectLibrary(InTargetPID, InWakeUpTID, InInjectionOptions,
+            Force(NativeAPI_EasyHook.RhInjectLibrary(InTargetPID, InWakeUpTID, InInjectionOptions,
                 InLibraryPath_x86, InLibraryPath_x64, InPassThruBuffer, InPassThruSize));
         }
 
         public static void RtlCreateSuspendedProcess(
-           String InEXEPath,
-           String InCommandLine,
+            String InEXEPath,
+            String InCommandLine,
             Int32 InProcessCreationFlags,
-           out Int32 OutProcessId,
-           out Int32 OutThreadId)
+            SafeFileHandle InStdInput,
+            SafeFileHandle InStdOutput,
+            SafeFileHandle InStdError,
+            out Int32 OutProcessId,
+            out Int32 OutThreadId)
         {
-            Force(NativeAPI_EasyHook.RtlCreateSuspendedProcess(InEXEPath, InCommandLine, InProcessCreationFlags,
+            Force(NativeAPI_EasyHook.RtlCreateSuspendedProcess(
+                InEXEPath, InCommandLine, InProcessCreationFlags,
+                InStdInput, InStdOutput, InStdError,
                 out OutProcessId, out OutThreadId));
         }
 
@@ -879,7 +895,7 @@ namespace EasyHook
             Int32 InProcessId,
             out Boolean OutResult)
         {
-            Force( NativeAPI_EasyHook.RhIsX64Process(InProcessId, out OutResult));
+            Force(NativeAPI_EasyHook.RhIsX64Process(InProcessId, out OutResult));
         }
 
         public static Boolean RhIsAdministrator()
@@ -911,7 +927,7 @@ namespace EasyHook
         {
             Force(NativeAPI_EasyHook.RhInstallDriver(InDriverPath, InDriverName));
         }
-        
+
         public static void RhInstallSupportDriver()
         {
             Force(NativeAPI_EasyHook.RhInstallSupportDriver());
@@ -953,11 +969,11 @@ namespace EasyHook
                     new System.GACManagedAccess.InstallReference(System.GACManagedAccess.InstallReferenceGuid.OpaqueGuid, InUniqueID, InDescription),
                     out results);
 
-// disable warnings Obsolete and Obsolete("message")
+                // disable warnings Obsolete and Obsolete("message")
 #pragma warning disable 612, 618
-                for (var i = 0; i < InAssemblyNames.Length; i++)
+                for (int i = 0; i < InAssemblyNames.Length; i++)
                     Config.PrintComment("GacUninstallAssembly: Assembly {0}, uninstall result {1}", InAssemblyNames[i], results[i]);
-// enable warnings for Obsolete and Obsolete("message")
+                // enable warnings for Obsolete and Obsolete("message")
 #pragma warning restore 612, 618
             }
             catch (Exception e)

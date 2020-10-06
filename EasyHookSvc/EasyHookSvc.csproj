@@ -144,12 +144,6 @@
     <None Include="StrongName.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EasyHook\EasyHook.csproj">
-      <Project>{AB53862B-3B5C-4EFC-9787-1F01199EBFBF}</Project>
-      <Name>EasyHook</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -166,6 +160,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyHook\EasyHook.csproj">
+      <Project>{ab53862b-3b5c-4efc-9787-1f01199ebfbf}</Project>
+      <Name>EasyHook</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -175,9 +175,13 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="..\Build\$(Configuration)\x64\$(AssemblyName).exe" DestinationFiles="..\Build\$(Configuration)\x64\EasyHook64Svc.exe"></Copy>
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="..\Build\$(Configuration)\x64\EasyHook64Svc.exe" DestinationFiles="..\Build\$(Configuration)\x86\EasyHook64Svc.exe"></Copy>
-    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="..\Build\$(Configuration)\x86\$(AssemblyName).exe" DestinationFiles="..\Build\$(Configuration)\x86\EasyHook32Svc.exe"></Copy>
-    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="..\Build\$(Configuration)\x86\EasyHook32Svc.exe" DestinationFiles="..\Build\$(Configuration)\x64\EasyHook32Svc.exe"></Copy>
+    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="..\Build\$(Configuration)\x64\$(AssemblyName).exe" DestinationFiles="..\Build\$(Configuration)\x64\EasyHook64Svc.exe">
+    </Copy>
+    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="..\Build\$(Configuration)\x64\EasyHook64Svc.exe" DestinationFiles="..\Build\$(Configuration)\x86\EasyHook64Svc.exe">
+    </Copy>
+    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="..\Build\$(Configuration)\x86\$(AssemblyName).exe" DestinationFiles="..\Build\$(Configuration)\x86\EasyHook32Svc.exe">
+    </Copy>
+    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="..\Build\$(Configuration)\x86\EasyHook32Svc.exe" DestinationFiles="..\Build\$(Configuration)\x64\EasyHook32Svc.exe">
+    </Copy>
   </Target>
 </Project>
