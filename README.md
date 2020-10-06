@@ -35,6 +35,7 @@ Requirements:
 * Visual Studio 2017 or later
 * [MSBuild Community Tasks](https://github.com/loresoft/msbuildtasks)
 * Windows 8.1 SDK
+* C++ ATL for latest v142 build tools (x86 & x64)
 
 ### Build Binaries (`build.bat`)
 
