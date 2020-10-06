@@ -137,22 +137,23 @@ function VisualStudioBuild {
         'v120' {
             $VisualStudioToolVersion = '12.0'
             $MSBuildToolVersion = '12.0'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\VC'
         }
         'v140' {
             $VisualStudioToolVersion = '14.0'
             $MSBuildToolVersion = '14.0'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\VC'
         }
         'v141' {
             $VisualStudioToolVersion = '15.0'
             $MSBuildToolVersion = '15.0'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\VC\Auxiliary\Build'
         }
         'v142' {
             $VisualStudioToolVersion = '16.0'
             $MSBuildToolVersion = 'Current'
-            $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
+            #$VXXCommonTools = Join-Path $VSInstallationPath '.\VC\Auxiliary\Build'
+            $VXXCommonTools = Join-Path $VSInstallationPath '.\Common7\Tools'
         }
     }
 
@@ -160,9 +161,12 @@ function VisualStudioBuild {
         Die 'Error unable to find any visual studio environment'
     }
 
-    $VCVarsAll = Join-Path $VXXCommonTools vcvarsall.bat
+    $VCVarsAll = Join-Path $VXXCommonTools 'vcvarsall.bat'
     if (-not (Test-Path $VCVarsAll)) {
-        Die "Unable to find $VCVarsAll"
+        $VCVarsAll = Join-Path $VXXCommonTools 'VsDevCmd.bat'
+        if (-not (Test-Path $VCVarsAll)) {
+            Die "Unable to find $VCVarsAll"
+        }
     }
 
     # Only configure build environment once
