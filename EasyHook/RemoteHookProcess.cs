@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\RemoteHook.cs)
+﻿// EasyHook (File: EasyHook\RemoteHookProcess.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -68,10 +68,13 @@ namespace EasyHook
         public string StandardError;
 
         public string StandardOutput;
+
         private AsyncStreamReader _errorReader;
 
         private AsyncStreamReader _outputReader;
+
         private StreamReader _standardError;
+
         private readonly SafeFileHandle _standardErrorReadPipeHandle;
 
         private StreamReader _standardOutput;
