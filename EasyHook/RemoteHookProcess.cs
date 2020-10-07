@@ -105,8 +105,38 @@ namespace EasyHook
             this._outputReader.BeginReadLine();
         }
 
+        private void Reset()
+        {
+            this.RemotePID = 0;
+            this.RemoteTID = 0;
+
+            this.hStdOutput?.Dispose();
+            this.hStdOutput = null;
+
+            this.hStdError?.Dispose();
+            this.hStdError = null;
+
+            this._standardOutputReadPipeHandle?.Dispose();
+            this._standardOutputReadPipeHandle = null;
+
+            this._standardErrorReadPipeHandle?.Dispose();
+            this._standardErrorReadPipeHandle = null;
+
+            this._standardOutput?.Close();
+            this._standardOutput = null;
+
+            this._standardError?.Close();
+            this._standardError = null;
+
+            this._outputReader?.Close();
+            this._outputReader = null;
+
+            this._errorReader?.Close();
+            this._errorReader = null;
+        }
+
         /// <summary>
-        /// Creates a new process which is started suspended until you call <see cref="WakeUpProcess"/>
+        /// Creates a new process which is started suspended until you call <see cref="RemoteHooking.WakeUpProcess"/>
         /// from within your injected library <c>Run()</c> method. This allows you to hook the target
         /// BEFORE any of its usual code is executed. In situations where a target has debugging and
         /// hook preventions, you will get a chance to block those mechanisms for example...
@@ -117,11 +147,11 @@ namespace EasyHook
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
         /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
-        /// with the usual <see cref="Inject"/> method.
+        /// with the usual <see cref="RemoteHooking.Inject"/> method.
         /// </para>
         /// <para>
-        /// See <see cref="Inject"/> for more information. The exceptions listed here are additional
-        /// to the ones listed for <see cref="Inject"/>.
+        /// See <see cref="RemoteHooking.Inject"/> for more information. The exceptions listed here are additional
+        /// to the ones listed for <see cref="RemoteHooking.Inject"/>.
         /// </para>
         /// </remarks>
         /// <param name="InEXEPath">
@@ -164,6 +194,8 @@ namespace EasyHook
         {
             try
             {
+                Reset();
+
                 CreatePipe(out this._standardOutputReadPipeHandle, out this.hStdOutput, false);
                 CreatePipe(out this._standardErrorReadPipeHandle, out this.hStdError, false);
 
@@ -215,20 +247,7 @@ namespace EasyHook
                     // it fails along the way during injection.
                 }
 
-                this.RemotePID = 0;
-                this.RemoteTID = 0;
-
-                this.hStdOutput?.Dispose();
-                this.hStdOutput = null;
-
-                this.hStdError?.Dispose();
-                this.hStdError = null;
-
-                this._standardOutputReadPipeHandle?.Dispose();
-                this._standardOutputReadPipeHandle = null;
-
-                this._standardErrorReadPipeHandle?.Dispose();
-                this._standardErrorReadPipeHandle = null;
+                Reset();
 
                 // Once we are done trying to kill process go ahead and rethrow the error
                 throw;

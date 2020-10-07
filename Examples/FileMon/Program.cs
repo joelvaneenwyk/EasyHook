@@ -97,7 +97,7 @@ namespace FileMon
                         Console.WriteLine($"[stdout] {argData.Data}");
                     };
 
-                    for (int i = 0; i < 20; i++)
+                    for (int i = 1; i < 20; i++)
                     {
                         try
                         {
@@ -113,7 +113,7 @@ namespace FileMon
                         }
                         catch
                         {
-                            Console.WriteLine("Failed to create and inject.");
+                            Console.WriteLine($"[Attempt #{i}] Failed to create and inject.");
                         }
                     }
                 }
