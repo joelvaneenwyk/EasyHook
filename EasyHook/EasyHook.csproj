@@ -90,7 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncStreamReader.cs" />
+    <Compile Include="RemoteAsyncStreamReader.cs" />
     <Compile Include="COMClassInfo.cs" />
     <Compile Include="GACWrap.cs" />
     <Compile Include="Config.cs" />

@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -41,7 +42,7 @@ namespace EasyHook
     /// <summary>
     /// Asynchronously read from and cache data from a stream.
     /// </summary>
-    public class AsyncStreamReader : IDisposable
+    public class RemoteAsyncStreamReader : IDisposable
     {
         internal const int DefaultBufferSize = 1024; // Byte buffer size
 
@@ -63,21 +64,25 @@ namespace EasyHook
         private int currentLinePos;
         private Decoder decoder;
         private Encoding encoding;
-        private ManualResetEvent eofEvent;
-        private readonly Queue messageQueue;
 
-        // Store a backpointer to the process class, to check for user callbacks
-        private RemoteHookProcess process;
+        /// <summary>
+        /// Default here to signaled because there is nothing to wait for. Only reset
+        /// to false if we have something to wait for.
+        /// </summary>
+        private readonly ManualResetEvent _endStreamEvent = new ManualResetEvent(true);
+
+        private readonly ConcurrentQueue<string> _messageEventQueue = new ConcurrentQueue<string>();
+
         private StringBuilder sb;
 
-        private Stream stream;
+        private readonly Stream stream;
 
         // Delegate to call user function.
-        private UserCallBack userCallBack;
+        private readonly UserCallBack userCallBack;
 
-        internal AsyncStreamReader(
-            RemoteHookProcess process, Stream stream, UserCallBack callback, Encoding encoding)
-            : this(process, stream, callback, encoding, DefaultBufferSize)
+        internal RemoteAsyncStreamReader(
+            Stream stream, UserCallBack callback, Encoding encoding)
+            : this(stream, callback, encoding, DefaultBufferSize)
         {
         }
 
@@ -86,28 +91,37 @@ namespace EasyHook
         /// character encoding is set by encoding and the buffer size,
         /// in number of 16-bit characters, is set by bufferSize.
         /// </summary>
-        /// <param name="process"></param>
         /// <param name="stream"></param>
         /// <param name="callback"></param>
         /// <param name="encoding"></param>
         /// <param name="bufferSize"></param>
-        internal AsyncStreamReader(
-            RemoteHookProcess process, Stream stream, UserCallBack callback, Encoding encoding,
+        internal RemoteAsyncStreamReader(
+            Stream stream, UserCallBack callback, Encoding encoding,
             int bufferSize)
         {
             Debug.Assert(
-                process != null && stream != null && encoding != null && callback != null,
+                stream != null && encoding != null && callback != null,
                 "Invalid arguments!");
             Debug.Assert(stream.CanRead, "Stream must be readable!");
             Debug.Assert(bufferSize > 0, "Invalid buffer size!");
 
-            Init(process, stream, callback, encoding, bufferSize);
-            this.messageQueue = new Queue();
+            this.stream = stream;
+            this.encoding = encoding;
+            this.userCallBack = callback;
+            this.decoder = encoding.GetDecoder();
+
+            if (bufferSize < MinBufferSize)
+            {
+                bufferSize = MinBufferSize;
+            }
+
+            this.byteBuffer = new byte[bufferSize];
+            this._maxCharsPerBuffer = encoding.GetMaxCharCount(bufferSize);
+            this.charBuffer = new char[this._maxCharsPerBuffer];
+            this.cancelOperation = false;
+            this.sb = null;
+            this.bLastCarriageReturn = false;
         }
-
-        public virtual Stream BaseStream => this.stream;
-
-        public virtual Encoding CurrentEncoding => this.encoding;
 
         void IDisposable.Dispose()
         {
@@ -122,28 +136,19 @@ namespace EasyHook
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            try
             {
-                if (this.stream != null)
+                if (disposing)
                 {
-                    this.stream.Close();
+                    this.stream?.Close();
                 }
             }
-
-            if (this.stream != null)
+            finally
             {
-                this.stream = null;
-                this.encoding = null;
-                this.decoder = null;
-                this.byteBuffer = null;
-                this.charBuffer = null;
+                // If anyone is waiting on this have them stop.
+                this._endStreamEvent.Set();
             }
 
-            if (this.eofEvent != null)
-            {
-                this.eofEvent.Close();
-                this.eofEvent = null;
-            }
         }
 
         // User calls BeginRead to start the asynchronous read
@@ -156,8 +161,10 @@ namespace EasyHook
 
             if (this.sb == null)
             {
+                // We are expecting to reset this later
+                this._endStreamEvent.Reset();
                 this.sb = new StringBuilder(DefaultBufferSize);
-                this.stream.BeginRead(this.byteBuffer, 0, this.byteBuffer.Length, ReadBuffer, null);
+                this.stream?.BeginRead(this.byteBuffer, 0, this.byteBuffer.Length, ReadBuffer, null);
             }
             else
             {
@@ -170,57 +177,37 @@ namespace EasyHook
             this.cancelOperation = true;
         }
 
-        // Wait until we hit EOF. This is called from RemoteHookProcess.WaitForExit
-        // We will lose some information if we don't do this.
+        /// <summary>
+        /// Wait until we hit EOF. This is called from RemoteHookProcess.WaitForExit
+        /// We will lose some information if we don't do this
+        /// </summary>
         internal void WaitUtilEOF()
         {
-            if (this.eofEvent != null)
-            {
-                this.eofEvent.WaitOne();
-                this.eofEvent.Close();
-                this.eofEvent = null;
-            }
+            this._endStreamEvent.WaitOne();
         }
 
         private void FlushMessageQueue()
         {
-            while (true)
+            while (this._messageEventQueue.TryDequeue(out string s))
             {
-                // When we call BeginReadLine, we also need to flush the queue
-                // So there could be a ---- between the ReadBuffer and BeginReadLine
-                // We need to take lock before DeQueue.
-                if (this.messageQueue.Count > 0)
+                // skip if the read is the read is canceled
+                // this might happen inside UserCallBack
+                // However, continue to drain the queue
+                if (!this.cancelOperation)
                 {
-                    lock (this.messageQueue)
-                    {
-                        if (this.messageQueue.Count > 0)
-                        {
-                            string s = (string) this.messageQueue.Dequeue();
-                            // skip if the read is the read is cancelled
-                            // this might happen inside UserCallBack
-                            // However, continue to drain the queue
-                            if (!this.cancelOperation)
-                            {
-                                this.userCallBack(s);
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    break;
+                    this.userCallBack(s);
                 }
             }
         }
 
-        // Read lines stored in StringBuilder and the buffer we just read into. 
-        // A line is defined as a sequence of characters followed by
-        // a carriage return ('\r'), a line feed ('\n'), or a carriage return
-        // immediately followed by a line feed. The resulting string does not
-        // contain the terminating carriage return and/or line feed. The returned
-        // value is null if the end of the input stream has been reached.
-        //
-
+        /// <summary>
+        /// Read lines stored in StringBuilder and the buffer we just read into. 
+        /// A line is defined as a sequence of characters followed by
+        /// a carriage return ('\r'), a line feed ('\n'), or a carriage return
+        /// immediately followed by a line feed. The resulting string does not
+        /// contain the terminating carriage return and/or line feed. The returned
+        /// value is null if the end of the input stream has been reached.
+        /// </summary>
         private void GetLinesFromStringBuilder()
         {
             int currentIndex = this.currentLinePos;
@@ -229,7 +216,7 @@ namespace EasyHook
 
             // skip a beginning '\n' character of new block if last block ended 
             // with '\r'
-            if (this.bLastCarriageReturn && (len > 0) && this.sb[0] == '\n')
+            if (this.bLastCarriageReturn && len > 0 && this.sb[0] == '\n')
             {
                 currentIndex = 1;
                 lineStart = 1;
@@ -246,16 +233,13 @@ namespace EasyHook
                     string s = this.sb.ToString(lineStart, currentIndex - lineStart);
                     lineStart = currentIndex + 1;
                     // skip the "\n" character following "\r" character
-                    if ((ch == '\r') && (lineStart < len) && (this.sb[lineStart] == '\n'))
+                    if (ch == '\r' && lineStart < len && this.sb[lineStart] == '\n')
                     {
                         lineStart++;
                         currentIndex++;
                     }
 
-                    lock (this.messageQueue)
-                    {
-                        this.messageQueue.Enqueue(s);
-                    }
+                    this._messageEventQueue.Enqueue(s);
                 }
 
                 currentIndex++;
@@ -268,7 +252,7 @@ namespace EasyHook
                 this.bLastCarriageReturn = true;
             }
 
-            // Keep the rest characaters which can't form a new line in string builder.
+            // Keep the rest characters which can't form a new line in string builder.
             if (lineStart < len)
             {
                 if (lineStart == 0)
@@ -292,85 +276,60 @@ namespace EasyHook
             FlushMessageQueue();
         }
 
-        private void Init(
-            RemoteHookProcess process, Stream stream, UserCallBack callback, Encoding encoding,
-            int bufferSize)
-        {
-            this.process = process;
-            this.stream = stream;
-            this.encoding = encoding;
-            this.userCallBack = callback;
-            this.decoder = encoding.GetDecoder();
-            if (bufferSize < MinBufferSize)
-            {
-                bufferSize = MinBufferSize;
-            }
-
-            this.byteBuffer = new byte[bufferSize];
-            this._maxCharsPerBuffer = encoding.GetMaxCharCount(bufferSize);
-            this.charBuffer = new char[this._maxCharsPerBuffer];
-            this.cancelOperation = false;
-            this.eofEvent = new ManualResetEvent(false);
-            this.sb = null;
-            this.bLastCarriageReturn = false;
-        }
-
-        // This is the async callback function. Only one thread could/should call this.
+        /// <summary>
+        /// This is the async callback function. Only one thread could/should call this.
+        /// </summary>
+        /// <param name="ar"></param>
         private void ReadBuffer(IAsyncResult ar)
         {
-            int byteLen;
+            int byteLen = 0;
 
             try
             {
-                byteLen = this.stream.EndRead(ar);
+                byteLen = this.stream?.EndRead(ar) ?? 0;
             }
-            catch (IOException)
+            catch (Exception)
             {
-                // We should ideally consume errors from operations getting cancelled
-                // so that we don't crash the unsuspecting parent with an unhandled exc. 
-                // This seems to come in 2 forms of exceptions (depending on platform and scenario), 
-                // namely OperationCanceledException and IOException (for errorcode that we don't 
-                // map explicitly).   
-                byteLen = 0; // Treat this as EOF
-            }
-            catch (OperationCanceledException)
-            {
-                // We should consume any OperationCanceledException from child read here  
-                // so that we don't crash the parent with an unhandled exc
-                byteLen = 0; // Treat this as EOF
+                this.cancelOperation = true;
             }
 
-            if (byteLen == 0)
+            if (byteLen == 0 || this.cancelOperation)
             {
-                // We're at EOF, we won't call this function again from here on.
-                lock (this.messageQueue)
+                try
                 {
+                    // We're at EOF, we won't call this function again from here on.
                     if (this.sb.Length != 0)
                     {
-                        this.messageQueue.Enqueue(this.sb.ToString());
+                        this._messageEventQueue.Enqueue(this.sb.ToString());
                         this.sb.Length = 0;
                     }
 
-                    this.messageQueue.Enqueue(null);
-                }
-
-                try
-                {
                     // UserCallback could throw, we should still set the eofEvent 
                     FlushMessageQueue();
                 }
                 finally
                 {
-                    this.eofEvent.Set();
+                    this._endStreamEvent.Set();
                 }
             }
             else
             {
-                int charLen = this.decoder.GetChars(
-                    this.byteBuffer, 0, byteLen, this.charBuffer, 0);
-                this.sb.Append(this.charBuffer, 0, charLen);
-                GetLinesFromStringBuilder();
-                this.stream.BeginRead(this.byteBuffer, 0, this.byteBuffer.Length, ReadBuffer, null);
+                try
+                {
+
+                    int charLen = this.decoder.GetChars(
+                        this.byteBuffer, 0, byteLen, this.charBuffer, 0);
+                    this.sb.Append(this.charBuffer, 0, charLen);
+                    GetLinesFromStringBuilder();
+
+                    this._endStreamEvent.Reset();
+                    this.stream?.BeginRead(this.byteBuffer, 0, this.byteBuffer.Length, ReadBuffer, null);
+                }
+                catch 
+                {
+                    // Make sure we free anyone waiting
+                    this._endStreamEvent.Set();
+                }
             }
         }
     }

@@ -1,26 +1,40 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
-using System.Text;
 using System.IO;
 using EasyHook;
-using System.Windows.Forms;
 
 namespace FileMon
 {
     public class FileMonInterface : MarshalByRefObject
     {
-        public void IsInstalled(Int32 InClientPID)
+        private readonly ConcurrentDictionary<int, List<string>> _filenames = new ConcurrentDictionary<int, List<string>>();
+
+        public void IsInstalled(int InClientPID)
         {
             Console.WriteLine("FileMon has been installed in target {0}.\r\n", InClientPID);
         }
 
-        public void OnCreateFile(Int32 InClientPID, String[] InFileNames)
+        public void OnCreateFile(int InClientPID, string[] InFileNames)
         {
-            for (int i = 0; i < InFileNames.Length; i++)
+            if (!this._filenames.TryGetValue(InClientPID, out List<string> outFilenames))
             {
-                Console.WriteLine(InFileNames[i]);
+                outFilenames = new List<string>();
+                this._filenames.TryAdd(InClientPID, outFilenames);
             }
+
+            foreach (string fileName in InFileNames)
+            {
+                outFilenames?.Add(fileName);
+                Console.WriteLine(fileName);
+            }
+        }
+
+        public string[] GetFilenames(int InClientPID)
+        {
+            this._filenames.TryGetValue(InClientPID, out List<string> outFilenames);
+            return outFilenames?.ToArray();
         }
 
         public void ReportException(Exception InInfo)
@@ -33,22 +47,25 @@ namespace FileMon
         }
     }
 
-    class Program
+    internal class Program
     {
-        static String ChannelName = null;
+        private static string ChannelName;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Int32 TargetPID = 0;
+            int TargetPID = 0;
             string targetExe = null;
 
             // Load the parameter
-            while ((args.Length != 1) || !Int32.TryParse(args[0], out TargetPID) || !File.Exists(args[0]))
+            while (args.Length != 1 ||
+                   !int.TryParse(args[0], out TargetPID) ||
+                   !File.Exists(args[0]))
             {
                 if (TargetPID > 0)
                 {
                     break;
                 }
+
                 if (args.Length != 1 || !File.Exists(args[0]))
                 {
                     Console.WriteLine();
@@ -59,7 +76,7 @@ namespace FileMon
 
                     args = new string[] { Console.ReadLine() };
 
-                    if (String.IsNullOrEmpty(args[0])) return;
+                    if (string.IsNullOrEmpty(args[0])) return;
                 }
                 else
                 {
@@ -72,8 +89,11 @@ namespace FileMon
             {
                 RemoteHooking.IpcCreateServer<FileMonInterface>(ref ChannelName, WellKnownObjectMode.SingleCall);
 
-                string injectionLibrary = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "FileMonInject.dll");
-                if (String.IsNullOrEmpty(targetExe))
+                string injectionLibrary = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                    "FileMonInject.dll");
+
+                if (string.IsNullOrEmpty(targetExe))
                 {
                     RemoteHooking.Inject(
                         TargetPID,
@@ -116,6 +136,8 @@ namespace FileMon
                             Console.WriteLine($"[Attempt #{i}] Failed to create and inject.");
                         }
                     }
+
+                    remoteProcess.WaitForExit();
                 }
                 Console.WriteLine("<Press any key to exit>");
                 Console.ReadKey();

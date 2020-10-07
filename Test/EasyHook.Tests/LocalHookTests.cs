@@ -67,7 +67,7 @@ namespace EasyHook.Tests
             List<LocalHook> hooks = new List<LocalHook>();
 
             // Install MAX_HOOK_COUNT hooks (i.e. 1024)
-            for (var i = 0; i < maxHookCount; i++)
+            for (int i = 0; i < maxHookCount; i++)
             {
                 LocalHook lh = LocalHook.Create(
                     LocalHook.GetProcAddress("kernel32.dll", "Beep"),

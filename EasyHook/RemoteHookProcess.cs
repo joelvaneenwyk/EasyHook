@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
 namespace EasyHook
@@ -71,9 +72,9 @@ namespace EasyHook
 
         public string StandardOutput;
 
-        private AsyncStreamReader _errorReader;
+        private RemoteAsyncStreamReader _errorReader;
 
-        private AsyncStreamReader _outputReader;
+        private RemoteAsyncStreamReader _outputReader;
 
         private StreamReader _standardError;
 
@@ -88,10 +89,13 @@ namespace EasyHook
         /// </summary>
         public void BeginErrorReadLine()
         {
-            Stream s = this._standardError.BaseStream;
-            this._errorReader = new AsyncStreamReader(
-                this, s, ErrorReadNotifyUser, this._standardError.CurrentEncoding);
-            this._errorReader.BeginReadLine();
+            if (this._standardError != null)
+            {
+                Stream s = this._standardError.BaseStream;
+                this._errorReader = new RemoteAsyncStreamReader(
+                    s, ErrorReadNotifyUser, this._standardError.CurrentEncoding);
+                this._errorReader.BeginReadLine();
+            }
         }
 
         /// <summary>
@@ -99,14 +103,21 @@ namespace EasyHook
         /// </summary>
         public void BeginOutputReadLine()
         {
-            Stream s = this._standardOutput.BaseStream;
-            this._outputReader = new AsyncStreamReader(
-                this, s, OutputReadNotifyUser, this._standardOutput.CurrentEncoding);
-            this._outputReader.BeginReadLine();
+            if (this._standardOutput != null)
+            {
+                Stream s = this._standardOutput.BaseStream;
+                this._outputReader = new RemoteAsyncStreamReader(
+                    s, OutputReadNotifyUser, this._standardOutput.CurrentEncoding);
+                this._outputReader.BeginReadLine();
+            }
         }
+
+        public bool IsValid => this.RemotePID != 0;
 
         private void Reset()
         {
+            Kill();
+
             this.RemotePID = 0;
             this.RemoteTID = 0;
 
@@ -128,9 +139,13 @@ namespace EasyHook
             this._standardError?.Close();
             this._standardError = null;
 
+            this._outputReader?.CancelOperation();
+            this._outputReader?.WaitUtilEOF();
             this._outputReader?.Close();
             this._outputReader = null;
 
+            this._errorReader?.CancelOperation();
+            this._errorReader?.WaitUtilEOF();
             this._errorReader?.Close();
             this._errorReader = null;
         }
@@ -196,6 +211,7 @@ namespace EasyHook
             {
                 Reset();
 
+
                 CreatePipe(out this._standardOutputReadPipeHandle, out this.hStdOutput, false);
                 CreatePipe(out this._standardErrorReadPipeHandle, out this.hStdError, false);
 
@@ -222,6 +238,11 @@ namespace EasyHook
                         this._standardErrorReadPipeHandle, FileAccess.Read,
                         4096, false), enc, true, 4096);
 
+                // Start reading *before* we inject because this will almost certainly wake the processes which
+                // may result in missing some output from the target.
+                BeginOutputReadLine();
+                BeginErrorReadLine();
+
                 RemoteHooking.InjectEx(
                     NativeAPI.GetCurrentProcessId(), this.RemotePID, this.RemoteTID,
                     0x20000000,
@@ -231,9 +252,6 @@ namespace EasyHook
                     ((InOptions & InjectionOptions.NoService) == 0),
                     ((InOptions & InjectionOptions.DoNotRequireStrongName) == 0),
                     InPassThruArgs);
-
-                BeginOutputReadLine();
-                BeginErrorReadLine();
             }
             catch (Exception)
             {
@@ -255,6 +273,88 @@ namespace EasyHook
         }
 
         /// <summary>
+        /// Creates a new process which is started suspended until you call <see cref="RemoteHooking.WakeUpProcess"/>
+        /// from within your injected library <c>Run()</c> method. This allows you to hook the target
+        /// BEFORE any of its usual code is executed. In situations where a target has debugging and
+        /// hook preventions, you will get a chance to block those mechanisms for example...
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Please note that this method might fail when injecting into managed processes, especially
+        /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
+        /// the Internet Explorer won't be hookable with this method. In such a case your only options
+        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
+        /// with the usual <see cref="RemoteHooking.Inject"/> method.
+        /// </para>
+        /// <para>
+        /// See <see cref="RemoteHooking.Inject"/> for more information. The exceptions listed here are additional
+        /// to the ones listed for <see cref="RemoteHooking.Inject"/>.
+        /// </para>
+        /// </remarks>
+        /// <param name="InEXEPath">
+        /// A relative or absolute path to the desired executable.
+        /// </param>
+        /// <param name="InCommandLine">
+        /// Optional command line parameters for process creation.
+        /// </param>
+        /// <param name="InProcessCreationFlags">
+        /// Internally CREATE_SUSPENDED is already passed to CreateProcess(). With this
+        /// parameter you can add more flags like DETACHED_PROCESS, CREATE_NEW_CONSOLE or
+        /// whatever!
+        /// </param>
+        /// <param name="InOptions">
+        /// A valid combination of options.
+        /// </param>
+        /// <param name="InLibraryPath_x86">
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// </param>
+        /// <param name="InLibraryPath_x64">
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// </param>
+        /// <param name="InPassThruArgs">
+        /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
+        /// constructor (see <see cref="IEntryPoint"/>).
+        /// </param>
+        /// <param name="InChannelName"></param>
+        /// <param name="InAttempts"></param>
+        /// <exception cref="ArgumentException">
+        /// The given EXE path could not be found.
+        /// </exception>
+        public void Launch(
+            String InEXEPath,
+            String InCommandLine,
+            Int32 InProcessCreationFlags,
+            InjectionOptions InOptions,
+            String InLibraryPath_x86,
+            String InLibraryPath_x64,
+            String InChannelName,
+            int InAttempts = 50)
+        {
+            for (int attemptIndex = 1; attemptIndex < InAttempts; attemptIndex++)
+            {
+                try
+                {
+                    CreateAndInject(
+                        InEXEPath, InCommandLine,
+                        InProcessCreationFlags, InOptions,
+                        InLibraryPath_x86, InLibraryPath_x64,
+                        InChannelName);
+
+                    Console.WriteLine("Created and injected process {0}", this.RemotePID);
+
+                    break;
+                }
+                catch
+                {
+                    Console.WriteLine($"[Attempt #{attemptIndex}] Failed to create and inject.");
+                }
+            }
+        }
+
+
+        /// <summary>
         /// Support for asynchronously reading streams
         /// </summary>
         public event OutputReceivedEventHandler ErrorDataReceived;
@@ -269,10 +369,60 @@ namespace EasyHook
         /// </summary>
         public void WaitForExit()
         {
-            this._outputReader.WaitUtilEOF();
-            this._errorReader.WaitUtilEOF();
+            while (IsValid && IsProcessAlive)
+            {
+                Thread.Sleep(50);
+            }
+
+            Reset();
         }
 
+        /// <summary>
+        /// Checks if given process is still alive
+        /// </summary>
+        /// <returns>true if process is alive, false if not</returns>
+        public bool IsProcessAlive
+        {
+            get
+            {
+                bool isAlive = false;
+
+                if (IsValid)
+                {
+                    IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+
+                    if (h == IntPtr.Zero)
+                        return false;
+
+                    bool b = NativeMethods.GetExitCodeProcess(h, out uint code);
+                    NativeMethods.CloseHandle(h);
+
+                    if (b)
+                    {
+                        /* STILL_ACTIVE  */
+                        isAlive = (code == 259);
+                    }
+                }
+
+                return isAlive;
+
+            }
+        }
+
+        public void Kill()
+        {
+            if (IsProcessAlive)
+            {
+                IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+
+                if (h != IntPtr.Zero)
+                {
+                    NativeMethods.TerminateProcess(h, 666);
+                }
+
+                NativeMethods.CloseHandle(h);
+            }
+        }
         internal void ErrorReadNotifyUser(string data)
         {
             this.StandardError += data;

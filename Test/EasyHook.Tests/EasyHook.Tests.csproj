@@ -101,8 +101,10 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Runtime.Remoting" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileHookTests.cs" />
     <Compile Include="LocalHookTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -110,6 +112,14 @@
     <ProjectReference Include="..\..\EasyHook\EasyHook.csproj">
       <Project>{ab53862b-3b5c-4efc-9787-1f01199ebfbf}</Project>
       <Name>EasyHook</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Examples\FileMonInject\FileMonInject.csproj">
+      <Project>{ca462e5d-8a32-42ea-9dbd-c256d22fda21}</Project>
+      <Name>FileMonInject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Examples\FileMon\FileMon.csproj">
+      <Project>{56b9a390-f320-4224-bfe3-380ddac2370f}</Project>
+      <Name>FileMon</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

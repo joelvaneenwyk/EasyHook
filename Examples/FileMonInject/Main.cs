@@ -30,7 +30,6 @@ namespace FileMonInject
             // install hook...
             try
             {
-
                 CreateFileHook = LocalHook.Create(
                     LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
                     new DCreateFile(CreateFile_Hooked),
