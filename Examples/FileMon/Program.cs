@@ -85,41 +85,35 @@ namespace FileMon
                 }
                 else
                 {
+                    var remoteProcess = new RemoteHookProcess();
+
+                    remoteProcess.ErrorDataReceived += (sender, argData) =>
+                    {
+                        Console.WriteLine($"[stderr] {argData.Data}");
+                    };
+
+                    remoteProcess.OutputDataReceived += (sender, argData) =>
+                    {
+                        Console.WriteLine($"[stdout] {argData.Data}");
+                    };
+
                     for (int i = 0; i < 20; i++)
                     {
                         try
                         {
-                            var remoteProcess = new ProcessRedirector();
-
-                            remoteProcess.ErrorDataReceived += (sender, argData) =>
-                            {
-                                Console.WriteLine($"[redirected-err] {argData.Data}");
-                            };
-
-                            remoteProcess.OutputDataReceived += (sender, argData) =>
-                            {
-                                Console.WriteLine($"[redirected-out] {argData.Data}");
-                            };
-
-                            //RemoteHooking.CreateAndInjectRedirect(
-                            //    targetExe, "",
-                            //    0, InjectionOptions.DoNotRequireStrongName,
-                            //    injectionLibrary, injectionLibrary,
-                            //    ref remoteProcess,
-                            //    ChannelName);
-                            var hook = RemoteHooking.CreateAndInject(
+                            remoteProcess.CreateAndInject(
                                 targetExe, "",
                                 0, InjectionOptions.DoNotRequireStrongName,
                                 injectionLibrary, injectionLibrary,
-                                out int targetId,
                                 ChannelName);
 
-                            Console.WriteLine("Created and injected process {0}", remoteProcess.ProcessId);
+                            Console.WriteLine("Created and injected process {0}", remoteProcess.RemotePID);
 
                             break;
                         }
-                        catch (Exception e)
+                        catch
                         {
+                            Console.WriteLine("Failed to create and inject.");
                         }
                     }
                 }

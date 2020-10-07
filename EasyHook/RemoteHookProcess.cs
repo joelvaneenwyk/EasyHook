@@ -25,6 +25,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,34 +34,35 @@ using Microsoft.Win32.SafeHandles;
 namespace EasyHook
 {
     /// <summary>
-    /// Provides data for the <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> and
-    /// <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> events.
+    /// Provides data for the process callback.
     /// </summary>
     public class OutputReceivedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Basic constructor to copy over the string data.
+        /// </summary>
+        /// <param name="data"></param>
         public OutputReceivedEventArgs(string data)
         {
             Data = data;
         }
 
         /// <summary>
-        /// Gets the line of characters that was written to a redirected <see cref="T:System.Diagnostics.Process" />
+        /// Gets the line of characters that was written to a redirected <see cref="RemoteHookProcess" />
         /// output stream.
         /// </summary>
-        /// <returns>
-        /// The line that was written by an associated <see cref="T:System.Diagnostics.Process" /> to its redirected
-        /// <see cref="P:System.Diagnostics.Process.StandardOutput" /> or <see cref="P:System.Diagnostics.Process.StandardError" />
-        /// stream.
-        /// </returns>
         public string Data { get; }
     }
 
+    /// <summary>
+    /// Wrapper around a process ID to handle redirected output.
+    /// </summary>
     public class RemoteHookProcess
     {
         public delegate void OutputReceivedEventHandler(object sender, OutputReceivedEventArgs e);
 
-        public SafeFileHandle hStdError;
-        public SafeFileHandle hStdOutput;
+        private SafeFileHandle hStdError;
+        private SafeFileHandle hStdOutput;
 
         public int RemotePID;
         public int RemoteTID;
@@ -75,17 +77,11 @@ namespace EasyHook
 
         private StreamReader _standardError;
 
-        private readonly SafeFileHandle _standardErrorReadPipeHandle;
+        private SafeFileHandle _standardErrorReadPipeHandle;
 
         private StreamReader _standardOutput;
 
-        private readonly SafeFileHandle _standardOutputReadPipeHandle;
-
-        public RemoteHookProcess()
-        {
-            CreatePipe(out this._standardOutputReadPipeHandle, out this.hStdOutput, false);
-            CreatePipe(out this._standardErrorReadPipeHandle, out this.hStdError, false);
-        }
+        private SafeFileHandle _standardOutputReadPipeHandle;
 
         /// <summary>
         /// Start reading error output asynchronously.
@@ -109,29 +105,145 @@ namespace EasyHook
             this._outputReader.BeginReadLine();
         }
 
-        public void Create()
+        /// <summary>
+        /// Creates a new process which is started suspended until you call <see cref="WakeUpProcess"/>
+        /// from within your injected library <c>Run()</c> method. This allows you to hook the target
+        /// BEFORE any of its usual code is executed. In situations where a target has debugging and
+        /// hook preventions, you will get a chance to block those mechanisms for example...
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Please note that this method might fail when injecting into managed processes, especially
+        /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
+        /// the Internet Explorer won't be hookable with this method. In such a case your only options
+        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
+        /// with the usual <see cref="Inject"/> method.
+        /// </para>
+        /// <para>
+        /// See <see cref="Inject"/> for more information. The exceptions listed here are additional
+        /// to the ones listed for <see cref="Inject"/>.
+        /// </para>
+        /// </remarks>
+        /// <param name="InEXEPath">
+        /// A relative or absolute path to the desired executable.
+        /// </param>
+        /// <param name="InCommandLine">
+        /// Optional command line parameters for process creation.
+        /// </param>
+        /// <param name="InProcessCreationFlags">
+        /// Internally CREATE_SUSPENDED is already passed to CreateProcess(). With this
+        /// parameter you can add more flags like DETACHED_PROCESS, CREATE_NEW_CONSOLE or
+        /// whatever!
+        /// </param>
+        /// <param name="InOptions">
+        /// A valid combination of options.
+        /// </param>
+        /// <param name="InLibraryPath_x86">
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// </param>
+        /// <param name="InLibraryPath_x64">
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// </param>
+        /// <param name="InPassThruArgs">
+        /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
+        /// constructor (see <see cref="IEntryPoint"/>).
+        /// </param>
+        /// <exception cref="ArgumentException">
+        /// The given EXE path could not be found.
+        /// </exception>
+        public void CreateAndInject(
+            String InEXEPath,
+            String InCommandLine,
+            Int32 InProcessCreationFlags,
+            InjectionOptions InOptions,
+            String InLibraryPath_x86,
+            String InLibraryPath_x64,
+            params Object[] InPassThruArgs)
         {
-            Encoding enc = Console.OutputEncoding;
-            this._standardOutput = new StreamReader(
-                new FileStream(
-                    this._standardOutputReadPipeHandle, FileAccess.Read,
-                    4096, false), enc, true, 4096);
-            this._standardError = new StreamReader(
-                new FileStream(
-                    this._standardErrorReadPipeHandle, FileAccess.Read,
-                    4096, false), enc, true, 4096);
+            try
+            {
+                CreatePipe(out this._standardOutputReadPipeHandle, out this.hStdOutput, false);
+                CreatePipe(out this._standardErrorReadPipeHandle, out this.hStdError, false);
+
+                // create suspended process...
+                NativeAPI.RtlCreateSuspendedProcess(
+                    InEXEPath,
+                    InCommandLine,
+                    InProcessCreationFlags,
+                    new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false),
+                    this.hStdOutput,
+                    this.hStdError,
+                    out this.RemotePID,
+                    out this.RemoteTID);
+
+                Encoding enc = Console.OutputEncoding;
+
+                this._standardOutput = new StreamReader(
+                    new FileStream(
+                        this._standardOutputReadPipeHandle, FileAccess.Read,
+                        4096, false), enc, true, 4096);
+
+                this._standardError = new StreamReader(
+                    new FileStream(
+                        this._standardErrorReadPipeHandle, FileAccess.Read,
+                        4096, false), enc, true, 4096);
+
+                RemoteHooking.InjectEx(
+                    NativeAPI.GetCurrentProcessId(), this.RemotePID, this.RemoteTID,
+                    0x20000000,
+                    InLibraryPath_x86,
+                    InLibraryPath_x64,
+                    ((InOptions & InjectionOptions.NoWOW64Bypass) == 0),
+                    ((InOptions & InjectionOptions.NoService) == 0),
+                    ((InOptions & InjectionOptions.DoNotRequireStrongName) == 0),
+                    InPassThruArgs);
+
+                BeginOutputReadLine();
+                BeginErrorReadLine();
+            }
+            catch (Exception)
+            {
+                try
+                {
+                    Process.GetProcessById(this.RemotePID).Kill();
+                }
+                catch (Exception)
+                {
+                    // Many reasons this can fail so we are just trying our best to kill the process if
+                    // it fails along the way during injection.
+                }
+
+                this.RemotePID = 0;
+                this.RemoteTID = 0;
+
+                this.hStdOutput?.Dispose();
+                this.hStdOutput = null;
+
+                this.hStdError?.Dispose();
+                this.hStdError = null;
+
+                this._standardOutputReadPipeHandle?.Dispose();
+                this._standardOutputReadPipeHandle = null;
+
+                this._standardErrorReadPipeHandle?.Dispose();
+                this._standardErrorReadPipeHandle = null;
+
+                // Once we are done trying to kill process go ahead and rethrow the error
+                throw;
+            }
         }
 
+        /// <summary>
+        /// Support for asynchronously reading streams
+        /// </summary>
         public event OutputReceivedEventHandler ErrorDataReceived;
 
-        // Support for asynchronously reading streams  
+        /// <summary>
+        /// Support for asynchronously reading streams
+        /// </summary>
         public event OutputReceivedEventHandler OutputDataReceived;
-
-        public void Start()
-        {
-            BeginOutputReadLine();
-            BeginErrorReadLine();
-        }
 
         /// <summary>
         /// Finish getting data from standard output and error.
@@ -157,8 +269,6 @@ namespace EasyHook
 
         internal void OutputReadNotifyUser(string data)
         {
-            Console.WriteLine($"teehee {data}");
-
             this.StandardOutput += data;
 
             // To avoid ---- between remove handler and raising the event
