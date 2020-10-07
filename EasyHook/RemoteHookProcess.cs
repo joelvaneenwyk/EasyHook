@@ -157,6 +157,8 @@ namespace EasyHook
 
         internal void OutputReadNotifyUser(string data)
         {
+            Console.WriteLine($"teehee {data}");
+
             this.StandardOutput += data;
 
             // To avoid ---- between remove handler and raising the event

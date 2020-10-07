@@ -85,13 +85,43 @@ namespace FileMon
                 }
                 else
                 {
-                    RemoteHooking.CreateAndInject(
-                        targetExe, "", 
-                        0, InjectionOptions.DoNotRequireStrongName,
-                        injectionLibrary, injectionLibrary, 
-                        out TargetPID, 
-                        ChannelName);
-                    Console.WriteLine("Created and injected process {0}", TargetPID);
+                    for (int i = 0; i < 20; i++)
+                    {
+                        try
+                        {
+                            var remoteProcess = new ProcessRedirector();
+
+                            remoteProcess.ErrorDataReceived += (sender, argData) =>
+                            {
+                                Console.WriteLine($"[redirected-err] {argData.Data}");
+                            };
+
+                            remoteProcess.OutputDataReceived += (sender, argData) =>
+                            {
+                                Console.WriteLine($"[redirected-out] {argData.Data}");
+                            };
+
+                            //RemoteHooking.CreateAndInjectRedirect(
+                            //    targetExe, "",
+                            //    0, InjectionOptions.DoNotRequireStrongName,
+                            //    injectionLibrary, injectionLibrary,
+                            //    ref remoteProcess,
+                            //    ChannelName);
+                            var hook = RemoteHooking.CreateAndInject(
+                                targetExe, "",
+                                0, InjectionOptions.DoNotRequireStrongName,
+                                injectionLibrary, injectionLibrary,
+                                out int targetId,
+                                ChannelName);
+
+                            Console.WriteLine("Created and injected process {0}", remoteProcess.ProcessId);
+
+                            break;
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
                 }
                 Console.WriteLine("<Press any key to exit>");
                 Console.ReadKey();

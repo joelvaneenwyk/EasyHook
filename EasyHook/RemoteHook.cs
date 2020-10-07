@@ -939,9 +939,9 @@ namespace EasyHook
                 InEXEPath,
                 InCommandLine,
                 InProcessCreationFlags,
-                new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false), 
-                process.hStdOutput,
-                process.hStdError,
+                new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false),
+                process.hStdOutput, //new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_OUTPUT_HANDLE), false),
+                process.hStdError, // new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_ERROR_HANDLE), false),
                 out process.RemotePID,
                 out process.RemoteTID);
 
@@ -982,6 +982,68 @@ namespace EasyHook
             }
 
             return process;
+        }
+
+        public static void CreateAndInjectRedirect(
+            String InEXEPath,
+            String InCommandLine,
+            Int32 InProcessCreationFlags,
+            InjectionOptions InOptions,
+            String InLibraryPath_x86,
+            String InLibraryPath_x64,
+            ref ProcessRedirector OutProcessRedirector,
+            params Object[] InPassThruArgs)
+        {
+            OutProcessRedirector.PreLaunch();
+
+            int RemotePID;
+            int RemoteTID;
+
+            // create suspended process...
+            NativeAPI.RtlCreateSuspendedProcess(
+                InEXEPath,
+                InCommandLine,
+                InProcessCreationFlags,
+                new SafeFileHandle(OutProcessRedirector.StandardInputReadHandle, false),
+                new SafeFileHandle(OutProcessRedirector.StandardWriteHandle, false),
+                new SafeFileHandle(OutProcessRedirector.StandardErrorWriteHandle, false),
+                out RemotePID,
+                out RemoteTID);
+
+            IntPtr processHandle = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.All, false, RemotePID);
+            if (OutProcessRedirector.PostLaunch(processHandle))
+            {
+                try
+                {
+                    InjectEx(
+                        NativeAPI.GetCurrentProcessId(),
+                        RemotePID,
+                        RemoteTID,
+                        0x20000000,
+                        InLibraryPath_x86,
+                        InLibraryPath_x64,
+                        ((InOptions & InjectionOptions.NoWOW64Bypass) == 0),
+                        ((InOptions & InjectionOptions.NoService) == 0),
+                        ((InOptions & InjectionOptions.DoNotRequireStrongName) == 0),
+                        InPassThruArgs);
+                }
+                catch (Exception)
+                {
+                    try
+                    {
+                        Process.GetProcessById(RemotePID).Kill();
+                    }
+                    catch (Exception)
+                    {
+                        // Many reasons this can fail so we are just trying our best to kill the process if
+                        // it fails along the way during injection.
+                    }
+
+                    // Once we are done trying to kill process go ahead and rethrow the error
+                    throw;
+                }
+            }
+
         }
 
         /// <summary>

@@ -32,8 +32,15 @@ using System.Threading;
 
 namespace EasyHook
 {
+    /// <summary>
+    /// Custom callback for every time we get a line from process output.
+    /// </summary>
+    /// <param name="data"></param>
     public delegate void UserCallBack(string data);
 
+    /// <summary>
+    /// Asynchronously read from and cache data from a stream.
+    /// </summary>
     public class AsyncStreamReader : IDisposable
     {
         internal const int DefaultBufferSize = 1024; // Byte buffer size

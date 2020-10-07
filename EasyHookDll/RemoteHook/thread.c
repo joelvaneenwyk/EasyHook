@@ -539,16 +539,17 @@ Parameters:
     StartInfo.cb = sizeof(StartInfo);
     StartInfo.wShowWindow = TRUE;
 	
-    StartInfo.dwFlags |= STARTF_USESTDHANDLES;
-    StartInfo.hStdInput = InStdInput;
-    StartInfo.hStdOutput = InStdOutput;
-    StartInfo.hStdError = InStdError;
+	StartInfo.dwFlags |= STARTF_USESTDHANDLES;
+	StartInfo.hStdInput = InStdInput;
+	StartInfo.hStdOutput = InStdOutput;
+	StartInfo.hStdError = InStdError;
 	
     if(!CreateProcessW(
             FullExePath, 
             FullCommandLine, 
-            NULL, NULL,  
-            FALSE, 
+            NULL, NULL,
+			// Make sure we inherit handles or redirect will not work
+            TRUE, 
             InCustomFlags | CREATE_SUSPENDED,
             NULL,
             CurrentDir,
