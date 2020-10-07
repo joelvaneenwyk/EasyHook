@@ -367,14 +367,24 @@ namespace EasyHook
         /// <summary>
         /// Finish getting data from standard output and error.
         /// </summary>
-        public void WaitForExit()
+        public uint WaitForExit()
         {
+            uint exitCode = 0;
+
             while (IsValid && IsProcessAlive)
             {
                 Thread.Sleep(50);
             }
 
-            Reset();
+            IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+
+            if (h != IntPtr.Zero)
+            {
+                NativeMethods.GetExitCodeProcess(h, out exitCode);
+                NativeMethods.CloseHandle(h);
+            }
+
+            return exitCode;
         }
 
         /// <summary>

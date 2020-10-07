@@ -59,7 +59,7 @@ namespace EasyHook.Tests
                 Assert.IsTrue(remoteProcess.IsValid);
 
                 client.Ping();
-                remoteProcess.WaitForExit();
+                Assert.Equals(remoteProcess.WaitForExit(), 0);
                 Assert.IsTrue(client.GetFilenames(remoteProcess.RemotePID).Length > 0);
                 Assert.IsTrue(output.Contains("Failed to stat arial.ttf"));
             }
