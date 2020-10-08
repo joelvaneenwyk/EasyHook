@@ -342,13 +342,13 @@ namespace EasyHook
                         InLibraryPath_x86, InLibraryPath_x64,
                         InChannelName);
 
-                    Console.WriteLine("Created and injected process {0}", this.RemotePID);
+                    OutputReadNotifyUser($"Created and injected process '{this.RemotePID}'");
 
                     break;
                 }
                 catch
                 {
-                    Console.WriteLine($"[Attempt #{attemptIndex}] Failed to create and inject.");
+                    ErrorReadNotifyUser($"[Attempt #{attemptIndex}] Failed to create and inject.");
                 }
             }
         }
