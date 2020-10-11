@@ -25,7 +25,7 @@
 
 using System;
 using System.Collections;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -71,7 +71,7 @@ namespace EasyHook
         /// </summary>
         private readonly ManualResetEvent _endStreamEvent = new ManualResetEvent(true);
 
-        private readonly ConcurrentQueue<string> _messageEventQueue = new ConcurrentQueue<string>();
+        private readonly Queue<string> _messageEventQueue = new Queue<string>();
 
         private StringBuilder sb;
 
@@ -188,15 +188,32 @@ namespace EasyHook
 
         private void FlushMessageQueue()
         {
-            while (this._messageEventQueue.TryDequeue(out string s))
+            int length;
+
+            do
             {
+                string message = null;
+
+                lock (this._messageEventQueue)
+                {
+                    length = this._messageEventQueue.Count;
+                    if (length > 0)
+                    {
+                        message = this._messageEventQueue.Dequeue();
+                    }
+                }
+
                 // skip if the read is the read is canceled
                 // this might happen inside UserCallBack
                 // However, continue to drain the queue
-                if (!this.cancelOperation)
+                if (!this.cancelOperation && !string.IsNullOrEmpty(message))
                 {
-                    this.userCallBack(s);
+                    this.userCallBack(message);
                 }
+            } while (length > 0);
+
+            while (length > 0)
+            {
             }
         }
 

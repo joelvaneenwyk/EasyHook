@@ -315,10 +315,10 @@ function VSX {
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Release' 'x64'
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Release' 'Win32'
 
-    #VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'x64'
-    #VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'Win32'
-    #VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'x64'
-    #VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'Win32'
+    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'x64'
+    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'Win32'
+    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'x64'
+    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'Win32'
 
     Write-Diagnostic "Finished build targeting toolchain $Toolchain"
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.IO;
@@ -9,7 +8,7 @@ namespace FileMon
 {
     public class FileMonInterface : MarshalByRefObject
     {
-        private readonly ConcurrentDictionary<int, List<string>> _filenames = new ConcurrentDictionary<int, List<string>>();
+        private readonly Dictionary<int, List<string>> _filenames = new Dictionary<int, List<string>>();
 
         public void IsInstalled(int InClientPID)
         {
@@ -18,23 +17,35 @@ namespace FileMon
 
         public void OnCreateFile(int InClientPID, string[] InFileNames)
         {
-            if (!this._filenames.TryGetValue(InClientPID, out List<string> outFilenames))
+            List<string> outFilenames;
+
+            lock (this._filenames)
             {
-                outFilenames = new List<string>();
-                this._filenames.TryAdd(InClientPID, outFilenames);
+                if (!this._filenames.TryGetValue(InClientPID, out outFilenames))
+                {
+                    outFilenames = new List<string>();
+                    this._filenames.Add(InClientPID, outFilenames);
+                }
             }
 
             foreach (string fileName in InFileNames)
             {
-                outFilenames?.Add(fileName);
+                lock (this._filenames)
+                {
+                    outFilenames?.Add(fileName);
+                }
+
                 Console.WriteLine(fileName);
             }
         }
 
         public string[] GetFilenames(int InClientPID)
         {
-            this._filenames.TryGetValue(InClientPID, out List<string> outFilenames);
-            return outFilenames?.ToArray();
+            lock (this._filenames)
+            {
+                this._filenames.TryGetValue(InClientPID, out List<string> outFilenames);
+                return outFilenames?.ToArray();
+            }
         }
 
         public void ReportException(Exception InInfo)

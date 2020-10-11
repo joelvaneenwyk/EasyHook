@@ -255,16 +255,6 @@ namespace EasyHook
             }
             catch (Exception)
             {
-                try
-                {
-                    Process.GetProcessById(this.RemotePID).Kill();
-                }
-                catch (Exception)
-                {
-                    // Many reasons this can fail so we are just trying our best to kill the process if
-                    // it fails along the way during injection.
-                }
-
                 Reset();
 
                 // Once we are done trying to kill process go ahead and rethrow the error
@@ -322,7 +312,7 @@ namespace EasyHook
         /// <exception cref="ArgumentException">
         /// The given EXE path could not be found.
         /// </exception>
-        public void Launch(
+        public bool Launch(
             String InEXEPath,
             String InCommandLine,
             Int32 InProcessCreationFlags,
@@ -332,7 +322,9 @@ namespace EasyHook
             String InChannelName,
             int InAttempts = 50)
         {
-            for (int attemptIndex = 1; attemptIndex < InAttempts; attemptIndex++)
+            bool succeeded = false;
+
+            for (int attemptIndex = 1; attemptIndex < InAttempts && !succeeded; attemptIndex++)
             {
                 try
                 {
@@ -344,13 +336,16 @@ namespace EasyHook
 
                     OutputReadNotifyUser($"Created and injected process '{this.RemotePID}'");
 
-                    break;
+                    succeeded = true;
                 }
                 catch
                 {
-                    ErrorReadNotifyUser($"[Attempt #{attemptIndex}] Failed to create and inject.");
+                    OutputReadNotifyUser($"[Attempt #{attemptIndex}] Failed to create and inject.");
+                    Reset();
                 }
             }
+
+            return succeeded;
         }
 
 
@@ -419,11 +414,15 @@ namespace EasyHook
             }
         }
 
+        /// <summary>
+        /// Kill the remote process if it's alive.
+        /// </summary>
         public void Kill()
         {
             if (IsProcessAlive)
             {
-                IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+                IntPtr h = NativeMethods.OpenProcess(
+                    NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
 
                 if (h != IntPtr.Zero)
                 {
@@ -432,7 +431,21 @@ namespace EasyHook
 
                 NativeMethods.CloseHandle(h);
             }
+
+            if (IsProcessAlive)
+            {
+                try
+                {
+                    Process.GetProcessById(this.RemotePID).Kill();
+                }
+                catch (Exception)
+                {
+                    // Many reasons this can fail so we are just trying our best to kill the process if
+                    // it fails along the way during injection.
+                }
+            }
         }
+
         internal void ErrorReadNotifyUser(string data)
         {
             this.StandardError += data;

@@ -19,7 +19,16 @@ namespace EasyHook.Tests
         {
             string channelName = null;
 
-            const string targetExe = "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_1_Stable\\Demo\\Demos\\Demos_x64-vs2017_Release.exe";
+            const string executableRoot =
+                "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_1_Stable";
+
+            string targetExe = $"{executableRoot}\\Demo\\Demos\\Demos_x64-vs2017_Release.exe";
+
+            // This test is optional and just skip if the executable does not exist
+            if (!File.Exists(targetExe))
+            {
+                return;
+            }
 
             try
             {
@@ -48,11 +57,13 @@ namespace EasyHook.Tests
                     Console.WriteLine($"[stdout] {argData.Data}");
                 };
 
-                remoteProcess.Launch(
-                    targetExe, "-g Physics/Core/Constraints/Ragdoll -i 5 -nows -nowp -rui 0",
-                    0, InjectionOptions.DoNotRequireStrongName,
-                    injectionLibrary, injectionLibrary,
-                    server.ChannelName);
+                Assert.IsTrue(
+                    remoteProcess.Launch(
+                        targetExe, "-g Physics/Core/Constraints/Ragdoll -i 1 -nows -nowp -rui 0",
+                        0, InjectionOptions.DoNotRequireStrongName,
+                        injectionLibrary, injectionLibrary,
+                        server.ChannelName),
+                    "Remote processed failed to launch and inject");
 
                 Thread.Sleep(10000);
 
