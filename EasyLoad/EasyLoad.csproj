@@ -55,12 +55,13 @@
     <DocumentationFile>
     </DocumentationFile>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netfx4-Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -91,7 +92,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'netfx3.5-Release|x86' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\Build\$(Configuration)\x86\</OutputPath>
     <DefineConstants>TRACE;NET35</DefineConstants>
@@ -103,6 +104,7 @@
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netfx4-Release|x86'">
     <OutputPath>..\Build\$(Configuration)\x86\</OutputPath>
@@ -110,12 +112,13 @@
     <DocumentationFile>
     </DocumentationFile>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netfx4-Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -167,8 +170,14 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(Platform)' == 'x64'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x86" /Y</PostBuildEvent>
-    <PostBuildEvent Condition="'$(Platform)' == 'x86'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x64" /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(Platform)' == 'x64'">
+    C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).dll" "$(TargetDir)..\x86" /Y
+    C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).pdb" "$(TargetDir)..\x86" /Y
+    </PostBuildEvent>
+    <PostBuildEvent Condition="'$(Platform)' == 'x86'">
+    C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).dll" "$(TargetDir)..\x64" /Y
+    C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).pdb" "$(TargetDir)..\x64" /Y
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="../Packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets" Condition="Exists('../packages/UnmanagedExports.1.2.7/tools/RGiesecke.DllExport.targets')" />
 </Project>
