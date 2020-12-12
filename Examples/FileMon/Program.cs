@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
 using System.IO;
@@ -19,31 +19,31 @@ namespace FileMon
         {
             List<string> outputPaths;
 
-            lock (_processIdToPaths)
+            lock (this._processIdToPaths)
             {
-                if (!_processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
+                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
                 {
                     outputPaths = new List<string>();
-                    _processIdToPaths.Add(inputClientProcessId, outputPaths);
+                    this._processIdToPaths.Add(inputClientProcessId, outputPaths);
                 }
+            }
+
+            lock (this._processIdToPaths)
+            {
+                outputPaths?.AddRange(inputPaths);
             }
 
             foreach (string fileName in inputPaths)
             {
-                lock (_processIdToPaths)
-                {
-                    outputPaths?.Add(fileName);
-                }
-
                 Console.WriteLine(fileName);
             }
         }
 
         public string[] GetPaths(int inputClientProcessId)
         {
-            lock (_processIdToPaths)
+            lock (this._processIdToPaths)
             {
-                if (!_processIdToPaths.TryGetValue(inputClientProcessId, out List<string> outputPaths))
+                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out List<string> outputPaths))
                 {
                     outputPaths = new List<string>();
                 }
