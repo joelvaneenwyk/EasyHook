@@ -60,16 +60,41 @@ namespace EasyHook
     /// </summary>
     public class RemoteHookProcess
     {
+        /// <summary>
+        /// Handler for receiving standard output or error streams from remote process.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public delegate void OutputReceivedEventHandler(object sender, OutputReceivedEventArgs e);
 
-        private SafeFileHandle hStdError;
-        private SafeFileHandle hStdOutput;
+        /// <summary>
+        /// Handle to the standard error stream.
+        /// </summary>
+        private SafeFileHandle _standardErrorHandle;
 
-        public int RemotePID;
-        public int RemoteTID;
+        /// <summary>
+        /// Handle to the standard output stream.
+        /// </summary>
+        private SafeFileHandle _standardOutputHandle;
 
+        /// <summary>
+        /// Remote process ID.
+        /// </summary>
+        public int RemoteProcessId;
+
+        /// <summary>
+        /// Remote thread ID.
+        /// </summary>
+        public int RemoteThreadId;
+
+        /// <summary>
+        /// Accumulated standard error output from remote process.
+        /// </summary>
         public string StandardError;
 
+        /// <summary>
+        /// Accumulated standard output from remote process.
+        /// </summary>
         public string StandardOutput;
 
         private RemoteAsyncStreamReader _errorReader;
@@ -89,12 +114,12 @@ namespace EasyHook
         /// </summary>
         public void BeginErrorReadLine()
         {
-            if (this._standardError != null)
+            if (_standardError != null)
             {
-                Stream s = this._standardError.BaseStream;
-                this._errorReader = new RemoteAsyncStreamReader(
-                    s, ErrorReadNotifyUser, this._standardError.CurrentEncoding);
-                this._errorReader.BeginReadLine();
+                Stream s = _standardError.BaseStream;
+                _errorReader = new RemoteAsyncStreamReader(
+                    s, ErrorReadNotifyUser, _standardError.CurrentEncoding);
+                _errorReader.BeginReadLine();
             }
         }
 
@@ -103,51 +128,54 @@ namespace EasyHook
         /// </summary>
         public void BeginOutputReadLine()
         {
-            if (this._standardOutput != null)
+            if (_standardOutput != null)
             {
-                Stream s = this._standardOutput.BaseStream;
-                this._outputReader = new RemoteAsyncStreamReader(
-                    s, OutputReadNotifyUser, this._standardOutput.CurrentEncoding);
-                this._outputReader.BeginReadLine();
+                Stream s = _standardOutput.BaseStream;
+                _outputReader = new RemoteAsyncStreamReader(
+                    s, OutputReadNotifyUser, _standardOutput.CurrentEncoding);
+                _outputReader.BeginReadLine();
             }
         }
 
-        public bool IsValid => this.RemotePID != 0;
+        /// <summary>
+        /// Validate that the remote process ID is valid.
+        /// </summary>
+        public bool IsValid => RemoteProcessId != 0;
 
         private void Reset()
         {
             Kill();
 
-            this.RemotePID = 0;
-            this.RemoteTID = 0;
+            RemoteProcessId = 0;
+            RemoteThreadId = 0;
 
-            this.hStdOutput?.Dispose();
-            this.hStdOutput = null;
+            _standardOutputHandle?.Dispose();
+            _standardOutputHandle = null;
 
-            this.hStdError?.Dispose();
-            this.hStdError = null;
+            _standardErrorHandle?.Dispose();
+            _standardErrorHandle = null;
 
-            this._standardOutputReadPipeHandle?.Dispose();
-            this._standardOutputReadPipeHandle = null;
+            _standardOutputReadPipeHandle?.Dispose();
+            _standardOutputReadPipeHandle = null;
 
-            this._standardErrorReadPipeHandle?.Dispose();
-            this._standardErrorReadPipeHandle = null;
+            _standardErrorReadPipeHandle?.Dispose();
+            _standardErrorReadPipeHandle = null;
 
-            this._standardOutput?.Close();
-            this._standardOutput = null;
+            _standardOutput?.Close();
+            _standardOutput = null;
 
-            this._standardError?.Close();
-            this._standardError = null;
+            _standardError?.Close();
+            _standardError = null;
 
-            this._outputReader?.CancelOperation();
-            this._outputReader?.WaitUtilEOF();
-            this._outputReader?.Close();
-            this._outputReader = null;
+            _outputReader?.CancelOperation();
+            _outputReader?.WaitUtilEOF();
+            _outputReader?.Close();
+            _outputReader = null;
 
-            this._errorReader?.CancelOperation();
-            this._errorReader?.WaitUtilEOF();
-            this._errorReader?.Close();
-            this._errorReader = null;
+            _errorReader?.CancelOperation();
+            _errorReader?.WaitUtilEOF();
+            _errorReader?.Close();
+            _errorReader = null;
         }
 
         /// <summary>
@@ -199,52 +227,53 @@ namespace EasyHook
         /// The given EXE path could not be found.
         /// </exception>
         public void CreateAndInject(
-            String InEXEPath,
-            String InCommandLine,
-            Int32 InProcessCreationFlags,
+            string InEXEPath,
+            string InCommandLine,
+            int InProcessCreationFlags,
             InjectionOptions InOptions,
-            String InLibraryPath_x86,
-            String InLibraryPath_x64,
-            params Object[] InPassThruArgs)
+            string InLibraryPath_x86,
+            string InLibraryPath_x64,
+            params object[] InPassThruArgs)
         {
             try
             {
                 Reset();
 
+                CreatePipe(out _standardOutputReadPipeHandle, out _standardOutputHandle, false);
+                CreatePipe(out _standardErrorReadPipeHandle, out _standardErrorHandle, false);
 
-                CreatePipe(out this._standardOutputReadPipeHandle, out this.hStdOutput, false);
-                CreatePipe(out this._standardErrorReadPipeHandle, out this.hStdError, false);
-
-                // create suspended process...
+                // Create suspended process...
                 NativeAPI.RtlCreateSuspendedProcess(
                     InEXEPath,
                     InCommandLine,
                     InProcessCreationFlags,
                     new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false),
-                    this.hStdOutput,
-                    this.hStdError,
-                    out this.RemotePID,
-                    out this.RemoteTID);
+                    _standardOutputHandle,
+                    _standardErrorHandle,
+                    out RemoteProcessId,
+                    out RemoteThreadId);
 
                 Encoding enc = Console.OutputEncoding;
 
-                this._standardOutput = new StreamReader(
+                _standardOutput = new StreamReader(
                     new FileStream(
-                        this._standardOutputReadPipeHandle, FileAccess.Read,
-                        4096, false), enc, true, 4096);
+                        _standardOutputReadPipeHandle, FileAccess.Read,
+                        4096, false), 
+                    enc, true, 4096);
 
-                this._standardError = new StreamReader(
+                _standardError = new StreamReader(
                     new FileStream(
-                        this._standardErrorReadPipeHandle, FileAccess.Read,
-                        4096, false), enc, true, 4096);
+                        _standardErrorReadPipeHandle, FileAccess.Read,
+                        4096, false), 
+                    enc, true, 4096);
 
-                // Start reading *before* we inject because this will almost certainly wake the processes which
+                // Start reading before we inject because this will almost certainly wake the processes which
                 // may result in missing some output from the target.
                 BeginOutputReadLine();
                 BeginErrorReadLine();
 
                 RemoteHooking.InjectEx(
-                    NativeAPI.GetCurrentProcessId(), this.RemotePID, this.RemoteTID,
+                    NativeAPI.GetCurrentProcessId(), RemoteProcessId, RemoteThreadId,
                     0x20000000,
                     InLibraryPath_x86,
                     InLibraryPath_x64,
@@ -273,7 +302,7 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
+        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
         /// with the usual <see cref="RemoteHooking.Inject"/> method.
         /// </para>
         /// <para>
@@ -313,13 +342,13 @@ namespace EasyHook
         /// The given EXE path could not be found.
         /// </exception>
         public bool Launch(
-            String InEXEPath,
-            String InCommandLine,
-            Int32 InProcessCreationFlags,
+            string InEXEPath,
+            string InCommandLine,
+            int InProcessCreationFlags,
             InjectionOptions InOptions,
-            String InLibraryPath_x86,
-            String InLibraryPath_x64,
-            String InChannelName,
+            string InLibraryPath_x86,
+            string InLibraryPath_x64,
+            string InChannelName,
             int InAttempts = 50)
         {
             bool succeeded = false;
@@ -334,7 +363,7 @@ namespace EasyHook
                         InLibraryPath_x86, InLibraryPath_x64,
                         InChannelName);
 
-                    OutputReadNotifyUser($"Created and injected process '{this.RemotePID}'");
+                    OutputReadNotifyUser($"Created and injected process '{RemoteProcessId}'");
 
                     succeeded = true;
                 }
@@ -371,7 +400,7 @@ namespace EasyHook
                 Thread.Sleep(50);
             }
 
-            IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+            IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, RemoteProcessId);
 
             if (h != IntPtr.Zero)
             {
@@ -394,7 +423,7 @@ namespace EasyHook
 
                 if (IsValid)
                 {
-                    IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+                    IntPtr h = NativeMethods.OpenProcess(NativeMethods.ProcessAccessFlags.QueryInformation, true, RemoteProcessId);
 
                     if (h == IntPtr.Zero)
                         return false;
@@ -422,7 +451,7 @@ namespace EasyHook
             if (IsProcessAlive)
             {
                 IntPtr h = NativeMethods.OpenProcess(
-                    NativeMethods.ProcessAccessFlags.QueryInformation, true, this.RemotePID);
+                    NativeMethods.ProcessAccessFlags.QueryInformation, true, RemoteProcessId);
 
                 if (h != IntPtr.Zero)
                 {
@@ -436,7 +465,7 @@ namespace EasyHook
             {
                 try
                 {
-                    Process.GetProcessById(this.RemotePID).Kill();
+                    Process.GetProcessById(RemoteProcessId).Kill();
                 }
                 catch (Exception)
                 {
@@ -448,7 +477,7 @@ namespace EasyHook
 
         internal void ErrorReadNotifyUser(string data)
         {
-            this.StandardError += data;
+            StandardError += data;
 
             // To avoid ---- between remove handler and raising the event
             OutputReceivedEventHandler outputDataReceived = ErrorDataReceived;
@@ -461,7 +490,7 @@ namespace EasyHook
 
         internal void OutputReadNotifyUser(string data)
         {
-            this.StandardOutput += data;
+            StandardOutput += data;
 
             // To avoid ---- between remove handler and raising the event
             OutputReceivedEventHandler outputDataReceived = OutputDataReceived;

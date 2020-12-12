@@ -20,9 +20,9 @@ namespace EasyHook.Tests
             string channelName = null;
 
             const string executableRoot =
-                "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_1_Stable";
+                "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_2_Stable";
 
-            string targetExe = $"{executableRoot}\\Demo\\Demos\\Demos_x64-vs2017_Release.exe";
+            string targetExe = $"{executableRoot}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
 
             // This test is optional and just skip if the executable does not exist
             if (!File.Exists(targetExe))
@@ -71,7 +71,7 @@ namespace EasyHook.Tests
 
                 client.Ping();
                 Assert.Equals(remoteProcess.WaitForExit(), 0);
-                Assert.IsTrue(client.GetFilenames(remoteProcess.RemotePID).Length > 0);
+                Assert.IsTrue(client.GetFilenames(remoteProcess.RemoteProcessId).Length > 0);
                 Assert.IsTrue(output.Contains("Failed to stat arial.ttf"));
             }
             catch (Exception ExtInfo)

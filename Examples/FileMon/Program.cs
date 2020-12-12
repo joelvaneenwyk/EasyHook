@@ -138,7 +138,7 @@ namespace FileMon
                                 injectionLibrary, injectionLibrary,
                                 ChannelName);
 
-                            Console.WriteLine("Created and injected process {0}", remoteProcess.RemotePID);
+                            Console.WriteLine("Created and injected process {0}", remoteProcess.RemoteProcessId);
 
                             break;
                         }
