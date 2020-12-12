@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHookSvc\InjectionService.cs)
+// EasyHook (File: EasyHookSvc\InjectionService.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -24,22 +24,13 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
 using System.IO;
 using System.ServiceProcess;
-using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Security.Policy;
-using System.Security;
-using System.Security.Permissions;
 using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using EasyHook;
 
 namespace EasyHookSvc

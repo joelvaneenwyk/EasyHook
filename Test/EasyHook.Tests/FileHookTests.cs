@@ -1,4 +1,4 @@
-﻿// ProcessMonitor (File: Test\EasyHook.Tests\FileHookTests.cs)
+// ProcessMonitor (File: Test\EasyHook.Tests\FileHookTests.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
@@ -24,6 +24,7 @@
 // about the project and latest updates.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
@@ -36,6 +37,19 @@ namespace EasyHook.Tests
     [TestClass]
     public class FileHookTests
     {
+        /// <summary>
+        /// This is assigned automatically.
+        /// </summary>
+        /// <summary>
+        /// This is automatically set by unit testing and must be public.
+        /// </summary>
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+        public TestContext TestContext
+        {
+            get;
+            set;
+        }
+
         [TestMethod]
         public void HookFileTest()
         {
@@ -53,8 +67,7 @@ namespace EasyHook.Tests
             }
 
             IpcServerChannel server = RemoteHooking.IpcCreateServer<FileMonInterface>(
-                ref channelName, WellKnownObjectMode.SingleCall);
-            FileMonInterface client = RemoteHooking.IpcConnectClient<FileMonInterface>(channelName);
+                ref channelName, WellKnownObjectMode.Singleton);
 
             string injectionLibrary = Path.Combine(
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
@@ -67,14 +80,14 @@ namespace EasyHook.Tests
 
             remoteProcess.ErrorDataReceived += (sender, argData) =>
             {
-                output += argData.Data;
-                Console.WriteLine($"[stderr] {argData.Data}");
+                output += $"{argData.Data}\n";
+                TestContext.WriteLine($"[stderr] {argData.Data}");
             };
 
             remoteProcess.OutputDataReceived += (sender, argData) =>
             {
-                output += argData.Data;
-                Console.WriteLine($"[stdout] {argData.Data}");
+                output += $"{argData.Data}\n";
+                TestContext.WriteLine($"[stdout] {argData.Data}");
             };
 
             Assert.IsTrue(
@@ -87,13 +100,24 @@ namespace EasyHook.Tests
 
             Thread.Sleep(10000);
 
-            Assert.IsTrue(remoteProcess.IsValid);
-            Assert.IsTrue(remoteProcess.WaitForExit() == 0);
+            uint returnCode = remoteProcess.WaitForExit();
 
+            Assert.IsTrue(remoteProcess.IsValid, "Remote process is not valid.");
+            Assert.IsTrue(returnCode == 0, "Expected return code of zero.");
+
+            // Keep client alive with a ping and test that it works
+            FileMonInterface client = RemoteHooking.IpcConnectClient<FileMonInterface>(channelName);
             client.Ping();
-            Assert.IsTrue(client.GetPaths(remoteProcess.RemoteProcessId).Length > 0);
+
+            // Grab array of files accessed
+            string[] paths = client.GetPaths(remoteProcess.RemoteProcessId);
+
+            Assert.IsTrue(
+                paths.Length > 0,
+                "No paths accessed in remote process.");
 
             Assert.IsTrue(output.Contains("Failed to stat arial.ttf"));
+            Assert.IsTrue(remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf"));
         }
     }
 }

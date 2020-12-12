@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\DllImport.cs)
+// EasyHook (File: EasyHook\DllImport.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -25,7 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 

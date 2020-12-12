@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\GACWrap.cs)
+// EasyHook (File: EasyHook\GACWrap.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -31,7 +31,6 @@
 // Other fusion API documentation: https://support.microsoft.com/en-us/kb/317540
 //-------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 

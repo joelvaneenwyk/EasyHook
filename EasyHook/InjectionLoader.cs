@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\InjectionLoader.cs)
+// EasyHook (File: EasyHook\InjectionLoader.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Runtime.InteropServices;

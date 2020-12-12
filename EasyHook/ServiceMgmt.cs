@@ -24,11 +24,8 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.IO;
-using System.Reflection;
 
 namespace EasyHook
 {

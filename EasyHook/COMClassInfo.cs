@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\COMClassInfo.cs)
+// EasyHook (File: EasyHook\COMClassInfo.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
@@ -24,7 +24,6 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 

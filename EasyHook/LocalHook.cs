@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\LocalHook.cs)
+// EasyHook (File: EasyHook\LocalHook.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -24,9 +24,7 @@
 // about the project and latest updates.
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;

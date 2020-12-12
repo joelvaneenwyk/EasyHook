@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\RemoteHook.cs)
+// EasyHook (File: EasyHook\RemoteHook.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -24,16 +24,12 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Text;
 using System.Reflection;
 using System.IO;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using System.Security;
-using System.Security.Permissions;
 using System.Runtime.Remoting;
 using System.Runtime.Serialization.Formatters;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -42,10 +38,8 @@ using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.Versioning;
 using System.Security.Cryptography;
 using Microsoft.Win32.SafeHandles;
-using System.Runtime.ConstrainedExecution;
 
 #pragma warning disable 0419 // XML comment: ambiguous reference
 

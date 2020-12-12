@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\HelperServiceInterface.cs)
+// EasyHook (File: EasyHook\HelperServiceInterface.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -25,9 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Reflection;
 using System.Threading;
 

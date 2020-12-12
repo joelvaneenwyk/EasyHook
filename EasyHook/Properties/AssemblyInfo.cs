@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\AssemblyInfo.cs)
+// EasyHook (File: EasyHook\AssemblyInfo.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -24,7 +24,6 @@
 // about the project and latest updates.
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following

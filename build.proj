@@ -4,7 +4,7 @@
     <PackageDir>.\Deploy</PackageDir>
     <FX35BuildDir>.\Build\netfx3.5-Release\x64</FX35BuildDir>
     <FX4BuildDir>.\Build\netfx4-Release\x64</FX4BuildDir>
-    <AssemblyCopyright>Copyright &#169; 2014 EasyHook Team</AssemblyCopyright>
+    <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
   </PropertyGroup>
 

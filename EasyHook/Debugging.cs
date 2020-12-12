@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\Debugging.cs)
+// EasyHook (File: EasyHook\Debugging.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -24,11 +24,8 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
-using System.Diagnostics;
 
 namespace EasyHook
 {
