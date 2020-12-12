@@ -8,71 +8,75 @@ namespace FileMon
 {
     public class FileMonInterface : MarshalByRefObject
     {
-        private readonly Dictionary<int, List<string>> _filenames = new Dictionary<int, List<string>>();
+        private readonly Dictionary<int, List<string>> _processIdToPaths = new Dictionary<int, List<string>>();
 
-        public void IsInstalled(int InClientPID)
+        public void IsInstalled(int inputClientProcessId)
         {
-            Console.WriteLine("FileMon has been installed in target {0}.\r\n", InClientPID);
+            Console.WriteLine("FileMon has been installed in target {0}.\r\n", inputClientProcessId);
         }
 
-        public void OnCreateFile(int InClientPID, string[] InFileNames)
+        public void OnCreateFile(int inputClientProcessId, string[] inputPaths)
         {
-            List<string> outFilenames;
+            List<string> outputPaths;
 
-            lock (this._filenames)
+            lock (_processIdToPaths)
             {
-                if (!this._filenames.TryGetValue(InClientPID, out outFilenames))
+                if (!_processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
                 {
-                    outFilenames = new List<string>();
-                    this._filenames.Add(InClientPID, outFilenames);
+                    outputPaths = new List<string>();
+                    _processIdToPaths.Add(inputClientProcessId, outputPaths);
                 }
             }
 
-            foreach (string fileName in InFileNames)
+            foreach (string fileName in inputPaths)
             {
-                lock (this._filenames)
+                lock (_processIdToPaths)
                 {
-                    outFilenames?.Add(fileName);
+                    outputPaths?.Add(fileName);
                 }
 
                 Console.WriteLine(fileName);
             }
         }
 
-        public string[] GetFilenames(int InClientPID)
+        public string[] GetPaths(int inputClientProcessId)
         {
-            lock (this._filenames)
+            lock (_processIdToPaths)
             {
-                this._filenames.TryGetValue(InClientPID, out List<string> outFilenames);
-                return outFilenames?.ToArray();
+                if (!_processIdToPaths.TryGetValue(inputClientProcessId, out List<string> outputPaths))
+                {
+                    outputPaths = new List<string>();
+                }
+                return outputPaths.ToArray();
             }
         }
 
-        public void ReportException(Exception InInfo)
+        public void ReportException(Exception exception)
         {
-            Console.WriteLine("The target process has reported an error:\r\n" + InInfo.ToString());
+            Console.WriteLine("The target process has reported an error:\r\n" + exception);
         }
 
         public void Ping()
         {
+            // No operation needed here just here to keep connection alive.
         }
     }
 
     internal class Program
     {
-        private static string ChannelName;
+        private static string _channelName;
 
         private static void Main(string[] args)
         {
-            int TargetPID = 0;
+            int targetProcessId = 0;
             string targetExe = null;
 
             // Load the parameter
             while (args.Length != 1 ||
-                   !int.TryParse(args[0], out TargetPID) ||
+                   !int.TryParse(args[0], out targetProcessId) ||
                    !File.Exists(args[0]))
             {
-                if (TargetPID > 0)
+                if (targetProcessId > 0)
                 {
                     break;
                 }
@@ -98,21 +102,21 @@ namespace FileMon
 
             try
             {
-                RemoteHooking.IpcCreateServer<FileMonInterface>(ref ChannelName, WellKnownObjectMode.SingleCall);
+                RemoteHooking.IpcCreateServer<FileMonInterface>(ref _channelName, WellKnownObjectMode.SingleCall);
 
                 string injectionLibrary = Path.Combine(
-                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location),
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
                     "FileMonInject.dll");
 
                 if (string.IsNullOrEmpty(targetExe))
                 {
                     RemoteHooking.Inject(
-                        TargetPID,
+                        targetProcessId,
                         injectionLibrary,
                         injectionLibrary,
-                        ChannelName);
+                        _channelName);
 
-                    Console.WriteLine("Injected to process {0}", TargetPID);
+                    Console.WriteLine("Injected to process {0}", targetProcessId);
                 }
                 else
                 {
@@ -136,7 +140,7 @@ namespace FileMon
                                 targetExe, "",
                                 0, InjectionOptions.DoNotRequireStrongName,
                                 injectionLibrary, injectionLibrary,
-                                ChannelName);
+                                _channelName);
 
                             Console.WriteLine("Created and injected process {0}", remoteProcess.RemoteProcessId);
 
@@ -150,12 +154,13 @@ namespace FileMon
 
                     remoteProcess.WaitForExit();
                 }
-                Console.WriteLine("<Press any key to exit>");
-                Console.ReadKey();
             }
-            catch (Exception ExtInfo)
+            catch (Exception exception)
             {
-                Console.WriteLine("There was an error while connecting to target:\r\n{0}", ExtInfo.ToString());
+                Console.WriteLine("There was an error while connecting to target:\r\n{0}", exception);
+            }
+            finally
+            {
                 Console.WriteLine("<Press any key to exit>");
                 Console.ReadKey();
             }

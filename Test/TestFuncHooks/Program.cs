@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace TestFuncHooks
 {
-    class Program
+    internal class Program
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct TEST_FUNC_HOOKS_OPTIONS
@@ -27,8 +24,9 @@ namespace TestFuncHooks
             public string ModuleRedirect;
             [MarshalAs(UnmanagedType.LPStr)]
             public string FnRedirect;
-            IntPtr FnAddress;
-            IntPtr RelocAddress;
+
+            private IntPtr FnAddress;
+            private IntPtr RelocAddress;
             [MarshalAs(UnmanagedType.LPStr)]
             public string EntryDisasm;
             [MarshalAs(UnmanagedType.LPStr)]
@@ -71,7 +69,7 @@ namespace TestFuncHooks
             public static extern Int32 ReleaseTestFuncHookResults(IntPtr results, int resultCount);
         }
 
-        static bool IsDisamSame(string disam1, string disam2)
+        private static bool IsDisamSame(string disam1, string disam2)
         {
             string[] d1 = disam1.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string[] d2 = disam2.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -93,7 +91,7 @@ namespace TestFuncHooks
             return true;
         }
 
-        static void PrintResults(string moduleName, TEST_FUNC_HOOKS_RESULT[] results)
+        private static void PrintResults(string moduleName, TEST_FUNC_HOOKS_RESULT[] results)
         {
             int errorCount = 0;
             int containAddress = 0;
@@ -112,7 +110,7 @@ namespace TestFuncHooks
             Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", moduleName, errorCount, containAddress, noRedirect, (errorCount + containAddress + noRedirect)));
         }
 
-        static bool TryGetProcessById(int pid, out System.Diagnostics.Process process)
+        private static bool TryGetProcessById(int pid, out System.Diagnostics.Process process)
         {
             process = null;
             try
@@ -126,7 +124,7 @@ namespace TestFuncHooks
             return false;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             int targetPID = 0;
             bool is64 = false;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using EasyHook;
 using System.Threading;
 using System.Runtime.InteropServices;
