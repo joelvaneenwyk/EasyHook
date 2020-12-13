@@ -23,12 +23,10 @@
 // Please visit https://easyhook.github.io for more information
 // about the project and latest updates.
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
-using System.Threading;
 using FileMon;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -50,55 +48,57 @@ namespace EasyHook.Tests
             set;
         }
 
-        [TestMethod]
-        public void HookFileTest()
+        private const string _testExecutablePath = "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_2_Stable";
+
+        private static string _testDemoExecutablePath = $"{_testExecutablePath}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
+
+        private void ExecuteTest()
         {
-            string channelName = null;
-
-            const string executableRoot =
-                "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_2_Stable";
-
-            string targetExe = $"{executableRoot}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
-
             // This test is optional and just skip if the executable does not exist
-            if (!File.Exists(targetExe))
+            if (!File.Exists(_testDemoExecutablePath))
             {
                 return;
             }
-
-            IpcServerChannel server = RemoteHooking.IpcCreateServer<FileMonInterface>(
-                ref channelName, WellKnownObjectMode.Singleton);
-
-            string injectionLibrary = Path.Combine(
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
-                "FileMonInject.dll");
-
-            Assert.IsFalse(string.IsNullOrEmpty(injectionLibrary));
 
             RemoteHookProcess remoteProcess = new RemoteHookProcess();
             string output = "";
 
             remoteProcess.ErrorDataReceived += (sender, argData) =>
             {
-                output += $"{argData.Data}\n";
-                TestContext.WriteLine($"[stderr] {argData.Data}");
+                lock (remoteProcess)
+                {
+                    output += $"{argData.Data}\n";
+                    TestContext.WriteLine($"[stderr] {argData.Data}");
+                }
             };
 
             remoteProcess.OutputDataReceived += (sender, argData) =>
             {
-                output += $"{argData.Data}\n";
-                TestContext.WriteLine($"[stdout] {argData.Data}");
+                lock (remoteProcess)
+                {
+                    output += $"{argData.Data}\n";
+                    TestContext.WriteLine($"[stdout] {argData.Data}");
+                }
             };
 
-            Assert.IsTrue(
-                remoteProcess.Launch(
-                    targetExe, "-g Physics/Core/Constraints/Ragdoll -i 1 -nows -nowp -rui 0",
-                    0, InjectionOptions.DoNotRequireStrongName,
-                    injectionLibrary, injectionLibrary,
-                    server.ChannelName),
-                "Remote processed failed to launch and inject");
+            string channelName = null;
+            IpcServerChannel server = RemoteHooking.IpcCreateServer<FileMonInterface>(
+                ref channelName, WellKnownObjectMode.Singleton);
 
-            Thread.Sleep(10000);
+            string injectionLibrary = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                "FileMonInject.dll");
+            Assert.IsFalse(string.IsNullOrEmpty(injectionLibrary), "Injection library missing.");
+
+            bool launchResult = remoteProcess.Launch(
+                _testDemoExecutablePath,
+                "-g Physics/Core/Constraints/Ragdoll -i 1 -nows -nowp -rui 0",
+                0,
+                InjectionOptions.DoNotRequireStrongName,
+                injectionLibrary,
+                injectionLibrary,
+                server.ChannelName);
+            Assert.IsTrue(launchResult, "Remote processed failed to launch and inject");
 
             uint returnCode = remoteProcess.WaitForExit();
 
@@ -116,8 +116,27 @@ namespace EasyHook.Tests
                 paths.Length > 0,
                 "No paths accessed in remote process.");
 
-            Assert.IsTrue(output.Contains("Failed to stat arial.ttf"));
-            Assert.IsTrue(remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf"));
+            Assert.IsTrue(
+                output.Contains("Failed to stat arial.ttf"),
+                "Missing log message.");
+            Assert.IsTrue(
+                remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf"),
+                "Missing log message.");
+        }
+
+        [TestMethod]
+        public void HookFileTest()
+        {
+            ExecuteTest();
+        }
+
+        [TestMethod]
+        public void HookFileStressTest()
+        {
+            for (int i = 0; i < 5000; i++)
+            {
+                ExecuteTest();
+            }
         }
     }
 }

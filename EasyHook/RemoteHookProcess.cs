@@ -226,7 +226,7 @@ namespace EasyHook
         /// <exception cref="ArgumentException">
         /// The given EXE path could not be found.
         /// </exception>
-        public void CreateAndInject(
+        private void CreateAndInject(
             string InEXEPath,
             string InCommandLine,
             int InProcessCreationFlags,
@@ -237,17 +237,31 @@ namespace EasyHook
         {
             try
             {
+                // Make sure there isn't an existing hook in place
                 Reset();
 
-                CreatePipe(out this._standardOutputReadPipeHandle, out this._standardOutputHandle, false);
-                CreatePipe(out this._standardErrorReadPipeHandle, out this._standardErrorHandle, false);
+                // Standard output pipe
+                CreatePipe(
+                    out this._standardOutputReadPipeHandle,
+                    out this._standardOutputHandle,
+                    false);
 
-                // Create suspended process...
+                // Standard error pipe
+                CreatePipe(
+                    out this._standardErrorReadPipeHandle,
+                    out this._standardErrorHandle,
+                    false);
+
+                // Create suspended process
                 NativeAPI.RtlCreateSuspendedProcess(
                     InEXEPath,
                     InCommandLine,
                     InProcessCreationFlags,
-                    new SafeFileHandle(NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE), false), this._standardOutputHandle, this._standardErrorHandle,
+                    new SafeFileHandle(
+                        NativeMethods.GetStdHandle(NativeMethods.STD_INPUT_HANDLE),
+                        false),
+                    this._standardOutputHandle,
+                    this._standardErrorHandle,
                     out this.RemoteProcessId,
                     out this.RemoteThreadId);
 
@@ -269,10 +283,20 @@ namespace EasyHook
                 // may result in missing some output from the target.
                 BeginOutputReadLine();
                 BeginErrorReadLine();
+            }
+            catch (Exception)
+            {
+                // Once we are done trying to kill process go ahead and throw the exception again.
+                Reset();
+                throw;
+            }
 
+            try
+            {
                 RemoteHooking.InjectEx(
-                    NativeAPI.GetCurrentProcessId(), this.RemoteProcessId, this.RemoteThreadId,
-                    0x20000000,
+                    NativeAPI.GetCurrentProcessId(),
+                    this.RemoteProcessId, this.RemoteThreadId,
+                    InjectionNativeOptions.NetDefibrillator,
                     InLibraryPath_x86,
                     InLibraryPath_x64,
                     ((InOptions & InjectionOptions.NoWOW64Bypass) == 0),
@@ -280,11 +304,11 @@ namespace EasyHook
                     ((InOptions & InjectionOptions.DoNotRequireStrongName) == 0),
                     InPassThruArgs);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                // Once we are done trying to kill process go ahead and throw the exception again.
                 Reset();
-
-                // Once we are done trying to kill process go ahead and rethrow the error
+                ErrorReadNotifyUser($"Inject failed: '{exception.Message}'");
                 throw;
             }
         }
@@ -301,7 +325,7 @@ namespace EasyHook
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
         /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
-        /// with the usual <see cref="RemoteHooking.Inject"/> method.
+        /// with the usual <see cref="RemoteHooking.Inject">method</see>.
         /// </para>
         /// <para>
         /// See <see cref="RemoteHooking.Inject"/> for more information. The exceptions listed here are additional
@@ -471,27 +495,33 @@ namespace EasyHook
 
         internal void ErrorReadNotifyUser(string data)
         {
-            this.StandardError += $"{data}{Environment.NewLine}";
+            lock (this)
+            {
+                this.StandardError += $"{data}{Environment.NewLine}";
+            }
 
-            // To avoid ---- between remove handler and raising the event
             OutputReceivedEventHandler outputDataReceived = ErrorDataReceived;
             if (outputDataReceived != null)
             {
-                OutputReceivedEventArgs e = new OutputReceivedEventArgs(data);
-                outputDataReceived(this, e); // Call back to user informing data is available.
+                outputDataReceived(
+                    this,
+                    new OutputReceivedEventArgs(data));
             }
         }
 
         internal void OutputReadNotifyUser(string data)
         {
-            this.StandardOutput += $"{data}{Environment.NewLine}";
+            lock (this)
+            {
+                this.StandardOutput += $"{data}{Environment.NewLine}";
+            }
 
-            // To avoid ---- between remove handler and raising the event
             OutputReceivedEventHandler outputDataReceived = OutputDataReceived;
             if (outputDataReceived != null)
             {
-                OutputReceivedEventArgs e = new OutputReceivedEventArgs(data);
-                outputDataReceived(this, e); // Call back to user informing data is available.
+                outputDataReceived(
+                    this,
+                    new OutputReceivedEventArgs(data));
             }
         }
 

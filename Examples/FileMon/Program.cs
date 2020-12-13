@@ -132,27 +132,20 @@ namespace FileMon
                         Console.WriteLine($"[stdout] {argData.Data}");
                     };
 
-                    for (int i = 1; i < 20; i++)
+                    bool launchResult = remoteProcess.Launch(
+                        targetExe, "",
+                        0, InjectionOptions.DoNotRequireStrongName,
+                        injectionLibrary, injectionLibrary,
+                        _channelName);
+
+                    if (launchResult && remoteProcess.WaitForExit() == 0)
                     {
-                        try
-                        {
-                            remoteProcess.CreateAndInject(
-                                targetExe, "",
-                                0, InjectionOptions.DoNotRequireStrongName,
-                                injectionLibrary, injectionLibrary,
-                                _channelName);
-
-                            Console.WriteLine("Created and injected process {0}", remoteProcess.RemoteProcessId);
-
-                            break;
-                        }
-                        catch
-                        {
-                            Console.WriteLine($"[Attempt #{i}] Failed to create and inject.");
-                        }
+                        Console.WriteLine($"Created and injected '{remoteProcess.RemoteProcessId}' process: '{targetExe}'");
                     }
-
-                    remoteProcess.WaitForExit();
+                    else
+                    {
+                        Console.WriteLine($"Failed to create and inject: '{targetExe}'");
+                    }
                 }
             }
             catch (Exception exception)

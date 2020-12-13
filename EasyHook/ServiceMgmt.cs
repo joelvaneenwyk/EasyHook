@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\ServiceMgmt.cs)
+// EasyHook (File: EasyHook\ServiceMgmt.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -88,7 +88,7 @@ namespace EasyHook
             Int32 InHostPID,
             Int32 InTargetPID,
             Int32 InWakeUpTID,
-            Int32 InNativeOptions,
+            InjectionNativeOptions InNativeOptions,
             String InLibraryPath_x86,
             String InLibraryPath_x64,
             String helperLibrary_x86,

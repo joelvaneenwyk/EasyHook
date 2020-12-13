@@ -417,6 +417,7 @@ namespace EasyHook
             String InLibraryPath_x64,
             IntPtr InPassThruBuffer,
             Int32 InPassThruSize);
+
         public static Int32 RhInjectLibrary(
             Int32 InTargetPID,
             Int32 InWakeUpTID,
@@ -633,9 +634,17 @@ namespace EasyHook
 
     public static class NativeAPI
     {
+        /// <summary>
+        /// Maximum number of hooks are supported.
+        /// </summary>
         public const Int32 MAX_HOOK_COUNT = 1024;
+
         public const Int32 MAX_ACE_COUNT = 128;
-        public readonly static Boolean Is64Bit = IntPtr.Size == 8;
+
+        /// <summary>
+        /// Whether or not the current process is 64-bit
+        /// </summary>
+        public static readonly Boolean Is64Bit = IntPtr.Size == 8;
 
         [DllImport("kernel32.dll")]
         public static extern int GetCurrentThreadId();
@@ -842,11 +851,9 @@ namespace EasyHook
             Int32 InBufferSize,
             out Int32 OutRequiredSize)
         {
-            Force(NativeAPI_EasyHook.DbgHandleToObjectName(InNamedHandle, OutNameBuffer, InBufferSize, out OutRequiredSize));
+            Force(NativeAPI_EasyHook.DbgHandleToObjectName(
+                InNamedHandle, OutNameBuffer, InBufferSize, out OutRequiredSize));
         }
-
-        public static Int32 EASYHOOK_INJECT_DEFAULT = 0x00000000;
-        public static Int32 EASYHOOK_INJECT_MANAGED = 0x00000001;
 
         public static Int32 RhInjectLibraryEx(
             Int32 InTargetPID,

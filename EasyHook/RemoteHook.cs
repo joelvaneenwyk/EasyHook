@@ -97,6 +97,42 @@ namespace EasyHook
     public interface IEntryPoint { }
 
     /// <summary>
+    /// Options passed to native inject method.
+    /// </summary>
+    [Flags]
+    public enum InjectionNativeOptions
+    {
+        /// <summary>
+        /// No special behavior. The given libraries are expected to be unmanaged DLLs.
+        /// Further they should export an entry point named
+        /// "NativeInjectionEntryPoint" (in case of 64-bit) and
+        /// _NativeInjectionEntryPoint@4" (in case of 32-bit). The expected entry point
+        /// signature is REMOTE_ENTRY_POINT.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// The given user library is a NET assembly. Further they should export a class
+        /// named "EasyHook.InjectionLoader" with a static method named "Main". The
+        /// signature of this method is expected to be "int (String)". Please refer
+        /// to the managed injection loader of EasyHook for more information about
+        /// writing such managed entry points.
+        /// </summary>
+        Managed = 0x00000001,
+
+        /// <summary>
+        /// Uses the experimental stealth thread creation. If it fails
+        /// you may try it with default settings. 
+        /// </summary>
+        Stealth = 0x10000000,
+
+        /// <summary>
+        /// USE THIS ONLY IN UNMANAGED CODE AND ONLY WITH CreateAndInject() FOR MANAGED PROCESSES!!
+        /// </summary>
+        NetDefibrillator = 0x20000000
+    }
+
+    /// <summary>
     /// All supported options that will influence the way your library is injected.
     /// </summary>
     [Flags]
@@ -539,7 +575,7 @@ namespace EasyHook
                 GetCurrentProcessId(),
                 InTargetPID,
                 0,
-                0x20000000,
+                InjectionNativeOptions.NetDefibrillator,
                 InLibraryPath_x86,
                 InLibraryPath_x64,
                 true,
@@ -621,7 +657,7 @@ namespace EasyHook
             Int32 InHostPID,
             Int32 InTargetPID,
             Int32 InWakeUpTID,
-            Int32 InNativeOptions,
+            InjectionNativeOptions InNativeOptions,
             String InLibraryPath_x86,
             String InLibraryPath_x64,
             Boolean InCanBypassWOW64,
@@ -632,11 +668,11 @@ namespace EasyHook
             MemoryStream PassThru = new MemoryStream();
 
             HelperServiceInterface.BeginInjection(InTargetPID);
+
             try
             {
-                ManagedRemoteInfo RemoteInfo = new ManagedRemoteInfo();
-                RemoteInfo.HostPID = InHostPID;
-                // We first serialise parameters so that they can be deserialised AFTER the UserLibrary is loaded
+                // We first serialize parameters so that they can be deserialized after
+                // the UserLibrary is loaded
                 BinaryFormatter format = new BinaryFormatter();
                 List<object> args = new List<object>();
                 if (InPassThruArgs != null)
@@ -650,9 +686,13 @@ namespace EasyHook
                         }
                     }
                 }
-                RemoteInfo.UserParams = args.ToArray();
 
-                RemoteInfo.RequireStrongName = InRequireStrongName;
+                ManagedRemoteInfo RemoteInfo = new ManagedRemoteInfo
+                {
+                    HostPID = InHostPID,
+                    UserParams = args.ToArray(),
+                    RequireStrongName = InRequireStrongName
+                };
 
                 GCHandle hPassThru = PrepareInjection(
                     RemoteInfo,
@@ -660,25 +700,27 @@ namespace EasyHook
                     ref InLibraryPath_x64,
                     PassThru);
 
-                /*
-                    Inject library...
-                 */
+                //
+                // Inject the library
+                //
                 try
                 {
-                    Int32 NtStatus;
-                    switch (NtStatus = NativeAPI.RhInjectLibraryEx(
-                            InTargetPID,
-                            InWakeUpTID,
-                            NativeAPI.EASYHOOK_INJECT_MANAGED | InNativeOptions,
-                            Path.Combine(Config.HelperLibraryLocation, Config.HelperLibrary32Bit),
-                            Path.Combine(Config.HelperLibraryLocation, Config.HelperLibrary64Bit),
-                            hPassThru.AddrOfPinnedObject(),
-                            (int)PassThru.Length))
+                    Int32 NtStatus = NativeAPI.RhInjectLibraryEx(
+                        InTargetPID,
+                        InWakeUpTID,
+                        (int)(InjectionNativeOptions.Managed | InNativeOptions),
+                        Path.Combine(Config.HelperLibraryLocation, Config.HelperLibrary32Bit),
+                        Path.Combine(Config.HelperLibraryLocation, Config.HelperLibrary64Bit),
+                        hPassThru.AddrOfPinnedObject(),
+                        (int)PassThru.Length);
+
+                    switch (NtStatus)
                     {
                         case NativeAPI.STATUS_WOW_ASSERTION:
                             {
                                 // Use helper application to bypass WOW64...
                                 if (InCanBypassWOW64)
+                                {
                                     WOW64Bypass.Inject(
                                         InHostPID,
                                         InTargetPID,
@@ -692,16 +734,19 @@ namespace EasyHook
                                         NativeAPI_EasyHook.DllName64,
                                         InRequireStrongName,
                                         InPassThruArgs);
+                                }
                                 else
+                                {
                                     throw new AccessViolationException("Unable to inject library into target process.");
-
+                                }
                             }
                             break;
 
                         case NativeAPI.STATUS_ACCESS_DENIED:
                             {
-                                // Use service and try again...
+                                // Use service and try again
                                 if (InCanCreateService)
+                                {
                                     ServiceMgmt.Inject(
                                         InHostPID,
                                         InTargetPID,
@@ -715,14 +760,17 @@ namespace EasyHook
                                         NativeAPI_EasyHook.DllName64,
                                         InRequireStrongName,
                                         InPassThruArgs);
+                                }
                                 else
+                                {
                                     NativeAPI.Force(NtStatus);
+                                }
                             }
                             break;
 
                         case NativeAPI.STATUS_SUCCESS:
                             {
-                                // wait for injection completion
+                                // Wait for injection completion
                                 HelperServiceInterface.WaitForInjection(InTargetPID);
                             }
                             break;
@@ -944,7 +992,7 @@ namespace EasyHook
                     NativeAPI.GetCurrentProcessId(),
                     RemotePID,
                     RemoteTID,
-                    0x20000000,
+                    InjectionNativeOptions.NetDefibrillator,
                     InLibraryPath_x86,
                     InLibraryPath_x64,
                     ((InOptions & InjectionOptions.NoWOW64Bypass) == 0),
