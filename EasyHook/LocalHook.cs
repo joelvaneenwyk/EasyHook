@@ -160,6 +160,7 @@ namespace EasyHook
         {
             get
             {
+                IntPtr _;
                 return NativeAPI_EasyHook.LhBarrierGetCallback(out _) == NativeAPI.STATUS_SUCCESS;
             }
         }

@@ -43,7 +43,8 @@ namespace FileMon
         {
             lock (this._processIdToPaths)
             {
-                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out List<string> outputPaths))
+                List<string> outputPaths;
+                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
                 {
                     outputPaths = new List<string>();
                 }
