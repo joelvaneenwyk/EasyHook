@@ -189,12 +189,12 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-supended) creation 
-        /// with the usual <see cref="RemoteHooking.Inject"/> method.
+        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
+        /// with the usual <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/> method.
         /// </para>
         /// <para>
-        /// See <see cref="RemoteHooking.Inject"/> for more information. The exceptions listed here are additional
-        /// to the ones listed for <see cref="RemoteHooking.Inject"/>.
+        /// See <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/> for more information. The exceptions listed here are additional
+        /// to the ones listed for <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/>.
         /// </para>
         /// </remarks>
         /// <param name="InEXEPath">
@@ -325,11 +325,11 @@ namespace EasyHook
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
         /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
-        /// with the usual <see cref="RemoteHooking.Inject">method</see>.
+        /// with the usual <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])">method</see>.
         /// </para>
         /// <para>
-        /// See <see cref="RemoteHooking.Inject"/> for more information. The exceptions listed here are additional
-        /// to the ones listed for <see cref="RemoteHooking.Inject"/>.
+        /// See <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/> for more information. The exceptions listed here are additional
+        /// to the ones listed for <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/>.
         /// </para>
         /// </remarks>
         /// <param name="InEXEPath">
@@ -446,7 +446,8 @@ namespace EasyHook
                     if (h == IntPtr.Zero)
                         return false;
 
-                    bool b = NativeMethods.GetExitCodeProcess(h, out uint code);
+                    uint code;
+                    bool b = NativeMethods.GetExitCodeProcess(h, out code);
                     NativeMethods.CloseHandle(h);
 
                     if (b)
