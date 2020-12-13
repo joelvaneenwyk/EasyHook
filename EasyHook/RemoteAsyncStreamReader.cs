@@ -43,15 +43,23 @@ namespace EasyHook
     /// </summary>
     public class RemoteAsyncStreamReader : IDisposable
     {
-        internal const int DefaultBufferSize = 1024; // Byte buffer size
+        /// <summary>
+        /// Byte buffer size.
+        /// </summary>
+        internal const int DefaultBufferSize = 1024;
 
+        /// <summary>
+        /// Record the number of valid bytes in the byteBuffer, for a few checks.
+        /// </summary>
         private const int MinBufferSize = 128;
-        // Record the number of valid bytes in the byteBuffer, for a few checks.
 
-        // This is the maximum number of chars we can get from one call to 
-        // ReadBuffer.  Used so ReadBuffer can tell when to copy data into
-        // a user's char[] directly, instead of our internal char[].
+        /// <summary>
+        /// This is the maximum number of chars we can get from one call to
+        /// ReadBuffer.  Used so ReadBuffer can tell when to copy data into
+        /// a user's char[] directly, instead of our internal char[].
+        /// </summary>
         private int _maxCharsPerBuffer;
+
         private bool bLastCarriageReturn;
         private byte[] byteBuffer;
 
@@ -62,7 +70,6 @@ namespace EasyHook
         // Cache the last position scanned in sb when searching for lines.
         private int currentLinePos;
         private Decoder decoder;
-        private Encoding encoding;
 
         /// <summary>
         /// Default here to signaled because there is nothing to wait for. Only reset
@@ -76,7 +83,9 @@ namespace EasyHook
 
         private readonly Stream stream;
 
-        // Delegate to call user function.
+        /// <summary>
+        /// Delegate to call user function.
+        /// </summary>
         private readonly UserCallBack userCallBack;
 
         internal RemoteAsyncStreamReader(
@@ -105,7 +114,6 @@ namespace EasyHook
             Debug.Assert(bufferSize > 0, "Invalid buffer size!");
 
             this.stream = stream;
-            this.encoding = encoding;
             this.userCallBack = callback;
             this.decoder = encoding.GetDecoder();
 
@@ -128,11 +136,15 @@ namespace EasyHook
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Close()
-        {
-            Dispose(true);
-        }
+        /// <summary>
+        /// Close the stream and dispose of everything.
+        /// </summary>
+        public virtual void Close() => Dispose(true);
 
+        /// <summary>
+        /// Close the stream and trigger events.
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             try
@@ -147,7 +159,6 @@ namespace EasyHook
                 // If anyone is waiting on this have them stop.
                 this._endStreamEvent.Set();
             }
-
         }
 
         // User calls BeginRead to start the asynchronous read
@@ -171,19 +182,13 @@ namespace EasyHook
             }
         }
 
-        internal void CancelOperation()
-        {
-            this.cancelOperation = true;
-        }
+        internal void CancelOperation() => this.cancelOperation = true;
 
         /// <summary>
         /// Wait until we hit EOF. This is called from RemoteHookProcess.WaitForExit
         /// We will lose some information if we don't do this
         /// </summary>
-        internal void WaitUtilEOF()
-        {
-            this._endStreamEvent.WaitOne();
-        }
+        internal void WaitUtilEOF() => this._endStreamEvent.WaitOne();
 
         private void FlushMessageQueue()
         {
@@ -217,7 +222,7 @@ namespace EasyHook
         }
 
         /// <summary>
-        /// Read lines stored in StringBuilder and the buffer we just read into. 
+        /// Read lines stored in StringBuilder and the buffer we just read into.
         /// A line is defined as a sequence of characters followed by
         /// a carriage return ('\r'), a line feed ('\n'), or a carriage return
         /// immediately followed by a line feed. The resulting string does not
@@ -332,7 +337,6 @@ namespace EasyHook
             {
                 try
                 {
-
                     int charLen = this.decoder.GetChars(
                         this.byteBuffer, 0, byteLen, this.charBuffer, 0);
                     this.sb.Append(this.charBuffer, 0, charLen);
@@ -341,7 +345,7 @@ namespace EasyHook
                     this._endStreamEvent.Reset();
                     this.stream?.BeginRead(this.byteBuffer, 0, this.byteBuffer.Length, ReadBuffer, null);
                 }
-                catch 
+                catch
                 {
                     // Make sure we free anyone waiting
                     this._endStreamEvent.Set();

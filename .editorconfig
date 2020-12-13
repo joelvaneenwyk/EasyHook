@@ -55,7 +55,7 @@ tab_width = 4
 #-----------
 #
 
-[*.{h,hxx,inl,cpp,cxx,idl}]
+[*.{c,h,hxx,inl,cpp,cxx,idl}]
 end_of_line = crlf
 indent_style = space
 indent_size = 4

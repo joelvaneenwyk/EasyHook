@@ -632,14 +632,20 @@ namespace EasyHook
         }
     }
 
+    /// <summary>
+    /// Native methods from built-in Windows API but also calls into EasyHook native libraries.
+    /// </summary>
     public static class NativeAPI
     {
         /// <summary>
         /// Maximum number of hooks are supported.
         /// </summary>
-        public const Int32 MAX_HOOK_COUNT = 1024;
+        public const int MAX_HOOK_COUNT = 1024;
 
-        public const Int32 MAX_ACE_COUNT = 128;
+        /// <summary>
+        /// Maximum access entries.
+        /// </summary>
+        public const int MAX_ACE_COUNT = 128;
 
         /// <summary>
         /// Whether or not the current process is 64-bit
@@ -647,35 +653,35 @@ namespace EasyHook
         public static readonly Boolean Is64Bit = IntPtr.Size == 8;
 
         [DllImport("kernel32.dll")]
-        public static extern int GetCurrentThreadId();
+        internal static extern int GetCurrentThreadId();
 
         [DllImport("kernel32.dll")]
-        public static extern void CloseHandle(IntPtr InHandle);
+        internal static extern void CloseHandle(IntPtr InHandle);
 
         [DllImport("kernel32.dll")]
-        public static extern int GetCurrentProcessId();
+        internal static extern int GetCurrentProcessId();
 
         [DllImport("kernel32.dll", CharSet = CharSet.Ansi)]
-        public static extern IntPtr GetProcAddress(IntPtr InModule, String InProcName);
+        internal static extern IntPtr GetProcAddress(IntPtr InModule, String InProcName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr LoadLibrary(String InPath);
+        internal static extern IntPtr LoadLibrary(String InPath);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool FreeLibrary(IntPtr hModule);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr GetModuleHandle(String InPath);
+        internal static extern IntPtr GetModuleHandle(String InPath);
 
         [DllImport("kernel32.dll")]
-        public static extern Int16 RtlCaptureStackBackTrace(
+        internal static extern Int16 RtlCaptureStackBackTrace(
             Int32 InFramesToSkip,
             Int32 InFramesToCapture,
             IntPtr OutBackTrace,
             IntPtr OutBackTraceHash);
 
-        public const Int32 STATUS_SUCCESS = unchecked((Int32)0);
+        public const Int32 STATUS_SUCCESS = 0;
         public const Int32 STATUS_INVALID_PARAMETER = unchecked((Int32)0xC000000DL);
         public const Int32 STATUS_INVALID_PARAMETER_1 = unchecked((Int32)0xC00000EFL);
         public const Int32 STATUS_INVALID_PARAMETER_2 = unchecked((Int32)0xC00000F0L);
