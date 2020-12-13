@@ -205,7 +205,7 @@
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook32.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x64\EasyHook32.dll"
@@ -241,7 +241,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook32.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x64\EasyHook32.dll"
@@ -278,7 +278,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook64.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x86\EasyHook64.dll"
@@ -315,7 +315,7 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook64.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x86\EasyHook64.dll"
@@ -358,7 +358,7 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook32.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x64\EasyHook32.dll"
@@ -402,7 +402,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook32.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x64\EasyHook32.dll"
@@ -446,7 +446,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook64.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x86\EasyHook64.dll"
@@ -490,7 +490,7 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
-      <ModuleDefinitionFile>EasyHook.def</ModuleDefinitionFile>
+      <ModuleDefinitionFile>EasyHook64.def</ModuleDefinitionFile>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(TargetDir)..\x86\EasyHook64.dll"
@@ -725,7 +725,8 @@ ml.exe /D_WIN32 /c /Cx "%(FullPath)"
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="EasyHook.def" />
+    <None Include="EasyHook32.def" />
+    <None Include="EasyHook64.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

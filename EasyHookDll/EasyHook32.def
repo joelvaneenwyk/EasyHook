@@ -1,4 +1,4 @@
-LIBRARY EasyHook
+LIBRARY EasyHook32
 EXPORTS
 	DbgAttachDebugger
 	DbgDetachDebugger
