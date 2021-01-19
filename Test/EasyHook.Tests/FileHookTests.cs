@@ -50,7 +50,7 @@ namespace EasyHook.Tests
 
         private const string _testExecutablePath = "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_2_Stable";
 
-        private static string _testDemoExecutablePath = $"{_testExecutablePath}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
+        private static readonly string _testDemoExecutablePath = $"{_testExecutablePath}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
 
         private void ExecuteTest()
         {
