@@ -1,4 +1,4 @@
-name: MSBuild
+name: EasyHook-Default
 
 on: [push]
 
