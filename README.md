@@ -2,9 +2,7 @@
 
 [![Join the chat at https://gitter.im/EasyHook/EasyHook](https://badges.gitter.im/EasyHook/EasyHook.svg)](https://gitter.im/EasyHook/EasyHook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Master branch: [![Master branch build status](https://ci.appveyor.com/api/projects/status/278ff5njpjnarayd/branch/master?svg=true)](https://ci.appveyor.com/project/spazzarama/easyhook/branch/master)
-
-Develop branch: [![Develop branch build status](https://ci.appveyor.com/api/projects/status/278ff5njpjnarayd/branch/develop?svg=true)](https://ci.appveyor.com/project/spazzarama/easyhook/branch/develop)
+Main branch: [![Main branch build status](https://ci.appveyor.com/api/projects/status/qf77u222llodmtsw/branch/main?svg=true)](https://ci.appveyor.com/project/joelvaneenwyk/easyhook)
 
 You can support the EasyHook project over at Bountysource or [raise a bounty for an issue to be fixed](https://www.bountysource.com/teams/easyhook/issues): [![Current bounties](https://api.bountysource.com/badge/team?team_id=104536)](https://www.bountysource.com/teams/easyhook/bounties)
 

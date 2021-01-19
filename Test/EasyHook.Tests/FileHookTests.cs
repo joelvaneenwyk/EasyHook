@@ -25,8 +25,10 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
+using System.Threading.Tasks;
 using FileMon;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -137,6 +139,86 @@ namespace EasyHook.Tests
             {
                 ExecuteTest();
             }
+        }
+
+        private bool RunHookTest()
+        {
+            // This test is optional and just skip if the executable does not exist
+            if (!File.Exists(_testDemoExecutablePath))
+            {
+                return true;
+            }
+
+            bool success = true;
+
+            RemoteHookProcess remoteProcess = new RemoteHookProcess();
+            string output = "";
+
+            remoteProcess.ErrorDataReceived += (sender, argData) =>
+            {
+                lock (remoteProcess)
+                {
+                    output += $"{argData.Data}\n";
+                    TestContext.WriteLine($"[stderr] {argData.Data}");
+                }
+            };
+
+            remoteProcess.OutputDataReceived += (sender, argData) =>
+            {
+                lock (remoteProcess)
+                {
+                    output += $"{argData.Data}\n";
+                    TestContext.WriteLine($"[stdout] {argData.Data}");
+                }
+            };
+
+            string channelName = null;
+            IpcServerChannel server = RemoteHooking.IpcCreateServer<FileMonInterface>(
+                ref channelName, WellKnownObjectMode.Singleton);
+
+            string injectionLibrary = Path.Combine(
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                "FileMonInject.dll");
+
+            success &= remoteProcess.Launch(
+                _testDemoExecutablePath,
+                "-g Physics/Core/Constraints/Ragdoll -i 1 -nows -nowp -rui 0",
+                0,
+                InjectionOptions.DoNotRequireStrongName,
+                injectionLibrary,
+                injectionLibrary,
+                server.ChannelName);
+
+            uint returnCode = remoteProcess.WaitForExit();
+
+            success &= remoteProcess.IsValid;
+            success &= returnCode == 0;
+
+            // Keep client alive with a ping and test that it works
+            FileMonInterface client = RemoteHooking.IpcConnectClient<FileMonInterface>(channelName);
+            client.Ping();
+
+            // Grab array of files accessed
+            string[] paths = client.GetPaths(remoteProcess.RemoteProcessId);
+
+            success &= paths.Length > 0;
+
+            success &= output.Contains("Failed to stat arial.ttf");
+            success &= remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf");
+
+            return success;
+        }
+
+        [TestMethod]
+        public void HookFileParallel()
+        {
+
+            int[] nums = Enumerable.Range(0, 10000000).ToArray();
+            Parallel.For(
+                0, 5, (index) =>
+                {
+                    Assert.IsTrue(RunHookTest());
+                });
         }
     }
 }
