@@ -29,4 +29,4 @@ jobs:
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} ${{env.SOLUTION_FILE_PATH}}
+      run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} "${{env.SOLUTION_FILE_PATH}}"

@@ -3,13 +3,15 @@
 set POWERSHELL=%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe
 set POWERSHELL_CONSOLE=-NoProfile -ExecutionPolicy Bypass -Command
 
-if "[%~1]" NEQ "[]" SET TARGET_ARG=-Target %1
-if "[%~1]" == "[]" SET TARGET_ARG=
+if "[%*]" NEQ "[]" SET TARGET_ARG= -Target %*
+if "[%*]" == "[]" SET TARGET_ARG=
 
-%POWERSHELL% %POWERSHELL_CONSOLE% "& '%~dp0\setup.ps1'" %TARGET_ARG% -Initialize
+"%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0\setup.ps1'" -Initialize%TARGET_ARG%
 
 call :SetupEnvironment
 call :CheckDisassembler
+
+echo Finished initial setup of environment for EasyHook.
 
 exit /b 0
 

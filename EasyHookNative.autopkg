@@ -3,8 +3,9 @@
     // This node contains custom pivot information.
     Toolset 
     {
-        key : "PlatformToolset"; // this is CoApp pre-defined key
-        choices: { v141, v140, v120, v110, v100 };
+       // This is CoApp pre-defined key
+        key : "PlatformToolset";
+        choices: { v142, v141, v140, v120, v110, v100 };
     };
 }
 nuget {

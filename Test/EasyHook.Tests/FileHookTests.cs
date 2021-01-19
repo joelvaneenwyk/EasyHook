@@ -25,10 +25,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
-using System.Threading.Tasks;
 using FileMon;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -207,18 +205,6 @@ namespace EasyHook.Tests
             success &= remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf");
 
             return success;
-        }
-
-        [TestMethod]
-        public void HookFileParallel()
-        {
-
-            int[] nums = Enumerable.Range(0, 10000000).ToArray();
-            Parallel.For(
-                0, 5, (index) =>
-                {
-                    Assert.IsTrue(RunHookTest());
-                });
         }
     }
 }

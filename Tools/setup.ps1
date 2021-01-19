@@ -227,7 +227,7 @@ function VisualStudioBuild {
 function Get-ProcessOutput {
     Param (
         [Parameter(Mandatory = $true)]$FileName,
-        $Args
+        $Arguments
     )
 
     $process = New-Object System.Diagnostics.Process
@@ -235,8 +235,8 @@ function Get-ProcessOutput {
     $process.StartInfo.RedirectStandardOutput = $true
     $process.StartInfo.RedirectStandardError = $true
     $process.StartInfo.FileName = $FileName
-    if ($Args) { $process.StartInfo.Arguments = $Args }
-    $_ = $process.Start()
+    if ($Arguments) { $process.StartInfo.Arguments = $Arguments }
+    $process.Start() | Out-Null
 
     $StandardError = $process.StandardError.ReadToEnd()
     $StandardOutput = $process.StandardOutput.ReadToEnd()
@@ -255,36 +255,36 @@ function FindVisualStudio {
 
     Write-Diagnostic $script:VSWhere
 
-    $args = ""
+    $toolchainArguments = ""
 
     # VS2013
     if ($Toolchain -eq 'v120') {
-        $args += '-legacy -version "[12.0,14.0)"'
+        $toolchainArguments += '-legacy -version "[12.0,14.0)"'
     }
 
     # VS2015
     if ($Toolchain -eq 'v140') {
-        $args += '-legacy -version "[14.0,15.0)"'
+        $toolchainArguments += '-legacy -version "[14.0,15.0)"'
     }
 
     # VS2017
     if ($Toolchain -eq 'v141') {
-        $args += '-version "[15.0,16.0)"'
+        $toolchainArguments += '-version "[15.0,16.0)"'
     }
 
     # VS2019
     if ($Toolchain -eq 'v142') {
-        $args += '-version "[16.0,17.0)"'
+        $toolchainArguments += '-version "[16.0,17.0)"'
     }
 
     if (-not (Test-Path $script:VSWhere)) {
         Die "Unable to find $script:VSWhere"
     }
 
-    $output = Get-ProcessOutput -FileName $script:VSWhere -Args ($args + ' -property installationPath')
+    $output = Get-ProcessOutput -FileName $script:VSWhere -Arguments ($toolchainArguments + ' -property installationPath')
     $script:VSInstallationPath = $output.StandardOutput.Trim()
 
-    $output = Get-ProcessOutput -FileName $script:VSWhere -Args ($args + ' -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe')
+    $output = Get-ProcessOutput -FileName $script:VSWhere -Arguments ($toolchainArguments + ' -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe')
     $script:MSBuildExe = ($output.StandardOutput -split '\n')[0].Trim()
 }
 
@@ -335,7 +335,11 @@ function WriteAssemblyVersionForFile {
     $AssemblyInfo = Get-Content $File
     $NewString = $AssemblyInfo -replace $Regex, "[assembly: AssemblyVersion(""$AssemblyVersion"")]"
 
-    $NewString | Set-Content $File -Encoding UTF8
+    try {
+        $NewString | Set-Content $File -Encoding UTF8 | Out-Null
+    } catch {
+        Write-Output ("Failed to update '{0}' as it may be read-only." -f $File)
+    }
 }
 
 function WriteAssemblyVersion {
@@ -344,11 +348,9 @@ function WriteAssemblyVersion {
     $Filename = Join-Path $EasyHookRoot EasyHook\Properties\AssemblyInfo.cs
     Write-Diagnostic "$Filename"
     WriteAssemblyVersionForFile "$Filename"
+
     $Filename = Join-Path $EasyHookRoot EasyLoad\Properties\AssemblyInfo.cs
     WriteAssemblyVersionForFile "$Filename"
-}
-
-function Nupkg {
 }
 
 Function Add-PathVariable {
@@ -412,10 +414,10 @@ Function Initialize-Environment {
 
     Write-Diagnostic "Downloading latest version of NuGet and installing packages."
 
-    Write-Diagnostic "EasyHook Tools: $script:ToolsDir"
-    Write-Diagnostic "EasyHook Packages Taget: $script:EasyHookPackages"
-    Write-Diagnostic "NuGet: $script:Nuget"
-    Write-Diagnostic "VSWhere: $script:VSWhere"
+    Write-Diagnostic "EasyHook Tools: '$script:ToolsDir'"
+    Write-Diagnostic "EasyHook Packages Taget: '$script:EasyHookPackages'"
+    Write-Diagnostic "NuGet: '$script:Nuget'"
+    Write-Diagnostic "VSWhere: '$script:VSWhere'"
 
     # Download local version of NuGet
     DownloadNuget
@@ -539,14 +541,18 @@ Function Initialize-Environment {
     $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
-    $_ = Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Args "/c start /wait msiexec /i ""$msiPath"" /quiet"
+    Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Arguments "/c start /wait msiexec /i ""$msiPath"" /quiet" | Out-Null
 
     # Update environment path
     Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;$coAppModulePath"
     $env:PSModulePath = $env:PSModulePath + ";$coAppModulePath"
 
     # Import CoApp module (for packaging native NuGet)
-    Import-Module CoApp
+    try {
+        Import-Module CoApp -WarningAction SilentlyContinue -Verbose:$false | Out-Null
+    } catch {
+        Write-Output "Failed to import CoApp. This can be ignored."
+    }
 
     Add-Content $BatchEnvironment "echo Generated environment batch complete."
 

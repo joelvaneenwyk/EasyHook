@@ -1,4 +1,4 @@
-﻿// EasyLoad (File: EasyLoad\Loader.cs)
+// EasyLoad (File: EasyLoad\Loader.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
@@ -36,17 +36,17 @@ namespace EasyHook.Tests
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool Beep(uint dwFreq, uint dwDuration);
+        private static extern bool Beep(uint dwFreq, uint dwDuration);
 
         [return: MarshalAs(UnmanagedType.Bool)]
-        delegate bool BeepDelegate(uint dwFreq, uint dwDuration);
+        private delegate bool BeepDelegate(uint dwFreq, uint dwDuration);
 
-        bool _beepHookCalled;
+        private bool _beepHookCalled;
 
         [return: MarshalAs(UnmanagedType.Bool)]
-        bool BeepHook(uint dwFreq, uint dwDuration)
+        private bool BeepHook(uint dwFreq, uint dwDuration)
         {
-            _beepHookCalled = true;
+            this._beepHookCalled = true;
             Beep(dwFreq, dwDuration);
             return false;
         }
@@ -118,15 +118,15 @@ namespace EasyHook.Tests
 
             Assert.IsFalse(Beep(100, 100));
 
-            Assert.IsTrue(_beepHookCalled);
+            Assert.IsTrue(this._beepHookCalled);
 
-            _beepHookCalled = false;
+            this._beepHookCalled = false;
 
             BeepDelegate beepDelegate = (BeepDelegate)Marshal.GetDelegateForFunctionPointer(
                 localHook.HookBypassAddress, typeof(BeepDelegate));
 
             beepDelegate(100, 100);
-            Assert.IsFalse(_beepHookCalled);
+            Assert.IsFalse(this._beepHookCalled);
         }
 
         [TestMethod]
@@ -136,6 +136,7 @@ namespace EasyHook.Tests
             {
                 File.Copy("EasyHook32.dll", "TestEasyHookName32.dll", true);
             }
+
             if (File.Exists("EasyHook64.dll"))
             {
                 File.Copy("EasyHook64.dll", "TestEasyHookName64.dll", true);
