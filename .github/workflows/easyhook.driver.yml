@@ -8,7 +8,7 @@ env:
 
 jobs:
   build:
-    runs-on: ${{ matrix.net }}
+    runs-on: ${{ matrix.image }}
 
     strategy:
       matrix:
