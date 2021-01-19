@@ -8,22 +8,20 @@ env:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.net }}
 
     strategy:
       matrix:
+        image: [windows-2016, windows-2019]
         net: [netfx3.5, netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
-        vs_version: ['[16.0,17.0)', '[15.0,16.0)', '[14.0, 15.0)']
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-      with:
-        vs-version: ${{ matrix.vs_version }}
         
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
