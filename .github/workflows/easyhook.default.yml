@@ -7,7 +7,7 @@ env:
   SOLUTION_FILE_PATH: EasyHook.sln
 
 jobs:
-  build:
+  default:
     runs-on: ${{ matrix.image }}
 
     strategy:

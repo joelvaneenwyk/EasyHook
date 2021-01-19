@@ -7,7 +7,7 @@ env:
   SOLUTION_FILE_PATH: EasyHook.sln
 
 jobs:
-  build:
+  package:
     runs-on: windows-2019
 
     steps:
