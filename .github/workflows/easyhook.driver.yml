@@ -1,0 +1,34 @@
+name: MSBuild
+
+on: [push]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: EasyHookSys.sln
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        net: [netfx3.5, netfx4]
+        config: [Debug, Release]
+        platform: [x64, Win32]
+        vs_version: ['[16.0,17.0)', '[15.0,16.0)', '[14.0, 15.0)']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+      with:
+        vs-version: ${{ matrix.vs_version }}
+        
+    - name: Restore NuGet packages
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} ${{env.SOLUTION_FILE_PATH}}
