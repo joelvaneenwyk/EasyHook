@@ -1,4 +1,4 @@
-// ProcessMonitor (File: Examples\FileMonInject\Main.cs)
+﻿// ProcessMonitor (File: Examples\FileMonInject\Main.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
