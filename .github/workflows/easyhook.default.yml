@@ -12,8 +12,8 @@ jobs:
 
     strategy:
       matrix:
-        image: [windows-2016, windows-2019]
-        net: [netfx3.5, netfx4]
+        image: [windows-2019, windows-2022]
+        net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
 
@@ -22,7 +22,7 @@ jobs:
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
-        
+
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
