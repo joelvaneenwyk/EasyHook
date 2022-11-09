@@ -197,11 +197,11 @@ ERROR_ABORT:
         free(NameBuffer );
 
 	printf(
-        "\n[Error(0x%p)]: \"%S\" (code: %d {0x%p})\n", 
-        reinterpret_cast<PVOID>(NtStatus),
+        "\n[Error(0x%x)]: \"%S\" (code: %d {0x%x})\n",
+        NtStatus,
         RtlGetLastErrorString(), 
         RtlGetLastError(),
-        (PVOID)RtlGetLastError());
+        RtlGetLastError());
 
     _getch();
 

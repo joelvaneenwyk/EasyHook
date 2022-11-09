@@ -5,7 +5,7 @@ by other scripts/tools here.
 
 param(
     [Parameter(Position = 0)]
-    [string] $Target = "vs2017",
+    [string] $Target = "vs2019",
     [switch] $Initialize = $false
 )
 
@@ -119,7 +119,7 @@ function VisualStudioBuild {
         [string] $Toolchain,
 
         [Parameter(Position = 2, ValueFromPipeline = $true)]
-        [ValidateSet('netfx3.5-Debug', 'netfx3.5-Release', 'netfx4-Debug', 'netfx4-Release')]
+        [ValidateSet('netfx4-Debug', 'netfx4-Release')]
         [string] $Configuration,
 
         [Parameter(Position = 3, ValueFromPipeline = $true)]
@@ -183,7 +183,7 @@ function VisualStudioBuild {
         "/p:Configuration=$Configuration",
         "/p:Platform=$Platform",
         "/p:PlatformToolset=$Toolchain",
-        "/p:PackageDir=.\Deploy;FX35BuildDir=.\Build\netfx3.5-Release\x64;FX4BuildDir=.\Build\netfx4-Release\x64",
+        "/p:PackageDir=.\Deploy;FX4BuildDir=.\Build\netfx4-Release\x64",
         "/verbosity:quiet"
     )
 
@@ -307,18 +307,13 @@ function VSX {
         Return
     }
 
-    Write-Diagnostic "Visual Studio Installation path: $script:VSInstallationPath"
+    Write-Diagnostic "Visual Studio Installation path: '$script:VSInstallationPath'"
     Write-Diagnostic "Starting build targeting toolchain $Toolchain"
 
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Debug' 'x64'
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Debug' 'Win32'
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Release' 'x64'
     VisualStudioBuild $EasyHookSln $Toolchain 'netfx4-Release' 'Win32'
-
-    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'x64'
-    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Debug' 'Win32'
-    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'x64'
-    VisualStudioBuild $EasyHookSln $Toolchain 'netfx3.5-Release' 'Win32'
 
     Write-Diagnostic "Finished build targeting toolchain $Toolchain"
 }
@@ -337,7 +332,8 @@ function WriteAssemblyVersionForFile {
 
     try {
         $NewString | Set-Content $File -Encoding UTF8 | Out-Null
-    } catch {
+    }
+    catch {
         Write-Output ("Failed to update '{0}' as it may be read-only." -f $File)
     }
 }
@@ -393,9 +389,33 @@ Function Get-Toolchain {
 
     return $toolchain
 }
+
+function Load-Module {
+    param (
+        [parameter(Mandatory = $true)][string] $name
+    )
+
+    $retVal = $true
+
+    if (!(Get-Module -Name $name)) {
+        $retVal = Get-Module -ListAvailable | where { $_.Name -eq $name }
+
+        if ($retVal) {
+            try {
+                Import-Module $name -ErrorAction SilentlyContinue
+            }
+            catch {
+                $retVal = $false
+            }
+        }
+    }
+
+    return $retVal
+}
+
 Function Initialize-Environment {
     param(
-        [string] $Target = "vs2017",
+        [string] $Target = "vs2019",
         [string] $AssemblyVersion = "2.8.0.0"
     )
 
@@ -444,7 +464,7 @@ Function Initialize-Environment {
 
     $Configuration = $env:Configuration
     if ([string]::IsNullOrEmpty($Configuration)) {
-        $Configuration = "netfx3.5-Debug"
+        $Configuration = "netfx4.5-Debug"
     }
 
     $Platform = $env:Platform
@@ -548,11 +568,7 @@ Function Initialize-Environment {
     $env:PSModulePath = $env:PSModulePath + ";$coAppModulePath"
 
     # Import CoApp module (for packaging native NuGet)
-    try {
-        Import-Module CoApp -WarningAction SilentlyContinue -Verbose:$false | Out-Null
-    } catch {
-        Write-Output "Failed to import CoApp. This can be ignored."
-    }
+    Load-Module "CoApp"
 
     Add-Content $BatchEnvironment "echo Generated environment batch complete."
 

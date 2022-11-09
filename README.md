@@ -39,10 +39,6 @@ Requirements:
 
 Use the `build.bat` to build binaries for all configurations (.NET 3.5/4.0, Debug/Release, x86/x64).
 
-* `.\netfx3.5-Debug\x86`
-* `.\netfx3.5-Debug\x64`
-* `.\netfx3.5-Release\x86`
-* `.\netfx3.5-Release\x64`
 * `.\netfx4-Debug\x86`
 * `.\netfx4-Debug\x64`
 * `.\netfx4-Release\x86`
@@ -60,7 +56,6 @@ Generates ZIP archives:
 
 Containing the following files:
 
-* `.\Deploy\NetFX3.5\*`
 * `.\Deploy\NetFX4.0\*`
 * `.\Deploy\Source\*`
 

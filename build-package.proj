@@ -3,7 +3,6 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageDir>.\Deploy</PackageDir>
-    <FX35BuildDir>.\Build\netfx3.5-Release\x64</FX35BuildDir>
     <FX4BuildDir>.\Build\netfx4-Release\x64</FX4BuildDir>
     <AssemblyCopyright>Copyright (c) 2016 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
@@ -70,20 +69,6 @@
     </ItemGroup>
     <!-- Note: These ItemGroup's must be child of Target to ensure that the Include paths are evaluated AFTER the build has completed -->
     <ItemGroup>
-      <NetFX35Files Include="$(FX35BuildDir)\EasyHook*.dll" />
-      <NetFX35Files Include="$(FX35BuildDir)\EasyLoad*.dll" />
-      <NetFX35Files Include="$(FX35BuildDir)\EasyHook*.lib" />
-      <NetFX35Files Include="$(FX35BuildDir)\EasyHook32Svc.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\EasyHook64Svc.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\FileMon.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\ProcessMonitor.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\ProcMonInject.dll" />
-      <NetFX35Files Include="$(FX35BuildDir)\ComplexParameterTest.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\ComplexParameterInject.dll" />
-      <NetFX35Files Include="$(FX35BuildDir)\TestFuncHooks.exe" />
-      <NetFX35Files Include="$(FX35BuildDir)\*.sys" />
-    </ItemGroup>
-    <ItemGroup>
       <NetFX4Files Include="$(FX4BuildDir)\EasyHook*.dll" />
       <NetFX4Files Include="$(FX4BuildDir)\EasyLoad*.dll" />
       <NetFX4Files Include="$(FX4BuildDir)\EasyHook*.lib" />
@@ -100,13 +85,9 @@
     </ItemGroup>
     <MakeDir Directories = "$(PackageDir)"
             Condition = "!Exists('$(PackageDir)')" />
-    <MakeDir Directories = "$(PackageDir)\NetFX3.5"
-            Condition = "!Exists('$(PackageDir)\NetFX3.5')" />
     <MakeDir Directories = "$(PackageDir)\NetFX4.0"
             Condition = "!Exists('$(PackageDir)\NetFX4.0')" />
-    <Copy SourceFiles="@(CommonFiles)" DestinationFolder="$(PackageDir)\NetFX3.5" />
     <Copy SourceFiles="@(CommonFiles)" DestinationFolder="$(PackageDir)\NetFX4.0" />
-    <Copy SourceFiles="@(NetFX35Files)" DestinationFolder="$(PackageDir)\NetFX3.5" />
     <Copy SourceFiles="@(NetFX4Files)" DestinationFolder="$(PackageDir)\NetFX4.0" />
   </Target>
   <!-- No need to export source
@@ -142,6 +123,6 @@
   </Target>
   <!-- Clean -->
   <Target Name = "Clean">
-    <RemoveDir Directories=".\Build;$(PackageDir)\NetFX4.0;$(PackageDir)\NetFX3.5;$(PackageDir)\Source" />
+    <RemoveDir Directories=".\Build;$(PackageDir)\NetFX4.0;$(PackageDir)\Source" />
   </Target>
 </Project>
