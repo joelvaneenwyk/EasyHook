@@ -1,38 +1,7 @@
-﻿# EditorConfig : http://EditorConfig.org
+# EditorConfig : http://EditorConfig.org
 # Install the EditorConfig extension
 
 root = true
-
-#
-#-----------
-# Ignore all of these folders. This is the current "official" way of ignoring folders and
-# files but not all tools truly follow this. It does allow faster processing with tools
-# like 'eclint' so worth including here.
-#-----------
-#
-
-[/{Bin,Build,yarn_modules,node_modules,__pycache__,.tox,.pytest_cache,.mypy_cache,.git}/**]
-ignore = true
-indent_style = unset
-indent_size = unset
-tab_width = unset
-end_of_line = unset
-charset = unset
-trim_trailing_whitespace = unset
-insert_final_newline = unset
-
-#
-#-----------
-# Python
-#-----------
-#
-
-[*.{py}]
-indent_style = space
-end_of_line = lf
-insert_final_newline = true
-trim_trailing_whitespace = true
-indent_size = 4
 
 #
 #-----------
@@ -42,7 +11,6 @@ indent_size = 4
 
 [*.{json}]
 indent_style = space
-end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
@@ -56,7 +24,6 @@ tab_width = 4
 #
 
 [*.{c,h,hxx,inl,cpp,cxx,idl}]
-end_of_line = crlf
 indent_style = space
 indent_size = 4
 insert_final_newline = true
@@ -64,7 +31,6 @@ trim_trailing_whitespace = true
 resharper_cpp_clang_tidy_modernize_use_auto_highlighting = silent
 
 [.editorconfig]
-end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 
@@ -76,7 +42,6 @@ trim_trailing_whitespace = true
 
 [*.md]
 indent_style = space
-end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
@@ -88,7 +53,6 @@ indent_size = 4
 #
 
 [*.{bat,cmd,ps1}]
-end_of_line = crlf
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
@@ -102,7 +66,6 @@ charset = utf-8
 #
 
 [*.{sh,bash,bats,conf}]
-end_of_line = lf
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
@@ -139,7 +102,6 @@ tab_width=4
 indent_style=space
 indent_size=4
 tab_width=4
-end_of_line = crlf
 charset = utf-8
 insert_final_newline = true
 trim_trailing_whitespace = true
@@ -160,41 +122,41 @@ tab_width=2
 dotnet_remove_unnecessary_suppression_exclusions = category: ReSharper
 
 # NOTE: We need the below severity entry for Add Braces due to https://github.com/dotnet/roslyn/issues/44201
-dotnet_diagnostic.IDE0011.severity = warning
+dotnet_diagnostic.ide0011.severity = warning
 
 # IDE0035: Remove unreachable code
-dotnet_diagnostic.IDE0035.severity = warning
+dotnet_diagnostic.ide0035.severity = warning
 
 # IDE0036: Order modifiers
-dotnet_diagnostic.IDE0036.severity = warning
+dotnet_diagnostic.ide0036.severity = warning
 
 # IDE0040: Add accessibility modifiers
-dotnet_diagnostic.IDE0040.severity = warning
+dotnet_diagnostic.ide0040.severity = warning
 
 # IDE0043: Format string contains invalid placeholder
-dotnet_diagnostic.IDE0043.severity = warning
+dotnet_diagnostic.ide0043.severity = warning
 
 # IDE0044: Make field readonly
-dotnet_diagnostic.IDE0044.severity = warning
+dotnet_diagnostic.ide0044.severity = warning
 
 # IDE0047: Remove unnecessary parentheses
-dotnet_diagnostic.IDE0047.severity = silent
+dotnet_diagnostic.ide0047.severity = silent
 
 # CONSIDER: Are IDE0051 and IDE0052 too noisy to be warnings for IDE editing scenarios? Should they be made build-only warnings?
 # IDE0051: Remove unused private member
-dotnet_diagnostic.IDE0051.severity = warning
+dotnet_diagnostic.ide0051.severity = warning
 
 # IDE0052: Remove unread private member
-dotnet_diagnostic.IDE0052.severity = warning
+dotnet_diagnostic.ide0052.severity = warning
 
 # IDE0059: Unnecessary assignment to a value
-dotnet_diagnostic.IDE0059.severity = warning
+dotnet_diagnostic.ide0059.severity = warning
 
 # IDE0060: Remove unused parameter
-dotnet_diagnostic.IDE0060.severity = warning
+dotnet_diagnostic.ide0060.severity = warning
 
 # CA1822: Make member static
-dotnet_diagnostic.CA1822.severity = warning
+dotnet_diagnostic.ca1822.severity = warning
 
 #
 #-----------
@@ -296,6 +258,16 @@ dotnet_style_explicit_tuple_names = true:suggestion
 #
 #-----------
 # ReSharper properties
+resharper_csharp_case_block_braces = next_line_shifted_2
+resharper_csharp_naming_rule.private_constants = AaBb:do_not_check
+resharper_csharp_naming_rule.private_static_fields = s_ + aaBb:do_not_check
+resharper_csharp_naming_rule.private_static_readonly = AaBb:do_not_check
+resharper_enforce_line_ending_style = true
+resharper_keep_existing_declaration_block_arrangement = true
+resharper_keep_existing_embedded_block_arrangement = true
+resharper_keep_existing_enum_arrangement = true
+resharper_show_autodetect_configure_formatting_tip = false
+resharper_use_indent_from_vs = false
 #-----------
 #
 
@@ -315,15 +287,15 @@ resharper_csharp_naming_rule.private_instance_fields = _ + aaBb, aaBb
 resharper_csharp_naming_rule.static_readonly=AaBb, Parature + AaBb
 resharper_csharp_wrap_after_declaration_lpar=true
 resharper_csharp_wrap_after_invocation_lpar=true
-resharper_for_other_types=use_var_when_evident
+resharper_for_other_types = use_explicit_type
 resharper_for_simple_types=use_explicit_type
 resharper_place_attribute_on_same_line=false
 resharper_place_linq_into_on_new_line=false
 resharper_wrap_before_linq_expression=true
-resharper_wrap_linq_expressions=chop_always
 resharper_xmldoc_indent_text=ZeroIndent
 
 # ReSharper inspection severities
+resharper_arrange_accessor_owner_body_highlighting = none
 resharper_arrange_redundant_parentheses_highlighting = none
 resharper_arrange_type_member_modifiers_highlighting=hint
 resharper_arrange_type_modifiers_highlighting=hint
@@ -356,13 +328,82 @@ resharper_redundant_empty_object_creation_argument_list_highlighting=suggestion
 resharper_string_literal_typo_highlighting = none
 resharper_suggest_discard_declaration_var_style_highlighting = none
 resharper_suggest_var_or_type_elsewhere_highlighting = none
-resharper_suggest_var_or_type_simple_types_highlighting=suggestion
+resharper_suggest_var_or_type_simple_types_highlighting = none
 resharper_switch_expression_handles_some_known_enum_values_with_exception_in_default_highlighting = none
 resharper_switch_statement_handles_some_known_enum_values_with_default_highlighting = none
 resharper_switch_statement_missing_some_enum_cases_no_default_highlighting = none
 resharper_use_negated_pattern_matching_highlighting = none
 resharper_use_null_propagation_highlighting = none
 resharper_use_pattern_matching_highlighting = none
+resharper_web_config_module_not_resolved_highlighting = warning
+resharper_web_config_type_not_resolved_highlighting = warning
+resharper_web_config_wrong_module_highlighting = warning
+
+# Standard properties
+insert_final_newline = true
+max_line_length = 130
+
+# Microsoft .NET properties
+csharp_new_line_before_members_in_object_initializers = false
+csharp_preferred_modifier_order = public, private, protected, internal, new, abstract, virtual, sealed, override, static, readonly, extern, unsafe, volatile, async:suggestion
+csharp_style_expression_bodied_methods = true:none
+csharp_style_var_elsewhere = false:none
+csharp_style_var_for_built_in_types = false:error
+csharp_style_var_when_type_is_apparent = false:none
+dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.constants_rule.resharper_style = AA_BB, AaBb
+dotnet_naming_rule.event_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.local_constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.local_constants_rule.resharper_style = aaBb, AA_BB
+dotnet_naming_rule.local_constants_rule_1.import_to_resharper = True
+dotnet_naming_rule.local_constants_rule_1.resharper_description = LocalConstants
+dotnet_naming_rule.local_constants_rule_1.resharper_guid = c00479af-f1a0-4091-945f-155b720c6e8b
+dotnet_naming_rule.local_constants_rule_1.resharper_style = aaBb, AA_BB
+dotnet_naming_rule.local_constants_rule_1.severity = none
+dotnet_naming_rule.local_constants_rule_1.style = lower_camel_case_style_1
+dotnet_naming_rule.local_constants_rule_1.symbols = local_constants_symbols_1
+dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_instance_fields_override_rule.import_to_resharper = False
+dotnet_naming_rule.private_instance_fields_override_rule.severity = none
+dotnet_naming_rule.private_instance_fields_override_rule.style = s_lower_camel_case_style
+dotnet_naming_rule.private_instance_fields_override_rule.symbols = private_instance_fields_override_symbols
+dotnet_naming_rule.private_instance_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_instance_fields_rule.resharper_style = _ + aaBb, aaBb
+dotnet_naming_rule.private_instance_fields_rule_1.import_to_resharper = True
+dotnet_naming_rule.private_instance_fields_rule_1.resharper_description = PrivateInstanceFields
+dotnet_naming_rule.private_instance_fields_rule_1.resharper_guid = 961e0f24-73c8-4117-8b85-a2318de3f37f
+dotnet_naming_rule.private_instance_fields_rule_1.resharper_style = _ + aaBb, aaBb
+dotnet_naming_rule.private_instance_fields_rule_1.severity = none
+dotnet_naming_rule.private_instance_fields_rule_1.style = lower_camel_case_style
+dotnet_naming_rule.private_instance_fields_rule_1.symbols = private_instance_fields_symbols_1
+dotnet_naming_rule.private_static_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.public_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.static_readonly_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.static_readonly_rule.resharper_style = AaBb, Parature + AaBb
+dotnet_naming_rule.type_parameters_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.unity_serialized_field_rule.import_to_resharper = True
+dotnet_naming_rule.unity_serialized_field_rule.resharper_description = Unity serialized field
+dotnet_naming_rule.unity_serialized_field_rule.resharper_guid = 5f0fdb63-c892-4d2c-9324-15c80b22a7ef
+dotnet_naming_rule.unity_serialized_field_rule.severity = none
+dotnet_naming_rule.unity_serialized_field_rule.style = lower_camel_case_style_1
+dotnet_naming_rule.unity_serialized_field_rule.symbols = unity_serialized_field_symbols
+dotnet_naming_symbols.local_constants_symbols_1.applicable_accessibilities = *
+dotnet_naming_symbols.local_constants_symbols_1.applicable_kinds = local
+dotnet_naming_symbols.local_constants_symbols_1.required_modifiers = const
+dotnet_naming_symbols.local_constants_symbols_1.resharper_applicable_kinds = local_constant
+dotnet_naming_symbols.local_constants_symbols_1.resharper_required_modifiers = any
+dotnet_naming_symbols.private_instance_fields_override_symbols.applicable_accessibilities = local,private
+dotnet_naming_symbols.private_instance_fields_override_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_instance_fields_override_symbols.required_modifiers = static
+dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_accessibilities = local,private
+dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_kinds = field
+dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_applicable_kinds = field,readonly_field
+dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_required_modifiers = instance
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.unity_serialized_field_symbols.applicable_kinds =
+dotnet_naming_symbols.unity_serialized_field_symbols.resharper_applicable_kinds = unity_serialised_field
+dotnet_naming_symbols.unity_serialized_field_symbols.resharper_required_modifiers = instance
 
 #-----------
 # C# (CSharp) specific code style settings
@@ -446,3 +487,8 @@ csharp_preserve_single_line_statements = true
 
 # IDE0011: Add braces
 csharp_prefer_braces = when_multiline:warning
+
+[*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,hlsl,hlsli,hlslinc,master,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
+indent_style = space
+indent_size = 4
+tab_width = 4
