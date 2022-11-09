@@ -1,5 +1,6 @@
 @echo off
 
+set VSCMD_DEBUG=1
 set POWERSHELL=%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe
 set POWERSHELL_CONSOLE=-NoProfile -ExecutionPolicy Bypass -Command
 
@@ -31,7 +32,7 @@ exit /b 0
     set APPVEYOR_TEST_LOGGER_DLL=Microsoft.VisualStudio.TestPlatform.Extension.Appveyor.TestLogger.dll
 
     set VSTEST=%TEST_PLATFORM_ROOT%\vstest.console.exe
-    set VSTEST_ARGS=/TestAdapterPath:%ADAPTER_PATH% /TestAdapterPath:%VSTEST_EXTENSIONS% /Logger:Appveyor /Parallel /Platform:%BUILD_PLATFORM% "%EASYHOOK_ROOT%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
+    set VSTEST_ARGS=/TestAdapterPath:"%ADAPTER_PATH%" /TestAdapterPath:"%VSTEST_EXTENSIONS%" /Logger:Appveyor /Parallel /Platform:%BUILD_PLATFORM% "%EASYHOOK_ROOT%\Build\%CONFIGURATION%\%BUILD_PLATFORM%\EasyHook.Tests.dll"
 
     goto:$SetupEnvironment.done
 
