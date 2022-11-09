@@ -1,4 +1,4 @@
-// EasyHook (File: EasyHookSvc\Program.cs)
+﻿// EasyHook (File: EasyHookSvc\Program.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //

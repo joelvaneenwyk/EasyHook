@@ -1,4 +1,4 @@
-// EasyLoad (File: EasyLoad\Loader.cs)
+﻿// EasyLoad (File: EasyLoad\Loader.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
