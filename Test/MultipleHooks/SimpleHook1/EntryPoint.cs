@@ -1,4 +1,4 @@
-using EasyHook;
+﻿using EasyHook;
 
 namespace SimpleHook1
 {

@@ -771,9 +771,11 @@ BOOL EASYHOOK_API GetRemoteModuleExportDirectory(HANDLE hProcess, HMODULE hRemot
             continue;
 
         if (_stricmp((char*)pImageSectionHeader->Name, ".edata") == 0) {
-            if (!ReadProcessMemory(hProcess, (void*)pImageSectionHeader->VirtualAddress, ExportDirectory, sizeof(IMAGE_EXPORT_DIRECTORY), NULL))
+            if (!ReadProcessMemory(
+                    hProcess, (void*)pImageSectionHeader->VirtualAddress, ExportDirectory,
+                    sizeof(IMAGE_EXPORT_DIRECTORY), NULL)) {
                 continue;
-
+            }
 
             free(ucAllocatedPEHeader);
             return TRUE;
