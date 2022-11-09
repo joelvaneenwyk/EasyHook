@@ -1,4 +1,4 @@
-// EasyHook (File: EasyHook\COMClassInfo.cs)
+﻿// EasyHook (File: EasyHook\COMClassInfo.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //

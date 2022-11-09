@@ -1,4 +1,4 @@
-// EasyHook (File: EasyHook\InjectionLoader.cs)
+﻿// EasyHook (File: EasyHook\InjectionLoader.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //

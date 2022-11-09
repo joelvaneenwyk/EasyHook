@@ -1,4 +1,4 @@
-// EasyHook (File: EasyHook\Debugging.cs)
+﻿// EasyHook (File: EasyHook\Debugging.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //

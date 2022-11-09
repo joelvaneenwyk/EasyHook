@@ -1,4 +1,4 @@
-// EasyHook (File: EasyHook\WOW64Bypass.cs)
+﻿// EasyHook (File: EasyHook\WOW64Bypass.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //

@@ -457,4 +457,3 @@ ULONG GetStealthStubSize()
 
     return 0;
 }
-
