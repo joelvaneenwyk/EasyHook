@@ -5,9 +5,8 @@
     <PackageDir>.\Deploy</PackageDir>
     <FX4BuildDir>.\Build\netfx4-Release\x64</FX4BuildDir>
     <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
-    <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
+    <AssemblyTitlePostfix></AssemblyTitlePostfix>
   </PropertyGroup>
-
   <!-- Build all binaries -->
   <Target Name="Build">
     <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx4-Debug;Platform=x64" />

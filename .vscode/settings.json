@@ -1,20 +1,23 @@
 {
-    "cSpell.words": [
-        "bountysource",
-        "christoph",
-        "easyhook",
-        "husse",
-        "justin",
-        "msbuild",
-        "netfx",
-        "nuget",
-        "stenning",
-        "struct",
-        "thampi",
-        "toolset",
-        "udis",
-        "unmanaged",
-        "vcpkg",
-        "vivek"
-    ]
+  "files.associations": {
+    "LICENSE": "text"
+  },
+  "cSpell.words": [
+    "bountysource",
+    "christoph",
+    "easyhook",
+    "husse",
+    "justin",
+    "msbuild",
+    "netfx",
+    "nuget",
+    "stenning",
+    "struct",
+    "thampi",
+    "toolset",
+    "udis",
+    "unmanaged",
+    "vcpkg",
+    "vivek"
+  ]
 }

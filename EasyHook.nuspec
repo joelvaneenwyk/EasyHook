@@ -6,7 +6,7 @@
     <title>EasyHook</title>
     <authors>EasyHook</authors>
     <owners>EasyHook</owners>
-    <licenseUrl>https://github.com/EasyHook/EasyHook#license</licenseUrl>
+    <licenseUrl>https://github.com/joelvaneenwyk/EasyHook#license</licenseUrl>
     <projectUrl>https://easyhook.github.io/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>This project supports extending (hooking) unmanaged code (APIs) with pure managed ones, from within a fully managed environment on 32- or 64-bit Windows XP SP2, Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, and Windows 10.
@@ -26,7 +26,7 @@ EasyHook currently supports injecting assemblies built for .NET Framework 3.5 an
 
 2.7.6578.0:
 1. Allow EasyLoad library path to be specified within Config class - only impacts managed remote hook (#220)
-            
+
 2.7.6270.0:
 1. CreateAndInject now supports long command lines (#84 / #170)
 2. RhCreateRemoveStealthThread now works for 64-bit targets (#91 / #159)
@@ -53,14 +53,12 @@ EasyHook currently supports injecting assemblies built for .NET Framework 3.5 an
     <file src="Build\netfx4-Release\x64\EasyHook64Svc.exe" target="content\net40\EasyHook64Svc.exe" />
     <file src="Build\netfx4-Release\x64\EasyLoad32.dll" target="content\net40\EasyLoad32.dll" />
     <file src="Build\netfx4-Release\x64\EasyLoad64.dll" target="content\net40\EasyLoad64.dll" />
-
     <file src="Build\netfx4-Release\x64\EasyHook32.dll" target="contentFiles\any\net40\EasyHook32.dll" />
     <file src="Build\netfx4-Release\x64\EasyHook32Svc.exe" target="contentFiles\any\net40\EasyHook32Svc.exe" />
     <file src="Build\netfx4-Release\x64\EasyHook64.dll" target="contentFiles\any\net40\EasyHook64.dll" />
     <file src="Build\netfx4-Release\x64\EasyHook64Svc.exe" target="contentFiles\any\net40\EasyHook64Svc.exe" />
     <file src="Build\netfx4-Release\x64\EasyLoad32.dll" target="contentFiles\any\net40\EasyLoad32.dll" />
     <file src="Build\netfx4-Release\x64\EasyLoad64.dll" target="contentFiles\any\net40\EasyLoad64.dll" />
-
     <file src="Build\netfx4-Release\x64\EasyHook.dll" target="lib\net40\EasyHook.dll" />
     <file src="Build\netfx4-Release\x64\EasyHook.xml" target="lib\net40\EasyHook.xml" />
     <file src="tools\install.ps1" target="tools\install.ps1" />
