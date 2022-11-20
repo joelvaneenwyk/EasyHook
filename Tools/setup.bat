@@ -7,13 +7,17 @@ set POWERSHELL_CONSOLE=-NoProfile -ExecutionPolicy Bypass -Command
 if "[%*]" NEQ "[]" SET TARGET_ARG= -Target %*
 if "[%*]" == "[]" SET TARGET_ARG=
 
-"%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0\setup.ps1'" -Initialize%TARGET_ARG%
+echo ##[cmd] "%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'" -Initialize%TARGET_ARG%
+"%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'" -Initialize%TARGET_ARG%
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
 call :SetupEnvironment
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
+
 call :CheckDisassembler
+if %ERRORLEVEL% NEQ 0 exit /b %ERRORLEVEL%
 
 echo Finished initial setup of environment for EasyHook.
-
 exit /b 0
 
 ::
