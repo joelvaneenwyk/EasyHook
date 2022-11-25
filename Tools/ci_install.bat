@@ -1,8 +1,8 @@
 ::
 :: Helper script that executes PowerShell install script.
 ::
-
 @echo off
+setlocal EnableDelayedExpansion
 
 echo.
 echo ===============================

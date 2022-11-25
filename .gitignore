@@ -1,6 +1,9 @@
 # Ignore thumbnails created by windows
 Thumbs.db
 
+/EasyHook.*.nupkg
+/EasyHook.*.symbols.nupkg
+
 # Ignore intermediate files created by Visual Studio
 *.obj
 *.exe

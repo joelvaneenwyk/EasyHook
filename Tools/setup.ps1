@@ -530,14 +530,15 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set Platform=$($ToolchainInfo.Platform)"
 
     Write-Diagnostic "Installing CoApp."
-    $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
-    Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Arguments "/c start /wait msiexec /i ""$msiPath"" /quiet" | Out-Null
+    Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Arguments "/c start /wait msiexec /i ""$msiPath"" /quiet"
 
-    # Update environment path
-    Add-Content $BatchEnvironment "set PSModulePath=%PSModulePath%;$coAppModulePath"
-    $env:PSModulePath = $env:PSModulePath + ";$coAppModulePath"
+    # Add default install directory to module path so we can immediately load the module
+    $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
+    $env:PSMODULEPATH = $env:PSMODULEPATH + ";$coAppModulePath"
+    Add-Content $BatchEnvironment "set PSMODULEPATH=$($env:PSModulePath)"
+    [System.Environment]::SetEnvironmentVariable("PSMODULEPATH", $env:PSModulePath, "User")
 
     # Import CoApp module (for packaging native NuGet)
     Find-Module "CoApp"
@@ -547,10 +548,6 @@ Function Initialize-Environment {
     Write-Host "Environment setup complete." -ForegroundColor $DefaultForeground -BackgroundColor $DefaultBackground
 }
 
-if ($Initialize) {
-    $ToolchainInfo = Initialize-Environment -Target $Target
-} else {
-    $ToolchainInfo = Get-Toolchain $Target
-}
+$ToolchainInfo = Initialize-Environment -Target $Targe
 
 return $ToolchainInfo

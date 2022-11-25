@@ -116,7 +116,7 @@
 
     <Zip Files="@(PackageFiles)" WorkingDirectory="$(PackageDir)" ZipFileName="$(PackageDir)\EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Binaries.zip" ZipLevel="9" />
     <Exec Command=".\Bin\NuGet.exe pack .\EasyHook.nuspec -NoPackageAnalysis -symbols" />
-    <Exec Command="PowerShell.exe -ExecutionPolicy Unrestricted -command &quot;&amp; { &amp;'.\Tools\EasyHookNativePkg.ps1' } &quot;" />
+    <Exec Command="PowerShell.exe -NoProfile -ExecutionPolicy Unrestricted -command &quot;&amp; { &amp;'.\Tools\create_nuget_package.ps1' } &quot;" />
     <!-- no longer archiving source files here
     <Zip Files="@(SourceFiles)" WorkingDirectory="$(PackageDir)\Source" ZipFileName="$(PackageDir)\EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Source.zip" ZipLevel="9" />
     -->
