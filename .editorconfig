@@ -5,16 +5,25 @@ root = true
 
 #
 #-----------
+# CMake
+#-----------
+#
+
+[{*.cmake,CMakeLists.txt}]
+indent_style=tab
+indent_size=tab
+tab_width=4
+
+#
+#-----------
 # JSON
 #-----------
 #
 
-[*.{json}]
+[*.{json,json5}]
 indent_style = space
-insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
-max_line_length = 130
 tab_width = 4
 
 #
@@ -26,12 +35,10 @@ tab_width = 4
 [*.{c,h,hxx,inl,cpp,cxx,idl}]
 indent_style = space
 indent_size = 4
-insert_final_newline = true
 trim_trailing_whitespace = true
 resharper_cpp_clang_tidy_modernize_use_auto_highlighting = silent
 
 [.editorconfig]
-insert_final_newline = true
 trim_trailing_whitespace = true
 
 #
@@ -42,7 +49,6 @@ trim_trailing_whitespace = true
 
 [*.md]
 indent_style = space
-insert_final_newline = true
 trim_trailing_whitespace = true
 indent_size = 4
 
@@ -56,25 +62,7 @@ indent_size = 4
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true
-insert_final_newline = true
 charset = utf-8
-
-#
-#-----------
-# Shell / Unix
-#-----------
-#
-
-[*.{sh,bash,bats,conf}]
-indent_style = space
-indent_size = 4
-trim_trailing_whitespace = true
-insert_final_newline = true
-binary_next_line   = true       # like -bn
-switch_case_indent = true       # like -ci
-space_redirects    = true       # like -sr
-keep_padding       = true       # like -kp
-function_next_line = true       # like -fn
 
 #
 #-----------
@@ -93,23 +81,12 @@ dotnet_analyzer_diagnostic.security.suppress = false
 #-----------
 #
 
-[*.proto]
-indent_style=tab
-indent_size=tab
-tab_width=4
-
-[*.{asax,ascx,aspx,cs,cshtml,css,htm,html,js,jsx,master,razor,skin,ts,tsx,vb,xaml,xamlx,xoml}]
+[*.{appxmanifest,axml,config,csproj,dbml,discomap,json,jsproj,lsproj,njsproj,proj,props,resjson,StyleCop,targets,tasks,vbproj,xml,axaml,cg,cginc,compute,hlsl,hlsli,hlslinc,paml,shader,usf,ush,css,htm,html,js,jsx,ts,tsx}]
 indent_style=space
 indent_size=4
 tab_width=4
 charset = utf-8
-insert_final_newline = true
 trim_trailing_whitespace = true
-
-[*.{appxmanifest,axml,nuspec,build,config,csproj,dbml,discomap,dtd,json,jsproj,lsproj,njsproj,nuspec,proj,props,resjson,resw,resx,StyleCop,targets,tasks,vbproj,xml,xsd}]
-indent_style=space
-indent_size=2
-tab_width=2
 
 #
 #-----------
@@ -118,6 +95,10 @@ tab_width=2
 #
 
 [*]
+
+# Standard properties
+insert_final_newline = true
+max_line_length = 130
 
 dotnet_remove_unnecessary_suppression_exclusions = category: ReSharper
 
@@ -339,10 +320,6 @@ resharper_web_config_module_not_resolved_highlighting = warning
 resharper_web_config_type_not_resolved_highlighting = warning
 resharper_web_config_wrong_module_highlighting = warning
 
-# Standard properties
-insert_final_newline = true
-max_line_length = 130
-
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers = false
 csharp_preferred_modifier_order = public, private, protected, internal, new, abstract, virtual, sealed, override, static, readonly, extern, unsafe, volatile, async:suggestion
@@ -465,7 +442,6 @@ csharp_space_after_dot = false
 csharp_space_after_keywords_in_control_flow_statements = true
 csharp_space_after_semicolon_in_for_statement = true
 csharp_space_around_binary_operators = before_and_after
-csharp_space_around_declaration_statements = do_not_ignore
 csharp_space_before_colon_in_inheritance_clause = true
 csharp_space_before_comma = false
 csharp_space_before_dot = false
@@ -487,8 +463,3 @@ csharp_preserve_single_line_statements = true
 
 # IDE0011: Add braces
 csharp_prefer_braces = when_multiline:warning
-
-[*.{appxmanifest,asax,ascx,aspx,axaml,build,cg,cginc,compute,cs,cshtml,dtd,hlsl,hlsli,hlslinc,master,nuspec,paml,razor,resw,resx,shader,skin,usf,ush,vb,xaml,xamlx,xoml,xsd}]
-indent_style = space
-indent_size = 4
-tab_width = 4
