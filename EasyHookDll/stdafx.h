@@ -75,7 +75,7 @@ void LhBarrierProcessDetach();
 ULONGLONG LhBarrierIntro(LOCAL_HOOK_INFO* InHandle, void* InRetAddr, void** InAddrOfRetAddr);
 void* __stdcall LhBarrierOutro(LOCAL_HOOK_INFO* InHandle, void** InAddrOfRetAddr);
 
-LONG DbgRelocateRIPRelative(
+EXTERN_C LONG EASYHOOK_API DbgRelocateRIPRelative(
 	        ULONGLONG InOffset,
 	        ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated);

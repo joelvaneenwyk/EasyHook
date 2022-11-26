@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,6 +25,10 @@
 
 #include "stdafx.h"
 
+// Disable warning C4276: no prototype provided; assumed no parameters
+// For ASM functions
+#pragma warning(disable: 4276)
+
 BYTE* GetStealthStubPtr();
 
 ULONG GetStealthStubSize();
@@ -35,7 +39,7 @@ typedef struct _STEALTH_CONTEXT_
     {
         struct
         {
-            /*00*/ WRAP_ULONG64(PVOID      CreateThread);			
+            /*00*/ WRAP_ULONG64(PVOID      CreateThread);
             /*08*/ WRAP_ULONG64(PVOID      RemoteThreadStart);
             /*16*/ WRAP_ULONG64(PVOID      RemoteThreadParam);
             /*24*/ WRAP_ULONG64(PVOID      WaitForSingleObject);
@@ -98,7 +102,7 @@ Description:
     The problem with this approach is, that there are several bad circumstances in
     which the target process might be damaged or crashed. This also won't work
     if no running thread is available in the target process (for example processes
-    created with RhCreateAndInject()). But I thought it would be something new to 
+    created with RhCreateAndInject()). But I thought it would be something new to
     play with ;-). Any sane process shouldn't be damaged by this approach but there
     is no guarantee.
 
@@ -136,7 +140,7 @@ Returns:
     HANDLE              hCompletionEvent = NULL;
 	HANDLE              hSyncEvent = NULL;
     SIZE_T              BytesRead = 0;
-	HANDLE				hThreadSnap = INVALID_HANDLE_VALUE; 
+	HANDLE				hThreadSnap = INVALID_HANDLE_VALUE;
 	THREADENTRY32		NativeEntry;
 	ULONG				SuspendCount;
 	ULONG				CtxSize = GetStealthStubSize() + sizeof(LocalCtx);
@@ -145,8 +149,8 @@ Returns:
 	RtlZeroMemory(&LocalCtx, sizeof(LocalCtx));
 
 	if((hProc = OpenProcess(
-				PROCESS_VM_OPERATION | PROCESS_DUP_HANDLE | PROCESS_VM_READ | PROCESS_VM_WRITE, 
-				FALSE, 
+				PROCESS_VM_OPERATION | PROCESS_DUP_HANDLE | PROCESS_VM_READ | PROCESS_VM_WRITE,
+				FALSE,
 				InTargetPID)) == NULL)
 	{
 		if(GetLastError() == ERROR_ACCESS_DENIED)
@@ -163,32 +167,32 @@ Returns:
 	*/
 #ifdef _M_X64
 	FORCE(RhIsX64Process(InTargetPID, &Is64BitTarget));
-      
+
     if(!Is64BitTarget)
         THROW(STATUS_WOW_ASSERTION, L"It is not supported to directly operate through the WOW64 barrier.");
 #else
 	FORCE(RhIsX64Process(InTargetPID, &Is64BitTarget));
-      
+
     if(Is64BitTarget)
         THROW(STATUS_WOW_ASSERTION, L"It is not supported to directly operate through the WOW64 barrier.");
 #endif
-	
+
 
     /*
         Select running thread...
     */
 
-	// take a snapshot of all running threads  
+	// take a snapshot of all running threads
 	NativeEntry.dwSize = sizeof(NativeEntry);
 
 	if((hThreadSnap = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0)) == INVALID_HANDLE_VALUE)
 		THROW(STATUS_INTERNAL_ERROR, L"Unable to enumerate system threads.");
 
-	if(!Thread32First(hThreadSnap, &NativeEntry)) 
+	if(!Thread32First(hThreadSnap, &NativeEntry))
 		THROW(STATUS_INTERNAL_ERROR, L"Unable to get first thread in enumeration.");
 
-	do 
-	{ 
+	do
+	{
 		if((NativeEntry.th32OwnerProcessID == InTargetPID) && (NativeEntry.th32ThreadID != GetCurrentThreadId()))
 		{
 			// is thread active?
@@ -215,7 +219,7 @@ Returns:
 			break;
 		}
 
-	}while(Thread32Next(hThreadSnap, &NativeEntry)); 
+	}while(Thread32Next(hThreadSnap, &NativeEntry));
 
 	if(hHijackedThread == NULL)
 		THROW(STATUS_NOT_SUPPORTED, L"Unable to select active thread in target process.");
@@ -266,7 +270,7 @@ Returns:
 
 #endif
 
-  
+
 
     /*
         Hijack target thread...
@@ -286,7 +290,7 @@ Returns:
 			!DuplicateHandle(GetCurrentProcess(), hSyncEvent, hProc, &LocalCtx.hSyncEvent, 0, FALSE, DUPLICATE_SAME_ACCESS))
         THROW(STATUS_INTERNAL_ERROR, L"Unable to duplicate event.");
 
-	/* 
+	/*
 		Allocate executable stack.
 
 		This is a little hack, because otherwise there would be problems when releasing the
@@ -334,7 +338,7 @@ Returns:
 	IsSuspended = FALSE;
 
 	// TODO:
-	//::PostThreadMessage(HijackedThreadId, 
+	//::PostThreadMessage(HijackedThreadId,
 	//PostThreadMessage(hijackedThreadId, WM_NULL, 0, 0);
 
 	/*
@@ -351,7 +355,7 @@ Returns:
 
 	if(LocalCtx.hRemoteThread == NULL)
 		THROW(STATUS_INTERNAL_ERROR, L"Unable to create remote thread.");
-	
+
 	if(IsValidPointer(OutRemoteThread, sizeof(HANDLE)))
 	{
 		if(!DuplicateHandle(hProc, LocalCtx.hRemoteThread, GetCurrentProcess(), OutRemoteThread, 0, FALSE, DUPLICATE_SAME_ACCESS))
@@ -385,7 +389,7 @@ FINALLY_OUTRO:
 
 			CloseHandle(hHijackedThread);
 		}
-       
+
         if(hProc != NULL)
             CloseHandle(hProc);
 
@@ -435,7 +439,7 @@ ULONG GetStealthStubSize()
 
 	if(___StealthStubSize != 0)
 		return ___StealthStubSize;
-	
+
 	// search for signature
 	BasePtr = Ptr = GetStealthStubPtr();
 
@@ -443,7 +447,7 @@ ULONG GetStealthStubSize()
 	{
 		Signature = *((ULONG*)Ptr);
 
-		if(Signature == 0x12345678)	
+		if(Signature == 0x12345678)
 		{
 			___StealthStubSize = (ULONG)(Ptr - BasePtr);
 

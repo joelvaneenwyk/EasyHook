@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -100,7 +100,7 @@ EASYHOOK_NT_EXPORT DbgAttachDebugger()
 /*
 Description:
 
-    Attaches a debugger to the current process (64-bit only). This is no 
+    Attaches a debugger to the current process (64-bit only). This is no
 	longer necessary for RIP-relocation and disassembling. Multiple
     calls will do nothing.
 
@@ -277,7 +277,7 @@ Description:
 
 
 
-EASYHOOK_NT_INTERNAL DbgRelocateRIPRelative(
+EXTERN_C LONG EASYHOOK_API DbgRelocateRIPRelative(
 	        ULONGLONG InOffset,
 	        ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated)
@@ -342,7 +342,7 @@ Parameters:
 
 	if(!RtlAnsiDbgHexToLongLong(Line, 16, &RelAddr))
 		RETURN;
-	
+
 	// verify that we are really RIP relative...
 	RelAddr -= NextInstr;
 
@@ -404,16 +404,16 @@ Parameters:
     NTSTATUS                        NtStatus;
 
     if(!IsValidPointer(OutThreadId, sizeof(ULONG)))
-        THROW(STATUS_INVALID_PARAMETER_2, L"Invalid TID storage specified."); 
+        THROW(STATUS_INVALID_PARAMETER_2, L"Invalid TID storage specified.");
 
     if(ZwQueryInformationThread != NULL)
     {
 	    // use deprecated API
 	    FORCE(ZwQueryInformationThread(
-            InThreadHandle, 
-            0 /* ThreadBasicInformation */, 
-            &ThreadInfo, 
-            sizeof(ThreadInfo), 
+            InThreadHandle,
+            0 /* ThreadBasicInformation */,
+            &ThreadInfo,
+            sizeof(ThreadInfo),
             NULL));
 
         *OutThreadId = ThreadInfo.ClientId.UniqueThread;
@@ -468,10 +468,10 @@ Parameters:
     {
 	    // use deprecated API
 	    FORCE(ZwQueryInformationProcess(
-            InProcessHandle, 
-            0 /* ProcessBasicInformation */, 
-            &ProcInfo, 
-            sizeof(ProcInfo), 
+            InProcessHandle,
+            0 /* ProcessBasicInformation */,
+            &ProcInfo,
+            sizeof(ProcInfo),
             NULL));
 
 	    *OutProcessId = (ULONG)ProcInfo.UniqueProcessId;
@@ -545,7 +545,7 @@ Parameters:
             THROW(STATUS_INVALID_PARAMETER_4, L"If no buffer is specified, you are expected to query the required size.");
     }
 
-    if((NtStatus = ZwQueryObject(InNamedHandle, ObjectNameInformation, NULL, 0, &RequiredSize)) 
+    if((NtStatus = ZwQueryObject(InNamedHandle, ObjectNameInformation, NULL, 0, &RequiredSize))
             != STATUS_INFO_LENGTH_MISMATCH)
         FORCE(NtStatus);
 
