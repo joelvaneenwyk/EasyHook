@@ -84,6 +84,9 @@
     <ClCompile Include="..\DriverShared\Disassembler\libudis86\udis86.c">
       <Filter>Source Files\Disassembler</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">

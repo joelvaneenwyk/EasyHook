@@ -4,8 +4,8 @@
 
 [Version]
 Signature="$WINDOWS NT$"
-Class=Sample ; TODO: edit Class
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Class=EasyHookTest
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FADA171} 
 Provider=%ManufacturerName%
 CatalogFile=TestDriver.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages
@@ -17,9 +17,9 @@ TestDriver_Device_CoInstaller_CopyFiles = 11
 ; ================= Class section =====================
 
 [ClassInstall32]
-Addreg=SampleClassReg
+Addreg=EasyHookTestClassReg
 
-[SampleClassReg]
+[EasyHookTestClassReg]
 HKR,,,0,%ClassName%
 HKR,,Icon,,-5
 
@@ -81,7 +81,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="EasyHook" ; TODO: add ManufacturerName
-ClassName="Sample" ; TODO: edit ClassName
+ClassName="EasyHookTest" ; TODO: edit ClassName
 DiskName = "TestDriver Installation Disk"
 TestDriver.DeviceDesc = "TestDriver Device"
 TestDriver.SVCDESC = "TestDriver Service"

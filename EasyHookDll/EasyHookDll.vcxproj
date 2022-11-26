@@ -107,8 +107,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <SmallerTypeCheck>true</SmallerTypeCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
@@ -146,8 +145,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <SmallerTypeCheck>true</SmallerTypeCheck>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
@@ -185,8 +183,7 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
@@ -230,8 +227,7 @@ copy "$(TargetDir)EasyHook32.pdb" "$(TargetDir)..\x64\EasyHook32.pdb"</Command>
       </ExceptionHandling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PrecompiledHeader>
-      </PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CallingConvention>StdCall</CallingConvention>
@@ -311,7 +307,9 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
     <ClCompile Include="..\DriverShared\LocalHook\caller.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='netfx4-Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="LocalHook\debug.cpp" />
+    <ClCompile Include="LocalHook\debug.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='netfx4-Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\DriverShared\LocalHook\install.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='netfx4-Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
@@ -321,9 +319,15 @@ copy "$(TargetDir)EasyHook64.pdb" "$(TargetDir)..\x86\EasyHook64.pdb"</Command>
     <ClCompile Include="..\DriverShared\LocalHook\uninstall.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='netfx4-Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>
-    <ClCompile Include="RemoteHook\driver.cpp" />
-    <ClCompile Include="RemoteHook\entry.cpp" />
-    <ClCompile Include="gacutil.cpp" />
+    <ClCompile Include="RemoteHook\driver.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='netfx4-Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RemoteHook\entry.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='netfx4-Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="gacutil.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='netfx4-Debug|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="RemoteHook\service.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='netfx4-Release|Win32'">CompileAsCpp</CompileAs>
     </ClCompile>

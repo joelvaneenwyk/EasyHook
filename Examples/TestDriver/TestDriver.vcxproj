@@ -17,54 +17,6 @@
       <Configuration>Win10-Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8.1-Debug|Win32">
-      <Configuration>Win8.1-Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8.1-Release|Win32">
-      <Configuration>Win8.1-Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8-Debug|Win32">
-      <Configuration>Win8-Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8-Release|Win32">
-      <Configuration>Win8-Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win7-Debug|Win32">
-      <Configuration>Win7-Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win7-Release|Win32">
-      <Configuration>Win7-Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8.1-Debug|x64">
-      <Configuration>Win8.1-Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8.1-Release|x64">
-      <Configuration>Win8.1-Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8-Debug|x64">
-      <Configuration>Win8-Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win8-Release|x64">
-      <Configuration>Win8-Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win7-Debug|x64">
-      <Configuration>Win7-Debug</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win7-Release|x64">
-      <Configuration>Win7-Release</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Public\easyhook.h" />
@@ -79,27 +31,13 @@
     <Configuration>Win8.1 Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <RootNamespace>TestDriver</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(ProjectDir)\..\..\EasyHookSys\EasyHookSys.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|Win32'" Label="Configuration">
-    <TargetVersion>WindowsV6.3</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|Win32'" Label="Configuration">
-    <TargetVersion>WindowsV6.3</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
@@ -111,41 +49,6 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|Win32'" Label="Configuration">
-    <TargetVersion>Windows8</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|Win32'" Label="Configuration">
-    <TargetVersion>Windows8</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|Win32'" Label="Configuration">
-    <TargetVersion>Windows7</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|Win32'" Label="Configuration">
-    <TargetVersion>Windows7</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|x64'" Label="Configuration">
-    <TargetVersion>WindowsV6.3</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -153,43 +56,8 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|x64'" Label="Configuration">
-    <TargetVersion>WindowsV6.3</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|x64'" Label="Configuration">
-    <TargetVersion>Windows8</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|x64'" Label="Configuration">
-    <TargetVersion>Windows8</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|x64'" Label="Configuration">
-    <TargetVersion>Windows7</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|x64'" Label="Configuration">
-    <TargetVersion>Windows7</TargetVersion>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
@@ -203,17 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|Win32'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
@@ -223,37 +81,7 @@
     <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
@@ -263,45 +91,7 @@
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|x64'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-  </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|Win32'">
     <ClCompile>
       <WppEnabled>false</WppEnabled>
       <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
@@ -319,51 +109,6 @@
       <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Debug|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
     <ClCompile>
       <WppEnabled>false</WppEnabled>
@@ -373,52 +118,7 @@
       <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8.1-Release|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Debug|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win8-Release|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Debug|x64'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win7-Release|x64'">
     <ClCompile>
       <WppEnabled>false</WppEnabled>
       <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>

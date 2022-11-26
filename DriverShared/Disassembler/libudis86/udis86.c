@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "stdafx.h"
+
 #include <memory.h>
 #include "udint.h"
 #include "extern.h"
@@ -334,7 +336,7 @@ ud_insn_mnemonic(const struct ud *u)
 const char*
 ud_lookup_mnemonic(enum ud_mnemonic_code c)
 {
-  if (c < UD_MAX_MNEMONIC_CODE) {
+  if (c >= UD_Iaaa && c < UD_MAX_MNEMONIC_CODE) {
     return ud_mnemonics_str[c];
   } else {
     return NULL;
