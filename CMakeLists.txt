@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.1...3.25)
 project(
 		EasyHook
 		VERSION 2.7.8364
-		LANGUAGES CSharp CXX)
+		LANGUAGES ASM_MASM C CXX CSharp)
 
 include(CSharpUtilities)
 include(Tools/CMake/EasyHook.cmake)
