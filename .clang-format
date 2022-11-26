@@ -1,0 +1,28 @@
+﻿---
+BasedOnStyle: Chromium
+ColumnLimit: 130
+AlignConsecutiveDeclarations: AcrossEmptyLinesAndComments
+Standard: "c++11"
+SortIncludes: Never
+IndentWidth: 4
+UseTab: Never
+BreakBeforeBraces: Allman
+SpacesInParentheses: false
+SpaceBeforeParens: ControlStatements
+AccessModifierOffset: -4
+FixNamespaceComments: false
+NamespaceIndentation: All
+BreakConstructorInitializers : BeforeComma
+SpaceAfterTemplateKeyword: true
+IndentPPDirectives: AfterHash
+AllowShortFunctionsOnASingleLine : Inline
+AllowShortIfStatementsOnASingleLine : false
+AlignEscapedNewlines: DontAlign
+AlignAfterOpenBracket : DontAlign
+BinPackArguments: true
+BinPackParameters: true
+AllowAllParametersOfDeclarationOnNextLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakStringLiterals: false
+
+...
