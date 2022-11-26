@@ -532,7 +532,11 @@ Function Initialize-Environment {
     Write-Diagnostic "Installing CoApp."
     $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
-    Get-ProcessOutput -FileName "c:\windows\system32\cmd.exe" -Arguments "/c start /wait msiexec /i ""$msiPath"" /quiet"
+    $msiOutput = Get-ProcessOutput -FileName "C:\Windows\System32\cmd.exe" -Arguments "/c start /wait C:\Windows\System32\msiexec.exe /i ""$msiPath"" /quiet"
+
+    if (-not ([string]::IsNullOrEmpty($($msiOutput.StandardError)))) {
+        Write-Diagnostic $($msiOutput.StandardError)
+    }
 
     # Add default install directory to module path so we can immediately load the module
     $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
@@ -548,6 +552,10 @@ Function Initialize-Environment {
     Write-Host "Environment setup complete." -ForegroundColor $DefaultForeground -BackgroundColor $DefaultBackground
 }
 
-$ToolchainInfo = Initialize-Environment -Target $Targe
+if ($Initialize) {
+    $ToolchainInfo = Initialize-Environment -Target $Target
+} else {
+    $ToolchainInfo = Get-Toolchain $Target
+}
 
 return $ToolchainInfo

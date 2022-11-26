@@ -25,9 +25,11 @@ exit /b 0
 :: it from here if it exists.
 ::
 :SetupEnvironment
-    if not exist "%~dp0..\Bin\setup_environment.bat" goto:$SetupEnvironment.error
+    set _easyhook_root=%~dp0..
+    set _env=%_easyhook_root%\Bin\setup_environment.bat
 
-    call "%~dp0..\Bin\setup_environment.bat"
+    if not exist "%_env%" goto:$SetupEnvironment.error
+    call "%_env%"
 
     set ADAPTER_PATH=%~dp0..\Packages\Appveyor.TestLogger.2.0.0\build\_common
     set TEST_PLATFORM_ROOT=%~dp0..\Packages\Microsoft.TestPlatform.16.5.0\tools\net451\Common7\IDE\Extensions\TestPlatform
