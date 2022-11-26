@@ -34,6 +34,11 @@
       <file path="$PROJECT_DIR$/Bin" />
       <file path="$PROJECT_DIR$/Build" />
       <file path="$PROJECT_DIR$/Deploy" />
+      <file path="$PROJECT_DIR$/EasyHook/bin" />
+      <file path="$PROJECT_DIR$/EasyHook/obj" />
+      <file path="$PROJECT_DIR$/EasyHookSvc/bin" />
+      <file path="$PROJECT_DIR$/EasyHookSvc/obj" />
+      <file path="$PROJECT_DIR$/EasyLoad/obj" />
     </excludeRoots>
   </component>
 </project>
