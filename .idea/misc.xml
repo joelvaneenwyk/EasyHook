@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/DriverShared" />
+      <file path="$PROJECT_DIR$/EasyHook" />
+      <file path="$PROJECT_DIR$/EasyHookDll" />
+      <file path="$PROJECT_DIR$/EasyHookSvc" />
+      <file path="$PROJECT_DIR$/EasyHookSys" />
+      <file path="$PROJECT_DIR$/EasyLoad" />
+      <file path="$PROJECT_DIR$/Examples/FileMon" />
+      <file path="$PROJECT_DIR$/Examples/FileMonInject" />
+      <file path="$PROJECT_DIR$/Examples/FileMonitorController" />
+      <file path="$PROJECT_DIR$/Examples/FileMonitorInterceptor" />
+      <file path="$PROJECT_DIR$/Examples/FileMonitorInterface" />
+      <file path="$PROJECT_DIR$/Examples/ProcMonInject" />
+      <file path="$PROJECT_DIR$/Examples/ProcessMonitor" />
+      <file path="$PROJECT_DIR$/Examples/TestDriver" />
+      <file path="$PROJECT_DIR$/Examples/UnmanagedHook" />
+      <file path="$PROJECT_DIR$/Public" />
+      <file path="$PROJECT_DIR$/Test/ComplexParameterInject" />
+      <file path="$PROJECT_DIR$/Test/ComplexParameterTest" />
+      <file path="$PROJECT_DIR$/Test/EasyHook.Tests" />
+      <file path="$PROJECT_DIR$/Test/ManagedTarget" />
+      <file path="$PROJECT_DIR$/Test/ManagedTest" />
+      <file path="$PROJECT_DIR$/Test/MultipleHooks" />
+      <file path="$PROJECT_DIR$/Test/TestFuncHooks" />
+    </sourceRoots>
+    <libraryRoots>
+      <file path="$PROJECT_DIR$/Packages" />
+    </libraryRoots>
+    <excludeRoots>
+      <file path="$PROJECT_DIR$/Bin" />
+      <file path="$PROJECT_DIR$/Build" />
+      <file path="$PROJECT_DIR$/Deploy" />
+    </excludeRoots>
+  </component>
+</project>
