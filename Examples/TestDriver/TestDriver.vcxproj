@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Win10-Debug|Win32">
-      <Configuration>Win10-Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Win10-Debug|x64">
       <Configuration>Win10-Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win10-Release|Win32">
-      <Configuration>Win10-Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Win10-Release|x64">
       <Configuration>Win10-Release</Configuration>
@@ -35,20 +27,6 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(ProjectDir)\..\..\EasyHookSys\EasyHookSys.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'" Label="Configuration">
-    <TargetVersion>Windows10</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'" Label="Configuration">
-    <TargetVersion>Windows10</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Driver</ConfigurationType>
-    <DriverType>KMDF</DriverType>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -71,16 +49,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
@@ -91,24 +59,6 @@
     <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'">
-    <ClCompile>
-      <WppEnabled>false</WppEnabled>
-      <WppScanConfigurationData Condition="'%(ClCompile. ScanConfigurationData)'  == ''">trace.h</WppScanConfigurationData>
-      <WppKernelMode>true</WppKernelMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
     <ClCompile>
       <WppEnabled>false</WppEnabled>
@@ -117,6 +67,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <DriverSign>
+      <FileDigestAlgorithm>SHA256</FileDigestAlgorithm>
+    </DriverSign>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|x64'">
     <ClCompile>
@@ -126,6 +79,9 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DriverShared;$(SolutionDir)Public;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_WIN64;_AMD64_;AMD64;DRIVER=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <DriverSign>
+      <FileDigestAlgorithm>SHA256</FileDigestAlgorithm>
+    </DriverSign>
   </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="$(TargetPath)" />

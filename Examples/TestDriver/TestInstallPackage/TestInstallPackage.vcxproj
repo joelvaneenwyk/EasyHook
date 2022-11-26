@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Win10-Debug|Win32">
-      <Configuration>Win10-Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Win10-Debug|x64">
       <Configuration>Win10-Debug</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Win10-Release|Win32">
-      <Configuration>Win10-Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Win10-Release|x64">
       <Configuration>Win10-Release</Configuration>
@@ -30,22 +22,6 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(ProjectDir)\..\..\..\EasyHookSys\EasyHookSys.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'" Label="Configuration">
-    <TargetVersion>Windows10</TargetVersion>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Utility</ConfigurationType>
-    <DriverType>Package</DriverType>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'" Label="Configuration">
-    <TargetVersion>Windows10</TargetVersion>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
-    <ConfigurationType>Utility</ConfigurationType>
-    <DriverType>Package</DriverType>
-    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -70,36 +46,6 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <EnableDeployment>False</EnableDeployment>
-    <RemoveDriver>True</RemoveDriver>
-    <HardwareIdString />
-    <CommandLine />
-    <DeployFiles />
-    <EnableVerifier>False</EnableVerifier>
-    <AllDrivers>False</AllDrivers>
-    <VerifyProjectOutput>True</VerifyProjectOutput>
-    <VerifyDrivers />
-    <VerifyFlags>133563</VerifyFlags>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Release|Win32'">
-    <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
-    <EnableDeployment>False</EnableDeployment>
-    <RemoveDriver>True</RemoveDriver>
-    <HardwareIdString />
-    <CommandLine />
-    <DeployFiles />
-    <EnableVerifier>False</EnableVerifier>
-    <AllDrivers>False</AllDrivers>
-    <VerifyProjectOutput>True</VerifyProjectOutput>
-    <VerifyDrivers />
-    <VerifyFlags>133563</VerifyFlags>
-    <IntDir>$(SolutionDir)Build\Temp\$(TargetName)\$(ConfigurationName)\$(Platform)\</IntDir>
-    <OutDir>$(SolutionDir)Build\$(ConfigurationName)\$(Platform)\</OutDir>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Win10-Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <EnableDeployment>False</EnableDeployment>
