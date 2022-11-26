@@ -35,6 +35,16 @@ Requirements:
 * Windows 8.1 SDK
 * C++ ATL for latest v142 build tools (x86 & x64)
 
+### EasyHook Service
+
+You need to install the Windows Driver Kit (WDK) for your version of windows. See [Download the Windows Driver Kit (WDK) - Windows drivers | Microsoft Learn](https://learn.microsoft.com/en-us/windows-hardware/drivers/download-the-wdk) for up-to-date steps.
+
+These are the steps for Windows 11:
+
+1. Install Visual Studio 2022
+2. Install [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
+3. Install [WDK](https://go.microsoft.com/fwlink/?linkid=2196230)
+
 ### Build Binaries
 
 Use `build.bat` to build binaries for all configurations (.NET 4.0, `Debug`/`Release`, and `x86`/`x64`).
