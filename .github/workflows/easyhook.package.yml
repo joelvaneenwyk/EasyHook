@@ -23,7 +23,9 @@ jobs:
     - name: Install
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: Tools\ci_install.bat vs2019
+      shell: cmd
 
     - name: Build Package
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: Tools\build-package.bat vs2019
+      shell: cmd
