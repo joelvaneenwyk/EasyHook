@@ -1,10 +1,6 @@
 # Welcome to EasyHook - The reinvention of Windows API Hooking
 
-[![Join the chat at https://gitter.im/EasyHook/EasyHook](https://badges.gitter.im/EasyHook/EasyHook.svg)](https://gitter.im/EasyHook/EasyHook?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-Main branch: [![Main branch build status](https://ci.appveyor.com/api/projects/status/qf77u222llodmtsw/branch/main?svg=true)](https://ci.appveyor.com/project/joelvaneenwyk/easyhook)
-
-You can support the EasyHook project over at [Bountysource](https://www.bountysource.com/teams/easyhook) or [raise a bounty for an issue to be fixed](https://www.bountysource.com/teams/easyhook/issues): [![Current bounties](https://api.bountysource.com/badge/team?team_id=104536)](https://www.bountysource.com/teams/easyhook/bounties)
+> This is a fork of the [EasyHook](<https://github.com/EasyHook/EasyHook>) project.
 
 This project supports extending (hooking) unmanaged code (APIs) with pure managed ones, from within a fully managed environment on 32- or 64-bit Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, Windows 10, and Windows 11.
 
@@ -81,29 +77,7 @@ You can download and install easyhook using the [vcpkg dependency manager](https
 
 The easyhook port in vcpkg is kept up to date by Microsoft team members and community contributors. If the version is out of date, please create an issue or pull request on the [vcpkg repository](https://github.com/Microsoft/vcpkg).
 
-## License
-
-    Copyright (c) 2009 Christoph Husse & Copyright (c) 2012 Justin Stenning
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-    THE SOFTWARE.
-
-## External libraries
+## External Libraries
 
 `EasyHook` includes the `UDIS86` library Copyright (c) 2002-2012, Vivek Thampi <vivek.mt@gmail.com>. See [udis86-LICENSE.txt](DriverShared/Disassembler/udis86-LICENSE.txt) for license details. Minor modifications have been made for it to compile with `EasyHook`.
 
