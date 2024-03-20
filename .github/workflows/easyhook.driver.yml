@@ -1,6 +1,10 @@
 name: EasyHook-Driver
 
-on: [push]
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -18,15 +22,18 @@ jobs:
         platform: [x64]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      - name: Restore NuGet packages
+        working-directory: ${{github.workspace}}}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} ${{env.SOLUTION_FILE_PATH}}
+      - name: Build
+        working-directory: ${{github.workspace}}}}
+        run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} ${{env.SOLUTION_FILE_PATH}}

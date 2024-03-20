@@ -1,32 +1,45 @@
 name: EasyHook-Default
 
-on: [push]
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
 
 env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: EasyHook.sln
 
 jobs:
-  default:
-    runs-on: ${{ matrix.image }}
-
+  build:
     strategy:
+      fail-fast: false
       matrix:
         image: [windows-2019, windows-2022]
         net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
 
+    runs-on: ${{ matrix.image }}
+
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      - name: Restore NuGet packages
+        working-directory: ${{github.workspace}}}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} "${{env.SOLUTION_FILE_PATH}}"
+      - name: Build
+        working-directory: ${{github.workspace}}}}
+        run: >
+          msbuild
+          /m
+          /p:Configuration=${{ matrix.net }}-${{ matrix.config }}
+          /p:Platform=${{ matrix.platform }}
+          "${{env.SOLUTION_FILE_PATH}}"

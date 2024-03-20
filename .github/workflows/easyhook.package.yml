@@ -1,6 +1,10 @@
 name: EasyHook-Package
 
-on: [push]
+on:
+  push:
+    branches: [main, develop, feature/*]
+  pull_request:
+    branches: [main, develop]
 
 env:
   # Path to the solution file relative to the root of the project.
@@ -11,21 +15,24 @@ jobs:
     runs-on: windows-2019
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
-    - name: Restore NuGet packages
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+      - name: Restore NuGet packages
+        working-directory: ${{github.workspace}}}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Install
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: Tools\ci_install.bat vs2019
-      shell: cmd
+      - name: Install
+        working-directory: ${{github.workspace}}}}
+        run: Tools\ci_install.bat vs2019
+        shell: cmd
 
-    - name: Build Package
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      run: Tools\build_package.bat vs2019
-      shell: cmd
+      - name: Build Package
+        working-directory: ${{github.workspace}}}}
+        run: Tools\build_package.bat vs2019
+        shell: cmd
