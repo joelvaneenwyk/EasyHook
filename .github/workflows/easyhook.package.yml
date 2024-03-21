@@ -24,15 +24,15 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Restore NuGet packages
-        working-directory: ${{github.workspace}}}}
+        working-directory: ${{github.workspace}}
         run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
       - name: Install
-        working-directory: ${{github.workspace}}}}
+        working-directory: ${{github.workspace}}
         run: Tools\ci_install.bat vs2019
         shell: cmd
 
       - name: Build Package
-        working-directory: ${{github.workspace}}}}
+        working-directory: ${{github.workspace}}
         run: Tools\build_package.bat vs2019
         shell: cmd
