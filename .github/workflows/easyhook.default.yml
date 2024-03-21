@@ -43,3 +43,58 @@ jobs:
           /p:Configuration=${{ matrix.net }}-${{ matrix.config }}
           /p:Platform=${{ matrix.platform }}
           "${{env.SOLUTION_FILE_PATH}}"
+
+  driver:
+    needs: build
+    runs-on: ${{ matrix.image }}
+
+    strategy:
+      matrix:
+        image: [windows-2022]
+        net: [Win10]
+        config: [Debug, Release]
+        platform: [x64]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        working-directory: ${{github.workspace}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+      - name: Build
+        working-directory: ${{github.workspace}}
+        run: msbuild /m /p:Configuration=${{ matrix.net }}-${{ matrix.config }} /p:Platform=${{ matrix.platform }} ${{env.SOLUTION_FILE_PATH}}
+
+  package:
+    needs: build
+    runs-on: windows-2019
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        working-directory: ${{github.workspace}}
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+      - name: Install
+        working-directory: ${{github.workspace}}
+        run: Tools\ci_install.bat vs2019
+        shell: cmd
+
+      - name: Build Package
+        working-directory: ${{github.workspace}}
+        run: Tools\build_package.bat vs2019
+        shell: cmd
