@@ -9,13 +9,32 @@
 
         <!-- SolutionDir is not defined when building projects explicitly -->
         <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+
+        <!-- SolutionDir is not defined when building projects explicitly -->
+        <Configuration Condition=" '$(Platform)' == '' ">x64</Configuration>
+        <Configuration Condition=" '$(TargetArchitecture)' == '' ">x64</Configuration>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)'=='x86' ">
+        <PlatformName>x86</PlatformName>
+        <PlatformBits>32</PlatformBits>
+        <AlternatePlatformName>x64</AlternatePlatformName>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)'=='x64' ">
+        <PlatformName>x64</PlatformName>
+        <PlatformBits>64</PlatformBits>
+        <AlternatePlatformName>x86</AlternatePlatformName>
     </PropertyGroup>
 
     <!-- Set Folder Variables -->
     <PropertyGroup>
         <WorkspaceFolder>$(MSBuildThisFileDirectory.TrimEnd('\/'))</WorkspaceFolder>
-        <OutNoSlash>$(WorkspaceFolder)/bin/$(Configuration)/$(Platform)$(TargetArchitecture)</OutNoSlash>
-        <IntNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)/$(Platform)$(TargetArchitecture)</IntNoSlash>
+        <OutNoSlash>$(WorkspaceFolder)/bin/$(Configuration)/$(PlatformName)</OutNoSlash>
+        <IntNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)/$(PlatformName)</IntNoSlash>
+
+        <OutAlternatePlatformNoSlash>$(WorkspaceFolder)/bin/$(Configuration)/$(AlternatePlatformName)</OutAlternatePlatformNoSlash>
+        <IntAlternatePlatformNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)/$(AlternatePlatformName)</IntAlternatePlatformNoSlash>
     </PropertyGroup>
 
     <!-- Set Base Variables -->
@@ -25,7 +44,8 @@
         <ProjectUrl>https://github.com/joelvaneenwyk/$(ProjectIdentifier)</ProjectUrl>
 
         <!-- SolutionDir is not defined when building projects explicitly -->
-        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">$(WorkspaceFolder)</SolutionDir>
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">
+            $(WorkspaceFolder)</SolutionDir>
         <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
         <VSToolsPath
             Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"

@@ -21,7 +21,8 @@ jobs:
         config: [Debug, Release]
         platform: [x64, x86, Any CPU]
 
-    name: "⚙️ ${{ matrix.vs.name }} - ${{ matrix.platform }} - ${{ matrix.config }}"
+    # e.g. "⚙️ vs2022:Debug:x64"
+    name: "⚙️ ${{ matrix.vs.name }} - ${{ matrix.config }} - ${{ matrix.platform }}"
     runs-on: ${{ matrix.vs.os }}
 
     steps:

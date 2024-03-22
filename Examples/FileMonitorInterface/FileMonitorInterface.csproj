@@ -17,7 +17,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\Build\netfx2.0-Debug\x86\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,13 +24,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'netfx2.0-Debug|AnyCPU'">
-    <OutputPath>..\..\Build\netfx2.0-Debug\x86\</OutputPath>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -66,7 +63,7 @@
   </Target>
   -->
   <Target Name="AfterBuild">
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="..\..\Build\$(Configuration)\x86\$(AssemblyName).dll" DestinationFiles="..\..\Build\$(Configuration)\x64\$(AssemblyName).dll">
+    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="$(OutNoSlash)\$(AssemblyName).dll" DestinationFolder="$(OutAlternatePlatformNoSlash)">
     </Copy>
   </Target>
 </Project>

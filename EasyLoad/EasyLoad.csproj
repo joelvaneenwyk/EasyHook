@@ -3,14 +3,7 @@
     <AssemblyNamePostfix>64</AssemblyNamePostfix>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
-    <AssemblyNamePostfix>32</AssemblyNamePostfix>
-    <AlternatePlatform>x64</AlternatePlatform>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
-    <AssemblyNamePostfix>32</AssemblyNamePostfix>
-    <AlternatePlatform>x86</AlternatePlatform>
+    <AssemblyNamePostfix>$(PlatformBits)</AssemblyNamePostfix>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
@@ -20,33 +13,25 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\Build\$(Configuration)\x64\</OutputPath>
     <DefineConstants>TRACE;NET4</DefineConstants>
-    <DocumentationFile></DocumentationFile>
     <Optimize>true</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\$(Configuration)\x64\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET4</DefineConstants>
-    <DocumentationFile></DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <OutputPath>..\Build\$(Configuration)\x86\</OutputPath>
     <DefineConstants>TRACE;NET4</DefineConstants>
-    <DocumentationFile></DocumentationFile>
     <Optimize>true</Optimize>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\$(Configuration)\x86\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NET4</DefineConstants>
-    <DocumentationFile></DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
@@ -69,7 +54,7 @@
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>cmd /c /d /v:off /e:on C:\Windows\System32\xcopy.exe /Y /C /E /Q "$(ProjectDir)$(OutDir)$(AssemblyName).*" "$(ProjectDir)$(OutDir)\..\$(AlternatePlatform)" &amp; exit /b 0</PostBuildEvent>
+    <PostBuildEvent>cmd /c /d /v:off /e:on C:\Windows\System32\xcopy.exe /Y /C /E /Q "$(ProjectDir)$(OutDir)$(AssemblyName).*" "$(ProjectDir)$(OutDir)\..\$(AlternatePlatformNameNameName)" &amp; exit /b 0</PostBuildEvent>
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <Title>EasyLoad</Title>
   </PropertyGroup>
