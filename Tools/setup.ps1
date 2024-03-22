@@ -130,7 +130,7 @@ function Invoke-VisualStudioBuild {
         "/p:Configuration=$Configuration",
         "/p:Platform=$Platform",
         "/p:PlatformToolset=$($ToolchainInfo.Toolchain)",
-        '/p:PackageDir=./Deploy;FX4BuildDir=./Build/Release/x64',
+        '/p:PackageDir=./Deploy;EasyHookBuildDir=./Build/Release/x64',
         '/verbosity:quiet'
     )
 

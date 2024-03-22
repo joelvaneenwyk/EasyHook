@@ -2,8 +2,9 @@
 <Project DefaultTargets="Build"
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PackageDir>.\Deploy</PackageDir>
-    <FX4BuildDir>.\Build\Release\x64</FX4BuildDir>
+    <EasyHookRootDir>.</EasyHookRootDir>
+    <PackageDir>$(EasyHookRootDir)\.build\deploy</PackageDir>
+    <EasyHookBuildDir>$(EasyHookRootDir)\bin\Release</EasyHookBuildDir>
     <AssemblyCopyright>Copyright (c) 2016 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
   </PropertyGroup>
@@ -62,33 +63,33 @@
   <Target Name = "PreparePackage">
     <!--DependsOnTargets="Build">-->
     <ItemGroup>
-      <CommonFiles Include=".\LICENSE" />
-      <CommonFiles Include=".\README.md" />
-      <CommonFiles Include=".\EasyHookTestCert.cer" />
-      <CommonFiles Include=".\Public\easyhook.h" />
+      <CommonFiles Include="$(EasyHookRootDir)\LICENSE" />
+      <CommonFiles Include="$(EasyHookRootDir)\README.md" />
+      <CommonFiles Include="$(EasyHookRootDir)\EasyHookTestCert.cer" />
+      <CommonFiles Include="$(EasyHookRootDir)\Public\easyhook.h" />
     </ItemGroup>
     <!-- Note: These ItemGroup's must be child of Target to ensure that the Include paths are evaluated AFTER the build has completed -->
     <ItemGroup>
-      <NetFX4Files Include="$(FX4BuildDir)\EasyHook*.dll" />
-      <NetFX4Files Include="$(FX4BuildDir)\EasyLoad*.dll" />
-      <NetFX4Files Include="$(FX4BuildDir)\EasyHook*.lib" />
-      <NetFX4Files Include="$(FX4BuildDir)\EasyHook32Svc.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\EasyHook64Svc.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\FileMon.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\FileMonInject.dll" />
-      <NetFX4Files Include="$(FX4BuildDir)\ProcessMonitor.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\ProcMonInject.dll" />
-      <NetFX4Files Include="$(FX4BuildDir)\ComplexParameterTest.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\ComplexParameterInject.dll" />
-      <NetFX4Files Include="$(FX4BuildDir)\TestFuncHooks.exe" />
-      <NetFX4Files Include="$(FX4BuildDir)\*.sys" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook*.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyLoad*.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook*.lib" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook32Svc.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook64Svc.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\FileMon.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\FileMonInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ProcessMonitor.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ProcMonInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ComplexParameterTest.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ComplexParameterInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\TestFuncHooks.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\*.sys" />
     </ItemGroup>
     <MakeDir Directories = "$(PackageDir)"
             Condition = "!Exists('$(PackageDir)')" />
     <MakeDir Directories = "$(PackageDir)\NetFX4.0"
             Condition = "!Exists('$(PackageDir)\NetFX4.0')" />
     <Copy SourceFiles="@(CommonFiles)" DestinationFolder="$(PackageDir)\NetFX4.0" />
-    <Copy SourceFiles="@(NetFX4Files)" DestinationFolder="$(PackageDir)\NetFX4.0" />
+    <Copy SourceFiles="@(EasyHookFiles)" DestinationFolder="$(PackageDir)\NetFX4.0" />
   </Target>
   <!-- No need to export source
   <Target Name="ExportSource">

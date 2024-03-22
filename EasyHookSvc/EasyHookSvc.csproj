@@ -124,21 +124,8 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
   <Target Name="AfterBuild">
-  </Target>
-  -->
-  <Target Name="AfterBuild">
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="$(OutNoSlash)\$(AssemblyName).exe" DestinationFiles="$(OutAlternatePlatformNoSlash)\EasyHook64Svc.exe">
-    </Copy>
-    <Copy Condition="'$(Platform)' == 'AnyCPU'" SourceFiles="$(OutNoSlash)\EasyHook64Svc.exe" DestinationFiles="$(OutAlternatePlatformNoSlash)\EasyHook64Svc.exe">
-    </Copy>
-    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="$(OutNoSlash)\$(AssemblyName).exe" DestinationFiles="$(OutAlternatePlatformNoSlash)\EasyHook32Svc.exe">
-    </Copy>
-    <Copy Condition="'$(Platform)' == 'x86'" SourceFiles="$(OutNoSlash)\EasyHook32Svc.exe" DestinationFiles="$(OutAlternatePlatformNoSlash)\EasyHook32Svc.exe">
+    <Copy SourceFiles="$(OutNoSlash)\$(AssemblyName).exe" DestinationFolder="$(OutAlternatePlatformNoSlash)">
     </Copy>
   </Target>
 </Project>

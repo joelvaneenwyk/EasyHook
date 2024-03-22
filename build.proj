@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageDir>.\Deploy</PackageDir>
-    <FX4BuildDir>.\Build\Release\x64</FX4BuildDir>
+    <EasyHookBuildDir>.\Build\Release\x64</EasyHookBuildDir>
     <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix></AssemblyTitlePostfix>
   </PropertyGroup>

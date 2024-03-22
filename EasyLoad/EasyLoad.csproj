@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
-    <AssemblyNamePostfix>64</AssemblyNamePostfix>
+  <PropertyGroup>
     <Configurations>Debug;Release</Configurations>
     <Platforms>AnyCPU</Platforms>
     <AssemblyNamePostfix>$(PlatformBits)</AssemblyNamePostfix>
-  </PropertyGroup>
-  <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
