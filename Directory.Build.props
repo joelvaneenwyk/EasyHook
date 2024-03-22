@@ -22,21 +22,27 @@
         <PlatformNative>Win32</PlatformNative>
         <PlatformName>x86</PlatformName>
         <PlatformBits>32</PlatformBits>
+        <PlatformTargetMachine>MachineX86</PlatformTargetMachine>
         <AlternatePlatformName>x64</AlternatePlatformName>
+        <AlternatePlatformNativeName>x64</AlternatePlatformNativeName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Platform)'=='x64' ">
         <PlatformNative>x64</PlatformNative>
         <PlatformName>x64</PlatformName>
         <PlatformBits>64</PlatformBits>
+        <PlatformTargetMachine>MachineX64</PlatformTargetMachine>
         <AlternatePlatformName>x86</AlternatePlatformName>
+        <AlternatePlatformNativeName>Win32</AlternatePlatformNativeName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Platform)'=='AnyCPU' ">
         <PlatformNative>AnyCPU</PlatformNative>
         <PlatformName>AnyCPU</PlatformName>
         <PlatformBits></PlatformBits>
+        <TargetMachine></TargetMachine>
         <AlternatePlatformName></AlternatePlatformName>
+        <AlternatePlatformNativeName></AlternatePlatformNativeName>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -46,6 +52,7 @@
         <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
         <TargetFrameworkProfile></TargetFrameworkProfile>
         <ErrorReport>prompt</ErrorReport>
+        <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
