@@ -61,9 +61,33 @@ csharp_set_designer_cs_properties(
 
 # Set CLR assembly properties.
 set_target_properties(${TARGET_NAME} PROPERTIES
-		VS_DOTNET_REFERENCES "System;System.Data;System.Runtime.Remoting;System.Xml"
+		LINKER_LANGUAGE CSharp
 		VS_GLOBAL_ROOTNAMESPACE ${TARGET_NAME}
 		)
+
+target_compile_options(${TARGET_NAME} PRIVATE "/platform:x64" )
+
+# Set the .NET Framework version for the target.
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
+
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_DOTNET_REFERENCES
+		"Microsoft.CSharp"
+		"PresentationCore"
+		"PresentationFramework"
+		"System"
+		"System.Xaml"
+		"System.Data"
+		"System.Linq"
+		"System.Windows"
+		"System.Windows.Forms"
+		"System.Numerics"
+		"System.Drawing"
+		"WindowsBase"
+)
+
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_PACKAGE_REFERENCES
+		"JetBrains.Annotations_2022.3.1"
+)
 
 target_compile_options(${TARGET_NAME} PUBLIC "/unsafe")
 

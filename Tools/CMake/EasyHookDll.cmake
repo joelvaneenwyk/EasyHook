@@ -80,7 +80,9 @@ add_library(${TARGET_NAME} SHARED
 
 target_link_libraries(${TARGET_NAME}
 		AUX_ULIB_${TARGET_LIB_POSTFIX}
-		psapi)
+		psapi
+		EasyHook
+)
 
 target_link_directories(${TARGET_NAME}
 		PUBLIC "${CMAKE_SOURCE_DIR}/EasyHookDll")
@@ -90,8 +92,13 @@ target_include_directories(${TARGET_NAME} AFTER
 		PUBLIC "${CMAKE_SOURCE_DIR}/Public"
 		PUBLIC "${CMAKE_SOURCE_DIR}/DriverShared")
 
-set_property(TARGET ${TARGET_NAME} PROPERTY
-		MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+target_compile_options(${TARGET_NAME} PRIVATE "/platform:x64" )
+set_target_properties(${TARGET_NAME} PROPERTIES
+		MSVC_RUNTIME_LIBRARY           "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
+
+# Set the .NET Framework version for the target.
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_DOTNET_TARGET_FRAMEWORK_VERSION "v4.6.1")
 
 target_compile_definitions(${TARGET_NAME} PRIVATE
 		"_UNICODE"
