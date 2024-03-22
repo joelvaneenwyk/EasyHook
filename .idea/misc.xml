@@ -39,6 +39,7 @@
       <file path="$PROJECT_DIR$/EasyHookSvc/bin" />
       <file path="$PROJECT_DIR$/EasyHookSvc/obj" />
       <file path="$PROJECT_DIR$/EasyLoad/obj" />
+      <file path="$PROJECT_DIR$/TestResults" />
     </excludeRoots>
   </component>
 </project>
