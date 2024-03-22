@@ -17,14 +17,14 @@ jobs:
       fail-fast: false
       matrix:
         vs:
-          - { name: vs2022, range: "[17,18)" }
-          - { name: vs2019, range: "[16,17)" }
+          - { name: vs2022, range: "[17,18)", os: windows-2022 }
+          - { name: vs2019, range: "[16,17)", os: windows-2019 }
         net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
 
     name: "⚙️ ${{ matrix.config }} - ${{ matrix.platform }}"
-    runs-on: windows-latest
+    runs-on: ${{ matrix.vs.os }}
 
     steps:
       - uses: actions/checkout@v4
