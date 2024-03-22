@@ -47,10 +47,10 @@ These are the steps for Windows 11:
 
 Use `build.bat` to build binaries for all configurations (.NET 4.0, `Debug`/`Release`, and `x86`/`x64`).
 
-* `./netfx4-Debug/x86`
-* `./netfx4-Debug/x64`
-* `./netfx4-Release/x86`
-* `./netfx4-Release/x64`
+* `./Debug/x86`
+* `./Debug/x64`
+* `./Release/x86`
+* `./Release/x64`
 
 ### Build Release Package
 

@@ -9,7 +9,7 @@ param(
     [switch] $Initialize = $false
 )
 
-$script:ToolsDir = split-path -parent $MyInvocation.MyCommand.Definition
+$script:ToolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 $script:EasyHookRootDir = (Get-Item $ToolsDir).Parent
 $script:EasyHookRoot = $EasyHookRootDir.FullName
@@ -34,8 +34,8 @@ function DownloadNuget() {
     New-Item -ItemType Directory -Force -Path $EasyHookBin | Out-Null
     Set-Alias nuget $script:Nuget -Scope Global
     if (-not (Test-Path $script:Nuget)) {
-        $Client = New-Object System.Net.WebClient;
-        $Client.DownloadFile('https://dist.nuget.org/win-x86-commandline/latest/nuget.exe', $script:Nuget);
+        $Client = New-Object System.Net.WebClient
+        $Client.DownloadFile('https://dist.nuget.org/win-x86-commandline/latest/nuget.exe', $script:Nuget)
     }
 }
 
@@ -66,8 +66,8 @@ function Invoke-BatchFile {
 
     cmd.exe /c " `"$Path`" $Parameters && set > `"$tempFile`" "
 
-    Get-Content $tempFile | Foreach-Object {
-        if ($_ -match "^(.*?)=(.*)$") {
+    Get-Content $tempFile | ForEach-Object {
+        if ($_ -match '^(.*?)=(.*)$') {
             Set-Content "env:\$($matches[1])" $matches[2]
         }
     }
@@ -106,7 +106,7 @@ function Invoke-VisualStudioBuild {
         [PSCustomObject] $ToolchainInfo,
 
         [Parameter(Position = 2, ValueFromPipeline = $true)]
-        [ValidateSet('netfx4-Debug', 'netfx4-Release')]
+        [ValidateSet('Debug', 'Release')]
         [string] $Configuration,
 
         [Parameter(Position = 3, ValueFromPipeline = $true)]
@@ -124,14 +124,14 @@ function Invoke-VisualStudioBuild {
 
     $Arguments = @(
         "$Sln",
-        "/t:rebuild",
+        '/t:rebuild',
         "/tv:$($ToolchainInfo.MSBuildToolVersion)",
         "/p:VisualStudioVersion=$($ToolchainInfo.VisualStudioToolVersion)",
         "/p:Configuration=$Configuration",
         "/p:Platform=$Platform",
         "/p:PlatformToolset=$($ToolchainInfo.Toolchain)",
-        "/p:PackageDir=./Deploy;FX4BuildDir=./Build/netfx4-Release/x64",
-        "/verbosity:quiet"
+        '/p:PackageDir=./Deploy;FX4BuildDir=./Build/Release/x64',
+        '/verbosity:quiet'
     )
 
     Write-Diagnostic "[cmd] $($ToolchainInfo.MSBuildExe) $Arguments"
@@ -156,7 +156,7 @@ function Invoke-VisualStudioBuild {
     $ProcessCreated = $Process.Start()
 
     if (!$ProcessCreated) {
-        Die "Failed to create process"
+        Die 'Failed to create process'
     }
 
     $stdout = $Process.StandardOutput.ReadToEnd()
@@ -167,7 +167,7 @@ function Invoke-VisualStudioBuild {
     if ($Process.ExitCode -ne 0) {
         Write-Host "stdout: $stdout"
         Write-Host "stderr: $stderr"
-        Die "Build failed"
+        Die 'Build failed'
     }
 }
 
@@ -190,8 +190,8 @@ function Get-ProcessOutput {
     $StandardOutput = $process.StandardOutput.ReadToEnd()
 
     $output = New-Object PSObject
-    $output | Add-Member -type NoteProperty -name StandardOutput -Value $StandardOutput
-    $output | Add-Member -type NoteProperty -name StandardError -Value $StandardError
+    $output | Add-Member -type NoteProperty -Name StandardOutput -Value $StandardOutput
+    $output | Add-Member -type NoteProperty -Name StandardError -Value $StandardError
     return $output
 }
 
@@ -221,7 +221,7 @@ function Invoke-TargetBuild {
     )
 
     if ([string]::IsNullOrEmpty($($ToolchainInfo.Target))) {
-        Write-Diagnostic "Requires a target to be specified."
+        Write-Diagnostic 'Requires a target to be specified.'
         return
     }
 
@@ -233,10 +233,10 @@ function Invoke-TargetBuild {
     Write-Diagnostic "Visual Studio Installation path: '$($ToolchainInfo.VSInstallationPath)'"
     Write-Diagnostic "Starting build targeting toolchain $($ToolchainInfo.Toolchain)"
 
-    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'netfx4-Debug' 'x64'
-    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'netfx4-Debug' 'Win32'
-    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'netfx4-Release' 'x64'
-    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'netfx4-Release' 'Win32'
+    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'Debug' 'x64'
+    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'Debug' 'Win32'
+    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'Release' 'x64'
+    Invoke-VisualStudioBuild $EasyHookSln $ToolchainInfo 'Release' 'Win32'
 
     Write-Diagnostic "Finished build targeting toolchain $($ToolchainInfo.Toolchain)"
 }
@@ -292,7 +292,7 @@ Function Get-Toolchain {
         [string] $Target
     )
 
-    $toolchainArguments = ""
+    $toolchainArguments = ''
 
     $WorkerImageOverride = $env:APPVEYOR_BUILD_WORKER_IMAGE
     if (-not ([string]::IsNullOrEmpty($WorkerImageOverride))) {
@@ -327,58 +327,58 @@ Function Get-Toolchain {
     $VSInstallationPath = $toolchainInfo.installationPath
     $MSBuildExe = Get-VSWhere ($toolchainArguments + ' -requires Microsoft.Component.MSBuild -find MSBuild/**/Bin/MSBuild.exe')
 
-    $versionParts = $toolchainInfo.installationVersion -Split "\."
+    $versionParts = $toolchainInfo.installationVersion -Split '\.'
     $version = "$($versionParts[0]).$($versionParts[1])" -as [double]
     if ($version -ge 17.0) {
-        $Target = "vs2022"
+        $Target = 'vs2022'
     }
     elseif ($version -ge 16.0) {
-        $Target = "vs2019"
+        $Target = 'vs2019'
     }
     elseif ($version -ge 15.0) {
-        $Target = "vs2017"
+        $Target = 'vs2017'
     }
     elseif ($version -ge 14.0) {
-        $Target = "vs2015"
+        $Target = 'vs2015'
     }
     elseif ($version -ge 12.0) {
-        $Target = "vs2013"
+        $Target = 'vs2013'
     }
 
     $targetMapping = @{
-        "nupkg-only" = ""
-        "vs2013" = "v120"
-        "vs2015" = "v140"
-        "vs2017" = "v141"
-        "vs2019" = "v142"
-        "vs2022" = "v143"
+        'nupkg-only' = ''
+        'vs2013'     = 'v120'
+        'vs2015'     = 'v140'
+        'vs2017'     = 'v141'
+        'vs2019'     = 'v142'
+        'vs2022'     = 'v143'
     }
     $toolchain = $targetMapping[$Target]
 
     switch -Exact ($Target) {
-        "vs2013" {
-            $VisualStudioToolVersion = "12.0"
-            $MSBuildToolVersion = "12.0"
+        'vs2013' {
+            $VisualStudioToolVersion = '12.0'
+            $MSBuildToolVersion = '12.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
-        "vs2015" {
-            $VisualStudioToolVersion = "14.0"
-            $MSBuildToolVersion = "14.0"
+        'vs2015' {
+            $VisualStudioToolVersion = '14.0'
+            $MSBuildToolVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc'
         }
-        "vs2017" {
-            $VisualStudioToolVersion = "15.0"
-            $MSBuildToolVersion = "14.0"
+        'vs2017' {
+            $VisualStudioToolVersion = '15.0'
+            $MSBuildToolVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
-        "vs2019" {
-            $VisualStudioToolVersion = "16.0"
-            $MSBuildToolVersion = "14.0"
+        'vs2019' {
+            $VisualStudioToolVersion = '16.0'
+            $MSBuildToolVersion = '14.0'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
-        "vs2022" {
-            $VisualStudioToolVersion = "17.0"
-            $MSBuildToolVersion = "Current"
+        'vs2022' {
+            $VisualStudioToolVersion = '17.0'
+            $MSBuildToolVersion = 'Current'
             $VXXCommonTools = Join-Path $VSInstallationPath '.\vc\auxiliary\build'
         }
     }
@@ -402,33 +402,33 @@ Function Get-Toolchain {
 
     $Configuration = $env:Configuration
     if ([string]::IsNullOrEmpty($Configuration)) {
-        $Configuration = "netfx4.5-Debug"
+        $Configuration = 'netfx4.5-Debug'
     }
 
     $Platform = $env:Platform
     if ([string]::IsNullOrEmpty($Platform)) {
-        $Platform = "x64"
+        $Platform = 'x64'
     }
 
-    if ($Platform -eq "Win32") {
-        $BuildPlatform = "x86"
+    if ($Platform -eq 'Win32') {
+        $BuildPlatform = 'x86'
     }
     else {
-        $BuildPlatform = "x64"
+        $BuildPlatform = 'x64'
     }
 
     $output = New-Object PSObject
-    $output | Add-Member -type NoteProperty -name VSInstallationPath -Value $VSInstallationPath
-    $output | Add-Member -type NoteProperty -name MSBuildExe -Value $MSBuildExe
-    $output | Add-Member -type NoteProperty -name Toolchain -Value $toolchain
-    $output | Add-Member -type NoteProperty -name Target -Value $Target
-    $output | Add-Member -type NoteProperty -name VisualStudioToolVersion -Value $VisualStudioToolVersion
-    $output | Add-Member -type NoteProperty -name MSBuildToolVersion -Value $MSBuildToolVersion
-    $output | Add-Member -type NoteProperty -name VXXCommonTools -Value $VXXCommonTools
-    $output | Add-Member -type NoteProperty -name VCVarsAll -Value $VCVarsAll
-    $output | Add-Member -type NoteProperty -name Configuration -Value $Configuration
-    $output | Add-Member -type NoteProperty -name Platform -Value $Platform
-    $output | Add-Member -type NoteProperty -name BuildPlatform -Value $BuildPlatform
+    $output | Add-Member -type NoteProperty -Name VSInstallationPath -Value $VSInstallationPath
+    $output | Add-Member -type NoteProperty -Name MSBuildExe -Value $MSBuildExe
+    $output | Add-Member -type NoteProperty -Name Toolchain -Value $toolchain
+    $output | Add-Member -type NoteProperty -Name Target -Value $Target
+    $output | Add-Member -type NoteProperty -Name VisualStudioToolVersion -Value $VisualStudioToolVersion
+    $output | Add-Member -type NoteProperty -Name MSBuildToolVersion -Value $MSBuildToolVersion
+    $output | Add-Member -type NoteProperty -Name VXXCommonTools -Value $VXXCommonTools
+    $output | Add-Member -type NoteProperty -Name VCVarsAll -Value $VCVarsAll
+    $output | Add-Member -type NoteProperty -Name Configuration -Value $Configuration
+    $output | Add-Member -type NoteProperty -Name Platform -Value $Platform
+    $output | Add-Member -type NoteProperty -Name BuildPlatform -Value $BuildPlatform
 
     return $output
 }
@@ -462,17 +462,17 @@ Function Initialize-Environment {
         [string] $AssemblyVersion = $null
     )
 
-    $DefaultForeground = (get-host).ui.rawui.ForegroundColor
-    $DefaultBackground = (get-host).ui.rawui.BackgroundColor
+    $DefaultForeground = (Get-Host).ui.rawui.ForegroundColor
+    $DefaultBackground = (Get-Host).ui.rawui.BackgroundColor
 
-    Write-Diagnostic "Initializing EasyHook build environment."
+    Write-Diagnostic 'Initializing EasyHook build environment.'
 
     $ContinuousIntegration = ![string]::IsNullOrEmpty($env:CI)
     if ($ContinuousIntegration) {
-        Write-Diagnostic "Continuous Integration build."
+        Write-Diagnostic 'Continuous Integration build.'
     }
     else {
-        Write-Diagnostic "Local (non-CI) build."
+        Write-Diagnostic 'Local (non-CI) build.'
     }
 
     Write-Diagnostic "EasyHook Tools: '$script:ToolsDir'"
@@ -481,14 +481,14 @@ Function Initialize-Environment {
     Write-Diagnostic "VSWhere: '$script:VSWhere'"
 
     # Download local version of NuGet
-    Write-Diagnostic "Downloading latest version of NuGet and installing packages."
+    Write-Diagnostic 'Downloading latest version of NuGet and installing packages.'
     DownloadNuget
     RestoreNugetPackages
 
     $ToolchainInfo = Get-Toolchain $Target
 
     if ([string]::IsNullOrEmpty($AssemblyVersion)) {
-        $AssemblyVersion = "2.8.0.0"
+        $AssemblyVersion = '2.8.0.0'
     }
 
     Write-Host "EasyHook version: $AssemblyVersion"
@@ -502,8 +502,8 @@ Function Initialize-Environment {
     # Update assembly C# files with correct version
     WriteAssemblyVersion
 
-    $BatchEnvironment = Join-Path $EasyHookBin "setup_environment.bat"
-    Set-Content -Path $BatchEnvironment -Value "" -Force
+    $BatchEnvironment = Join-Path $EasyHookBin 'setup_environment.bat'
+    Set-Content -Path $BatchEnvironment -Value '' -Force
     Add-Content $BatchEnvironment "set TOOLCHAIN_VERSION=$($ToolchainInfo.Toolchain)"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_NAME=$($ToolchainInfo.Target)"
     Add-Content $BatchEnvironment "set VISUAL_STUDIO_PATH=$($ToolchainInfo.VSInstallationPath)"
@@ -514,47 +514,48 @@ Function Initialize-Environment {
     Add-Content $BatchEnvironment "set EASYHOOK_ROOT=$EasyHookRoot"
     Add-Content $BatchEnvironment "set BUILD_PLATFORM=$($ToolchainInfo.BuildPlatform)"
 
-    Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" NEQ ""[]"" SET LOGGER=/logger:""C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"""
-    Add-Content $BatchEnvironment "if ""[%APPVEYOR_BUILD_ID%]"" == ""[]"" SET LOGGER="
+    Add-Content $BatchEnvironment 'if "[%APPVEYOR_BUILD_ID%]" NEQ "[]" SET LOGGER=/logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"'
+    Add-Content $BatchEnvironment 'if "[%APPVEYOR_BUILD_ID%]" == "[]" SET LOGGER='
 
     Add-Content $BatchEnvironment "set MSBUILD_TOOL_VERSION=$($ToolchainInfo.MSBuildToolVersion)"
-    Add-Content $BatchEnvironment "set MSBUILD_ARGS=/p:VisualStudioVersion=%VISUAL_STUDIO_TOOL_VERSION% %LOGGER%"
+    Add-Content $BatchEnvironment 'set MSBUILD_ARGS=/p:VisualStudioVersion=%VISUAL_STUDIO_TOOL_VERSION% %LOGGER%'
     Add-Content $BatchEnvironment "set MSBUILD_EXE=""$($ToolchainInfo.MSBuildExe)"""
-    Add-Content $BatchEnvironment "set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%"
+    Add-Content $BatchEnvironment 'set MSBUILD=%MSBUILD_EXE% %MSBUILD_ARGS%'
 
-    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" echo Calling Visual Studio setup script: ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
-    Add-Content $BatchEnvironment "if ""%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%"" == """" call ""%VISUAL_STUDIO_VARS%"" %VISUAL_STUDIO_VARS_ARCH%"
+    Add-Content $BatchEnvironment 'if "%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%" == "" echo Calling Visual Studio setup script: "%VISUAL_STUDIO_VARS%" %VISUAL_STUDIO_VARS_ARCH%'
+    Add-Content $BatchEnvironment 'if "%VSCMD_VER%%__VCVARSALL_TARGET_ARCH%" == "" call "%VISUAL_STUDIO_VARS%" %VISUAL_STUDIO_VARS_ARCH%'
 
     # We set these back in case Visual Studio or something else modified the setting
     Add-Content $BatchEnvironment "set Configuration=$($ToolchainInfo.Configuration)"
     Add-Content $BatchEnvironment "set Platform=$($ToolchainInfo.Platform)"
 
-    Write-Diagnostic "Installing CoApp."
-    $msiPath = Join-Path $script:EasyHookBin "CoApp.Tools.Powershell.msi"
+    Write-Diagnostic 'Installing CoApp.'
+    $msiPath = Join-Path $script:EasyHookBin 'CoApp.Tools.Powershell.msi'
     (New-Object Net.WebClient).DownloadFile('https://easyhook.github.io/downloads/CoApp.Tools.Powershell.msi', $msiPath)
-    $msiOutput = Get-ProcessOutput -FileName "C:\Windows\System32\cmd.exe" -Arguments "/c start /wait C:\Windows\System32\msiexec.exe /i ""$msiPath"" /quiet"
+    $msiOutput = Get-ProcessOutput -FileName 'C:\Windows\System32\cmd.exe' -Arguments "/c start /wait C:\Windows\System32\msiexec.exe /i ""$msiPath"" /quiet"
 
     if (-not ([string]::IsNullOrEmpty($($msiOutput.StandardError)))) {
         Write-Diagnostic $($msiOutput.StandardError)
     }
 
     # Add default install directory to module path so we can immediately load the module
-    $coAppModulePath = "C:\Program Files (x86)\Outercurve Foundation\Modules"
+    $coAppModulePath = 'C:\Program Files (x86)\Outercurve Foundation\Modules'
     $env:PSMODULEPATH = $env:PSMODULEPATH + ";$coAppModulePath"
     Add-Content $BatchEnvironment "set PSMODULEPATH=$($env:PSModulePath)"
-    [System.Environment]::SetEnvironmentVariable("PSMODULEPATH", $env:PSModulePath, "User")
+    [System.Environment]::SetEnvironmentVariable('PSMODULEPATH', $env:PSModulePath, 'User')
 
     # Import CoApp module (for packaging native NuGet)
-    Find-Module "CoApp"
+    Find-Module 'CoApp'
 
-    Add-Content $BatchEnvironment "echo Generated environment batch complete."
+    Add-Content $BatchEnvironment 'echo Generated environment batch complete.'
 
-    Write-Host "Environment setup complete." -ForegroundColor $DefaultForeground -BackgroundColor $DefaultBackground
+    Write-Host 'Environment setup complete.' -ForegroundColor $DefaultForeground -BackgroundColor $DefaultBackground
 }
 
 if ($Initialize) {
     $ToolchainInfo = Initialize-Environment -Target $Target
-} else {
+}
+else {
     $ToolchainInfo = Get-Toolchain $Target
 }
 

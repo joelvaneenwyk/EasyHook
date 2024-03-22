@@ -3,15 +3,15 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageDir>.\Deploy</PackageDir>
-    <FX4BuildDir>.\Build\netfx4-Release\x64</FX4BuildDir>
+    <FX4BuildDir>.\Build\Release\x64</FX4BuildDir>
     <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix></AssemblyTitlePostfix>
   </PropertyGroup>
   <!-- Build all binaries -->
   <Target Name="Build">
-    <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx4-Debug;Platform=x64" />
-    <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx4-Debug;Platform=Win32" />
-    <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx4-Release;Platform=x64" />
-    <MSBuild Projects="EasyHook.sln" Properties="Configuration=netfx4-Release;Platform=Win32" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=x64" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=Win32" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Release;Platform=x64" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Release;Platform=Win32" />
   </Target>
 </Project>

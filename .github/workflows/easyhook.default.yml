@@ -19,7 +19,6 @@ jobs:
         vs:
           - { name: vs2022, range: "[17,18)", os: windows-2022, package: false }
           - { name: vs2019, range: "[16,17)", os: windows-2019, package: true }
-        net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
 
@@ -44,7 +43,7 @@ jobs:
         run: >
           msbuild
           /m
-          /p:Configuration="${{ matrix.net }}-${{ matrix.config }}"
+          /p:Configuration="${{ matrix.config }}"
           /p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_FILE_PATH}}"
 
@@ -62,6 +61,7 @@ jobs:
     needs: build
 
     strategy:
+      fail-fast: false
       matrix:
         image: [windows-2022]
         net: [Win10]
@@ -87,6 +87,6 @@ jobs:
         run: >
           msbuild
           /m
-          /p:Configuration="${{ matrix.net }}-${{ matrix.config }}"
+          /p:Configuration="${{ matrix.config }}"
           /p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_SYS_FILE_PATH}}"

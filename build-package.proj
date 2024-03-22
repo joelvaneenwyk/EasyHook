@@ -3,7 +3,7 @@
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <PackageDir>.\Deploy</PackageDir>
-    <FX4BuildDir>.\Build\netfx4-Release\x64</FX4BuildDir>
+    <FX4BuildDir>.\Build\Release\x64</FX4BuildDir>
     <AssemblyCopyright>Copyright (c) 2016 EasyHook Team</AssemblyCopyright>
     <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
   </PropertyGroup>
