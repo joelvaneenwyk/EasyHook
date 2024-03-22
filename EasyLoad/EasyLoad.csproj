@@ -6,6 +6,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
     <AssemblyNamePostfix>32</AssemblyNamePostfix>
+    <AlternatePlatform>x64</AlternatePlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x64' ">
+    <AssemblyNamePostfix>32</AssemblyNamePostfix>
+    <AlternatePlatform>x86</AlternatePlatform>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net481</TargetFramework>
@@ -59,7 +64,8 @@
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(Platform)' == 'x64'">C:\Windows\System32\xcopy.exe /C /E /Q "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x86" /Y</PostBuildEvent>
-    <PostBuildEvent Condition="'$(Platform)' == 'x86'">C:\Windows\System32\xcopy.exe /C /E /Q "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x64" /Y</PostBuildEvent>
+    <PostBuildEvent>cmd /c /d /v:off /e:on C:\Windows\System32\xcopy.exe /Y /C /E /Q "$(ProjectDir)$(OutDir)$(AssemblyName).*" "$(ProjectDir)$(OutDir)\..\$(AlternatePlatform)" &amp; exit /b 0</PostBuildEvent>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+    <Title>EasyLoad</Title>
   </PropertyGroup>
 </Project>
