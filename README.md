@@ -1,6 +1,8 @@
-# Welcome to EasyHook - The reinvention of Windows API Hooking
+# EasyHook
 
 > This is a fork of the [EasyHook](<https://github.com/EasyHook/EasyHook>) project.
+
+## Reinvention of Windows API Hooking
 
 This project supports extending (hooking) unmanaged code (APIs) with pure managed ones, from within a fully managed environment on 32- or 64-bit Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, Windows 10, and Windows 11.
 
@@ -12,7 +14,7 @@ For more information head to the EasyHook site at [easyhook.github.io](https://e
 
 ## NuGet
 
-[nuget.org/packages/EasyHook](https://www.nuget.org/packages/EasyHook)
+> [nuget.org/packages/EasyHook](https://www.nuget.org/packages/EasyHook)
 
 For native C++ apps there is also a native NuGet package: [nuget.org/packages/EasyHookNativePackages](https://www.nuget.org/packages/EasyHookNativePackage)
 
