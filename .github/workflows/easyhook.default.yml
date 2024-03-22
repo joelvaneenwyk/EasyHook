@@ -17,8 +17,8 @@ jobs:
       fail-fast: false
       matrix:
         vs:
-          - { name: vs2022, range: "[17,18)", os: windows-2022 }
-          - { name: vs2019, range: "[16,17)", os: windows-2019 }
+          - { name: vs2022, range: "[17,18)", os: windows-2022, package: false }
+          - { name: vs2019, range: "[16,17)", os: windows-2019, package: true }
         net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
@@ -48,9 +48,18 @@ jobs:
           /p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_FILE_PATH}}"
 
+      - name: Install
+        run: Tools\ci_install.bat ${{ matrix.vs.name }}
+        shell: cmd
+        if: ${{ matrix.vs.package }}
+
+      - name: Build Package
+        run: Tools\build_package.bat ${{ matrix.vs.name }}
+        shell: cmd
+        if: ${{ matrix.vs.package }}
+
   driver:
     needs: build
-    runs-on: ${{ matrix.image }}
 
     strategy:
       matrix:
@@ -58,6 +67,9 @@ jobs:
         net: [Win10]
         config: [Debug, Release]
         platform: [x64]
+
+    name: "⚙️ Build Driver | ${{ matrix.config }}"
+    runs-on: ${{ matrix.image }}
 
     steps:
       - uses: actions/checkout@v4
@@ -78,27 +90,3 @@ jobs:
           /p:Configuration="${{ matrix.net }}-${{ matrix.config }}"
           /p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_SYS_FILE_PATH}}"
-
-  package:
-    needs: build
-    runs-on: windows-2019
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Restore NuGet packages
-        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-      - name: Install
-        run: Tools\ci_install.bat vs2019
-        shell: cmd
-
-      - name: Build Package
-        run: Tools\build_package.bat vs2019
-        shell: cmd
