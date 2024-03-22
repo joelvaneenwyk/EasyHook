@@ -57,7 +57,7 @@
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(Platform)' == 'x64'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x86" /Y</PostBuildEvent>
-    <PostBuildEvent Condition="'$(Platform)' == 'x86'">C:\Windows\System32\xcopy.exe "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x64" /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(Platform)' == 'x64'">C:\Windows\System32\xcopy.exe /C /E /Q "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x86" /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(Platform)' == 'x86'">C:\Windows\System32\xcopy.exe /C /E /Q "$(TargetDir)$(AssemblyName).*" "$(TargetDir)..\x64" /Y</PostBuildEvent>
   </PropertyGroup>
 </Project>
