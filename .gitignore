@@ -3,6 +3,7 @@ Thumbs.db
 
 /EasyHook.*.nupkg
 /EasyHook.*.symbols.nupkg
+/cmake-build-*/
 
 # Ignore intermediate files created by Visual Studio
 *.obj
