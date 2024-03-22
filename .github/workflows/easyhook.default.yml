@@ -22,7 +22,7 @@ jobs:
         config: [Debug, Release]
         platform: [x64, Win32]
 
-    name: "⚙️ ${{ matrix.config }} - ${{ matrix.platform }}"
+    name: "⚙️ ${{ matrix.vs.name }} - ${{ matrix.platform }} - ${{ matrix.config }}"
     runs-on: ${{ matrix.vs.os }}
 
     steps:
@@ -39,7 +39,7 @@ jobs:
       - name: Restore NuGet packages
         run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-      - name: Build
+      - name: ⚙️ Build
         run: >
           msbuild
           /m
@@ -47,12 +47,12 @@ jobs:
           /p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_FILE_PATH}}"
 
-      - name: Install
+      - name: 🔥 Install
         run: Tools\ci_install.bat ${{ matrix.vs.name }}
         shell: cmd
         if: ${{ matrix.vs.package }}
 
-      - name: Build Package
+      - name: 📦 Package
         run: Tools\build_package.bat ${{ matrix.vs.name }}
         shell: cmd
         if: ${{ matrix.vs.package }}
