@@ -1,3 +1,9 @@
+#
+# EasyHook
+#
+
+.build/
+
 # Ignore thumbnails created by windows
 Thumbs.db
 
