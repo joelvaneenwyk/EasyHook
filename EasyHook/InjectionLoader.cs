@@ -231,7 +231,7 @@ namespace EasyHook
             try
             {
                 // Prepare parameter array.
-                var paramArray = new object[1 + connection.RemoteInfo.UserParams.Length];
+                object[] paramArray = new object[1 + connection.RemoteInfo.UserParams.Length];
                 // The next type cast is not redundant because the object needs to be an explicit IContext
                 // when passed as a parameter to the IEntryPoint constructor and Run() methods.
                 paramArray[0] = (RemoteHooking.IContext)connection.UnmanagedInfo;
@@ -464,7 +464,7 @@ namespace EasyHook
         private static string ConstructMissingMethodExceptionMessage(string methodName, object[] paramArray)
         {
             var msg = new StringBuilder("The given user library does not export a proper " + methodName + "(");
-            foreach (var param in paramArray)
+            foreach (object param in paramArray)
                 msg.Append(param.GetType() + ", ");
             return msg.ToString(0, msg.Length - 2) + ") method in the 'EasyHook.IEntryPoint' interface.";
         }

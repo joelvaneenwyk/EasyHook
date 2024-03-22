@@ -25,11 +25,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using JetBrains.Annotations;
 using Microsoft.Win32.SafeHandles;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace EasyHook
 {
+    [PublicAPI]
     static class NativeAPI_EasyHook
     {
         static bool _initialised = false;
@@ -635,6 +639,7 @@ namespace EasyHook
     /// <summary>
     /// Native methods from built-in Windows API but also calls into EasyHook native libraries.
     /// </summary>
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
     public static class NativeAPI
     {
         /// <summary>

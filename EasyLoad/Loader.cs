@@ -175,7 +175,7 @@ namespace EasyLoad
                     catch (System.CannotUnloadAppDomainException)
                     {
                         // Usually means that one or more threads within the AppDomain haven't finished exiting (e.g. still within a finalize)
-                        var i = 0;
+                        int i = 0;
                         while (i < 3) // try up to 3 times to unload the AppDomain
                         {
                             System.Threading.Thread.Sleep(1000);

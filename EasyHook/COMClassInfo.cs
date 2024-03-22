@@ -92,7 +92,7 @@ namespace EasyHook
             Methods = new MethodInfo[methodNames.Length];
             MethodPointers = new IntPtr[methodNames.Length];
 
-            for (var i = 0; i < methodNames.Length; i++)
+            for (int i = 0; i < methodNames.Length; i++)
                 Methods[i] = InterfaceType.GetMethod(methodNames[i]);
         }
 
@@ -187,7 +187,7 @@ namespace EasyHook
                 interfaceGuid = InterfaceType.GUID;
                 // get com-slot-number (vtable-index) of function X
                 vTableOffsets = new int[MethodPointers.Length];
-                for (var i = 0; i < Methods.Length; i++)
+                for (int i = 0; i < Methods.Length; i++)
                     vTableOffsets[i] = Marshal.GetComSlotForMethodInfo(Methods[i]);
             }
             else
@@ -217,7 +217,7 @@ namespace EasyHook
                 // get vtable
                 int** vTable = *interfaceRawPtr;
                 // get function-addresses from vtable
-                for (var i = 0; i < vTableOffsets.Length; i++)
+                for (int i = 0; i < vTableOffsets.Length; i++)
                 {
                     int* faddr = vTable[vTableOffsets[i]];
                     MethodPointers[i] = new IntPtr(faddr);
