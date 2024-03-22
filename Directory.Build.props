@@ -18,19 +18,22 @@
         <AnyPlatformName>AnyCPU</AnyPlatformName>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Platform)'=='x86' ">
+    <PropertyGroup Condition=" '$(Platform)'=='x86' or '$(Platform)'=='Win32' ">
+        <PlatformNative>Win32</PlatformNative>
         <PlatformName>x86</PlatformName>
         <PlatformBits>32</PlatformBits>
         <AlternatePlatformName>x64</AlternatePlatformName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Platform)'=='x64' ">
+        <PlatformNative>x64</PlatformNative>
         <PlatformName>x64</PlatformName>
         <PlatformBits>64</PlatformBits>
         <AlternatePlatformName>x86</AlternatePlatformName>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Platform)'=='AnyCPU' ">
+        <PlatformNative>AnyCPU</PlatformNative>
         <PlatformName>AnyCPU</PlatformName>
         <PlatformBits></PlatformBits>
         <AlternatePlatformName></AlternatePlatformName>
