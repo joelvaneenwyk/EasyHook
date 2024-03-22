@@ -16,13 +16,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image: [windows-2019, windows-2022]
+        vs:
+          - { name: vs2022, range: "[17,18)" }
+          - { name: vs2019, range: "[16,17)" }
         net: [netfx4]
         config: [Debug, Release]
         platform: [x64, Win32]
 
-    name: "⚙️ ${{ matrix.image }} - ${{ matrix.config }} - ${{ matrix.platform }}"
-    runs-on: ${{ matrix.image }}
+    name: "⚙️ ${{ matrix.config }} - ${{ matrix.platform }}"
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -32,6 +34,8 @@ jobs:
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: ${{ matrix.vs.range }}
 
       - name: Restore NuGet packages
         run: nuget restore ${{env.SOLUTION_FILE_PATH}}
