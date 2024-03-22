@@ -9,7 +9,6 @@ on:
 env:
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: EasyHook.sln
-  SOLUTION_SYS_FILE_PATH: EasyHookSys.sln
 
 jobs:
   build:
@@ -37,14 +36,16 @@ jobs:
           vs-version: ${{ matrix.vs.range }}
 
       - name: Restore NuGet packages
-        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+        run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
 
       - name: ⚙️ Build
         run: >
           msbuild
-          /m
-          /p:Configuration="${{ matrix.config }}"
-          /p:Platform="${{ matrix.platform }}"
+          -target:Restore,Build
+          -maxCpuCount
+          -p:RestorePackagesConfig=true
+          -p:Configuration="${{ matrix.config }}"
+          -p:Platform="${{ matrix.platform }}"
           "${{env.SOLUTION_FILE_PATH}}"
 
       - name: 🔥 Install
@@ -56,37 +57,3 @@ jobs:
         run: Tools\build_package.bat ${{ matrix.vs.name }}
         shell: cmd
         if: ${{ matrix.vs.package }}
-
-  driver:
-    needs: build
-
-    strategy:
-      fail-fast: false
-      matrix:
-        image: [windows-2022]
-        net: [Win10]
-        config: [Debug, Release]
-        platform: [x64]
-
-    name: "⚙️ Build Driver | ${{ matrix.config }}"
-    runs-on: ${{ matrix.image }}
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Restore NuGet packages
-        run: nuget restore ${{env.SOLUTION_SYS_FILE_PATH}}
-
-      - name: Build
-        run: >
-          msbuild
-          /m
-          /p:Configuration="${{ matrix.config }}"
-          /p:Platform="${{ matrix.platform }}"
-          "${{env.SOLUTION_SYS_FILE_PATH}}"
