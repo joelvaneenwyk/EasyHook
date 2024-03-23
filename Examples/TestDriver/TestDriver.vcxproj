@@ -21,17 +21,20 @@
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">x64</Platform>
     <RootNamespace>TestDriver</RootNamespace>
-    <WindowsTargetPlatformVersion>$(EasyHookDriverWindowsVersion)</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import
-    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.Default.props')"
-    Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import
-    Condition="exists('$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props')"
-    Project="$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.Default.props')" Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Condition="exists('$(ProjectDir)\..\..\EasyHookSys\EasyHookSys.props')" Project="$(ProjectDir)\..\..\EasyHookSys\EasyHookSys.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
+    <ConfigurationType>Driver</ConfigurationType>
+    <DriverType>KMDF</DriverType>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetVersion>Windows10</TargetVersion>
+    <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>$(WindowsKernelVersion)</PlatformToolset>
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>

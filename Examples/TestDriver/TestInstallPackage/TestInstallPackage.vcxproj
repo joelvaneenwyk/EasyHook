@@ -18,12 +18,8 @@
     <RootNamespace>TestInstallPackage</RootNamespace>
     <WindowsTargetPlatformVersion>$(EasyHookDriverWindowsVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import
-    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.Default.props')"
-    Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import
-    Condition="exists('$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props')"
-    Project="$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.Default.props')" Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import Condition="exists('$(ProjectDir)\..\..\..\EasyHookSys\EasyHookSys.props')" Project="$(ProjectDir)\..\..\..\EasyHookSys\EasyHookSys.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -40,16 +36,17 @@
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
-  <Import
-    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')"
-    Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')" Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DisableProductionSignDebugWarnings>true</DisableProductionSignDebugWarnings>
+    <DriverProductionSignMinimalRebuildFromTracking>true</DriverProductionSignMinimalRebuildFromTracking>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <EnableDeployment>False</EnableDeployment>
@@ -62,7 +59,19 @@
     <VerifyProjectOutput>True</VerifyProjectOutput>
     <VerifyDrivers />
     <VerifyFlags>133563</VerifyFlags>
+    <DisableProductionSignDebugWarnings>true</DisableProductionSignDebugWarnings>
+    <DriverProductionSignMinimalRebuildFromTracking>true</DriverProductionSignMinimalRebuildFromTracking>
   </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DriverSign>
+      <FileDigestAlgorithm>SHA256</FileDigestAlgorithm>
+    </DriverSign>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <DriverSign>
+      <FileDigestAlgorithm>SHA256</FileDigestAlgorithm>
+    </DriverSign>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <FilesToPackage Include="@(Inf->'%(CopyOutput)')" Condition="'@(Inf)'!=''" />
   </ItemGroup>
@@ -74,9 +83,7 @@
       <Project>{c33f2a0c-001e-446b-9291-0515db0c8769}</Project>
     </ProjectReference>
   </ItemGroup>
-  <Import
-    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.targets')"
-    Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.targets')" Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
