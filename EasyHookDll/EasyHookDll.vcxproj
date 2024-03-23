@@ -32,6 +32,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules />
     <CodeAnalysisRuleAssemblies />
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -58,6 +59,18 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>EasyHook$(PlatformBits)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>EasyHook$(PlatformBits)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>EasyHook$(PlatformBits)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>EasyHook$(PlatformBits)</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(WorkspaceFolder)\DriverShared;$(WorkspaceFolder)\;$(WorkspaceFolder)\Public;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -270,6 +283,11 @@
   <ItemGroup>
     <MASM Include="..\DriverShared\ASM\HookSpecific_x64.asm">
       <ExcludedFromBuild Condition="'$(PlatformBits)'=='32'">true</ExcludedFromBuild>
+      <Command>cd /D "$(IntDir)" ;&amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
+      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+    </MASM>
+    <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm">
+      <ExcludedFromBuild Condition="'$(PlatformBits)'=='64'">true</ExcludedFromBuild>
       <Command>cd /D "$(IntDir)" ;&amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
       <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
     </MASM>
