@@ -139,7 +139,7 @@ namespace EasyHook.Tests
             }
         }
 
-        private bool RunHookTest()
+        public bool RunHookTest()
         {
             // This test is optional and just skip if the executable does not exist
             if (!File.Exists(_testDemoExecutablePath))
