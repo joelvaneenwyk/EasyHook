@@ -50,10 +50,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <Inf2CatVerbose>true</Inf2CatVerbose>
+    <Inf2CatNoCatalog>true</Inf2CatNoCatalog>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DebuggerFlavor>DbgengKernelDebugger</DebuggerFlavor>
     <IncludePath>$(ProjectDir);$(IncludePath);$(VC_IncludePath)</IncludePath>
+    <Inf2CatVerbose>true</Inf2CatVerbose>
+    <Inf2CatNoCatalog>true</Inf2CatNoCatalog>
+    <Inf2CatUseLocalTime>true</Inf2CatUseLocalTime>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
