@@ -27,9 +27,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
-          fetch-depth: 0
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -37,7 +34,7 @@ jobs:
           vs-version: ${{ matrix.vs.range }}
 
       - name: Restore NuGet packages
-        run: dotnet restore "${{env.SOLUTION_FILE_PATH}}"
+        run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
 
       - name: ⚙️ Build
         run: >
