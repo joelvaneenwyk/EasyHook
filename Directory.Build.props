@@ -66,12 +66,14 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(PlatformToolset)' == 'v143'">
+    <PropertyGroup Condition="'$(PlatformToolset)' == 'v143' or '$(PlatformToolset)' == ''">
+        <EasyHookPlatformToolset>v143</EasyHookPlatformToolset>
         <EasyHookDriverWindowsVersion>10.0.22621.0</EasyHookDriverWindowsVersion>
         <EasyHookDriverKernelVersion>WindowsKernelModeDriver10.0</EasyHookDriverKernelVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(PlatformToolset)' == 'v142'">
+        <EasyHookPlatformToolset>v142</EasyHookPlatformToolset>
         <EasyHookDriverKernelVersion>WindowsKernelModeDriver8.1</EasyHookDriverKernelVersion>
         <EasyHookDriverWindowsVersion>10.0.19041.0</EasyHookDriverWindowsVersion>
     </PropertyGroup>
