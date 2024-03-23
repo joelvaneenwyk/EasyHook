@@ -14,13 +14,16 @@
     <ProjectGuid>{70058B57-2AC6-4E19-BB15-33E577C99C48}</ProjectGuid>
     <TemplateGuid>{4605da2c-74a5-4865-98e1-152ef136825f}</TemplateGuid>
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
-    <Configuration>Win8.1 Debug</Configuration>
-    <Platform Condition="'$(Platform)' == ''">Win32</Platform>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
     <RootNamespace>TestInstallPackage</RootNamespace>
-    <WindowsTargetPlatformVersion>$(WindowsDriverVersion)</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(EasyHookDriverWindowsVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props" />
+  <Import
+    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.Default.props')"
+    Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <Import
+    Condition="exists('$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props')"
+    Project="$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -37,7 +40,9 @@
     <DriverType>Package</DriverType>
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import
+    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')"
+    Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets">

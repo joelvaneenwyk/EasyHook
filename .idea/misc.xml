@@ -31,7 +31,6 @@
       <file path="$PROJECT_DIR$/Packages" />
     </libraryRoots>
     <excludeRoots>
-      <file path="$PROJECT_DIR$/Bin" />
       <file path="$PROJECT_DIR$/Build" />
       <file path="$PROJECT_DIR$/Deploy" />
       <file path="$PROJECT_DIR$/EasyHook/bin" />
@@ -40,6 +39,7 @@
       <file path="$PROJECT_DIR$/EasyHookSvc/obj" />
       <file path="$PROJECT_DIR$/EasyLoad/obj" />
       <file path="$PROJECT_DIR$/TestResults" />
+      <file path="$PROJECT_DIR$/bin" />
     </excludeRoots>
   </component>
 </project>

@@ -1,31 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build"
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <EasyHookRootDir>.</EasyHookRootDir>
-    <PackageDir>$(EasyHookRootDir)\.build\deploy</PackageDir>
-    <EasyHookBuildDir>$(EasyHookRootDir)\bin\Release</EasyHookBuildDir>
-    <AssemblyCopyright>Copyright (c) 2016 EasyHook Team</AssemblyCopyright>
-    <AssemblyTitlePostfix>(beta)</AssemblyTitlePostfix>
-  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory.TrimEnd('\/'))/Directory.Build.props" />
 
   <!-- https://github.com/loresoft/msbuildtasks -->
-  <Import Project=".\Packages\MSBuildTasks.1.5.0.196\tools\MSBuild.Community.Tasks.Targets"/>
+  <Import
+  Condition="Exists('./Packages/MSBuildTasks.1.5.0.196/tools/MSBuild.Community.Tasks.Targets')"
+  Project="./Packages/MSBuildTasks.1.5.0.196/tools/MSBuild.Community.Tasks.Targets"/>
 
   <!-- BeforeBuild: update version info across all projects -->
   <Target Name="BeforeBuild">
     <ItemGroup>
-      <AssemblyInfoFiles Include=".\**\*AssemblyInfo.cs" />
+      <AssemblyInfoFiles Include="./**/*AssemblyInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-      <CppProjectFiles Include=".\**\*.vcxproj" />
+      <CppProjectFiles Include="./**/*.vcxproj" />
     </ItemGroup>
     <ItemGroup>
-      <CppResourceFiles Include=".\**\*.rc" />
+      <CppResourceFiles Include="./**/*.rc" />
     </ItemGroup>
     <ItemGroup>
-      <NuGetAutopkgFiles Include=".\EasyHookNative.autopkg" />
-      <NuGetNuspecFiles Include=".\EasyHook.nuspec" />
+      <NuGetAutopkgFiles Include="./EasyHookNative.autopkg" />
+      <NuGetNuspecFiles Include="./EasyHook.nuspec" />
     </ItemGroup>
     <!-- attempt to record the Subversion Repository revision in SVNRevision for use in AssemblyTitle -->
     <CreateProperty Value="$(AssemblyTitlePostfix)">
@@ -59,53 +55,53 @@
     <FileUPdate Files="@(NuGetNuspecFiles)" Regex="&lt;version&gt;(\d+)\.(\d+)\.(\d+)\.(\d+)" ReplacementText="&lt;version&gt;$(Major).$(Minor).$(Build).$(Revision)" />
   </Target>
 
-  <!-- PreparePackage: Prepare Deployment package files within .\Deploy\ -->
+  <!-- PreparePackage: Prepare Deployment package files -->
   <Target Name = "PreparePackage">
     <!--DependsOnTargets="Build">-->
     <ItemGroup>
-      <CommonFiles Include="$(EasyHookRootDir)\LICENSE" />
-      <CommonFiles Include="$(EasyHookRootDir)\README.md" />
-      <CommonFiles Include="$(EasyHookRootDir)\EasyHookTestCert.cer" />
-      <CommonFiles Include="$(EasyHookRootDir)\Public\easyhook.h" />
+      <CommonFiles Include="$(EasyHookRootDir)/LICENSE" />
+      <CommonFiles Include="$(EasyHookRootDir)/README.md" />
+      <CommonFiles Include="$(EasyHookRootDir)/EasyHookTestCert.cer" />
+      <CommonFiles Include="$(EasyHookRootDir)/Public/easyhook.h" />
     </ItemGroup>
     <!-- Note: These ItemGroup's must be child of Target to ensure that the Include paths are evaluated AFTER the build has completed -->
     <ItemGroup>
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook*.dll" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyLoad*.dll" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook*.lib" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook32Svc.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\EasyHook64Svc.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\FileMon.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\FileMonInject.dll" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ProcessMonitor.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ProcMonInject.dll" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ComplexParameterTest.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\ComplexParameterInject.dll" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\TestFuncHooks.exe" />
-      <EasyHookFiles Include="$(EasyHookBuildDir)\AnyCPU\*.sys" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/EasyHook*.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/EasyLoad*.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/EasyHook*.lib" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/EasyHook32Svc.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/EasyHook64Svc.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/FileMon.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/FileMonInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/ProcessMonitor.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/ProcMonInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/ComplexParameterTest.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/ComplexParameterInject.dll" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/TestFuncHooks.exe" />
+      <EasyHookFiles Include="$(EasyHookBuildDir)/AnyCPU/*.sys" />
     </ItemGroup>
     <MakeDir Directories = "$(PackageDir)"
             Condition = "!Exists('$(PackageDir)')" />
-    <MakeDir Directories = "$(PackageDir)\NetFX4.0"
-            Condition = "!Exists('$(PackageDir)\NetFX4.0')" />
-    <Copy SourceFiles="@(CommonFiles)" DestinationFolder="$(PackageDir)\NetFX4.0" />
-    <Copy SourceFiles="@(EasyHookFiles)" DestinationFolder="$(PackageDir)\NetFX4.0" />
+    <MakeDir Directories = "$(PackageDir)/NetFX4.0"
+            Condition = "!Exists('$(PackageDir)/NetFX4.0')" />
+    <Copy SourceFiles="@(CommonFiles)" DestinationFolder="$(PackageDir)/NetFX4.0" />
+    <Copy SourceFiles="@(EasyHookFiles)" DestinationFolder="$(PackageDir)/NetFX4.0" />
   </Target>
   <!-- No need to export source
   <Target Name="ExportSource">
-    <RemoveDir Directories="$(PackageDir)\Source" />
-    <SvnExport RepositoryPath="$(MSBuildProjectDirectory)" LocalPath="$(PackageDir)\Source"></SvnExport>
+    <RemoveDir Directories="$(PackageDir)/Source" />
+    <SvnExport RepositoryPath="$(MSBuildProjectDirectory)" LocalPath="$(PackageDir)/Source"></SvnExport>
   </Target>
 -->
 
   <!-- Package: Create deployment ZIP file -->
   <Target Name = "Package" DependsOnTargets="PreparePackage">
     <ItemGroup>
-      <PackageFiles Include="$(PackageDir)\**\*.*" Exclude="$(PackageDir)\*.zip;$(PackageDir)\Source\**\*.*" />
+      <PackageFiles Include="$(PackageDir)/**/*.*" Exclude="$(PackageDir)/*.zip;$(PackageDir)/Source/**/*.*" />
     </ItemGroup>
     <!-- No longer packaging source files
 	<ItemGroup>
-      <SourceFiles Include="$(PackageDir)\Source\**\*.*" />
+      <SourceFiles Include="$(PackageDir)/Source/**/*.*" />
     </ItemGroup>
     -->
     <Version VersionFile="Version.txt" BuildType="None" RevisionType="None">
@@ -115,15 +111,15 @@
       <Output TaskParameter="Revision" PropertyName="Revision" />
     </Version>
 
-    <Zip Files="@(PackageFiles)" WorkingDirectory="$(PackageDir)" ZipFileName="$(PackageDir)\EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Binaries.zip" ZipLevel="9" />
-    <Exec Command=".\Bin\NuGet.exe pack .\EasyHook.nuspec -NoPackageAnalysis -symbols" />
-    <Exec Command="PowerShell.exe -NoProfile -ExecutionPolicy Unrestricted -command &quot;&amp; { &amp;'.\Tools\create_nuget_package.ps1' } &quot;" />
+    <Zip Files="@(PackageFiles)" WorkingDirectory="$(PackageDir)" ZipFileName="$(PackageDir)/EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Binaries.zip" ZipLevel="9" />
+    <Exec Command="./Bin/NuGet.exe pack ./EasyHook.nuspec -NoPackageAnalysis -symbols" />
+    <Exec Command="PowerShell.exe -NoProfile -ExecutionPolicy Unrestricted -command &quot;&amp; { &amp;'./Tools/create_nuget_package.ps1' } &quot;" />
     <!-- no longer archiving source files here
-    <Zip Files="@(SourceFiles)" WorkingDirectory="$(PackageDir)\Source" ZipFileName="$(PackageDir)\EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Source.zip" ZipLevel="9" />
+    <Zip Files="@(SourceFiles)" WorkingDirectory="$(PackageDir)/Source" ZipFileName="$(PackageDir)/EasyHook-$(Major).$(Minor).$(Build).$(Revision)-Source.zip" ZipLevel="9" />
     -->
   </Target>
   <!-- Clean -->
   <Target Name = "Clean">
-    <RemoveDir Directories=".\Build;$(PackageDir)\NetFX4.0;$(PackageDir)\Source" />
+    <RemoveDir Directories="./Build;$(PackageDir)/NetFX4.0;$(PackageDir)/Source" />
   </Target>
 </Project>

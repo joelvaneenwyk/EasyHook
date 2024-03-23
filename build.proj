@@ -1,13 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build"
   xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <PackageDir>.\Deploy</PackageDir>
-    <EasyHookBuildDir>.\Build\Release\x64</EasyHookBuildDir>
-    <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
-    <AssemblyTitlePostfix></AssemblyTitlePostfix>
-  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory.TrimEnd('\/'))/Directory.Build.props" />
   <!-- Build all binaries -->
+  <Target Name="Restore">
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=x64" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=x86" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Release;Platform=x64" />
+    <MSBuild Projects="EasyHook.sln" Properties="Configuration=Release;Platform=x86" />
+  </Target>
   <Target Name="Build">
     <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=x64" />
     <MSBuild Projects="EasyHook.sln" Properties="Configuration=Debug;Platform=x86" />
