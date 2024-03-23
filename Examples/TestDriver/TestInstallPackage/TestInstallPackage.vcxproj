@@ -74,7 +74,9 @@
       <Project>{c33f2a0c-001e-446b-9291-0515db0c8769}</Project>
     </ProjectReference>
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import
+    Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.targets')"
+    Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>
