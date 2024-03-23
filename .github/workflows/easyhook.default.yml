@@ -17,9 +17,13 @@ jobs:
       matrix:
         vs:
           - { name: vs2022, range: "[17,18)", os: windows-2022, toolset: v143, package: false }
-          - { name: vs2019, range: "[16,17)", os: windows-2019, toolset: v142, package: true }
+          # - { name: vs2019, range: "[16,17)", os: windows-2019, toolset: v142, package: true }
         config: [Debug, Release]
-        platform: [x64, x86, Any CPU]
+        platform:
+          - x64
+          - x86
+          # Disabled for now and may remove the platform altogether.
+          # - Any CPU
 
     # e.g. "⚙️ vs2022:Debug:x64"
     name: "⚙️ ${{ matrix.vs.name }} - ${{ matrix.config }} - ${{ matrix.platform }}"
