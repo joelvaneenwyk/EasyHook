@@ -16,8 +16,8 @@ jobs:
       fail-fast: false
       matrix:
         vs:
-          - { name: vs2022, range: "[17,18)", os: windows-2022, package: false }
-          - { name: vs2019, range: "[16,17)", os: windows-2019, package: true }
+          - { name: vs2022, range: "[17,18)", os: windows-2022, toolset: v143, package: false }
+          - { name: vs2019, range: "[16,17)", os: windows-2019, toolset: v142, package: true }
         config: [Debug, Release]
         platform: [x64, x86, Any CPU]
 

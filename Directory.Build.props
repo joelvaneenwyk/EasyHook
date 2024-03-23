@@ -13,6 +13,7 @@
         <!-- SolutionDir is not defined when building projects explicitly -->
         <TargetArchitecture Condition=" '$(TargetArchitecture)' == '' ">x64</TargetArchitecture>
         <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+        <PlatformToolset Condition=" '$(PlatformToolset)' == '' ">v143</PlatformToolset>
         <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
 
         <AnyPlatformName>AnyCPU</AnyPlatformName>
