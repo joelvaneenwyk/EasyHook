@@ -3,6 +3,7 @@
 #
 
 .build/
+*Backup.csproj
 
 # Ignore thumbnails created by windows
 Thumbs.db
