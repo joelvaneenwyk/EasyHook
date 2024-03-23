@@ -13,10 +13,12 @@
         <!-- SolutionDir is not defined when building projects explicitly -->
         <TargetArchitecture Condition=" '$(TargetArchitecture)' == '' ">x64</TargetArchitecture>
         <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-        <PlatformToolset Condition=" '$(PlatformToolset)' == '' ">v143</PlatformToolset>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-
+        <DefaultPlatformToolset Condition=" '$(DefaultPlatformToolset)' == '' ">v143</DefaultPlatformToolset>
+        <PlatformToolset Condition=" '$(PlatformToolset)' == '' ">$(DefaultPlatformToolset)</PlatformToolset>
         <AnyPlatformName>AnyCPU</AnyPlatformName>
+        <!--
+        <VCTargetsPath>C:\Program Files\Microsoft Visual Studio\2022\Community\Msbuild\Microsoft\VC\v170</VCTargetsPath>
+        -->
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Platform)'=='x86' or '$(Platform)'=='Win32' ">
@@ -132,6 +134,8 @@
         <BaseOutputPath>$(OutputPath)</BaseOutputPath>
         <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
 
+        <IntermediateDirectory>$(IntNoSlash)\</IntermediateDirectory>
+        <IntDir>$(IntNoSlash)\</IntDir>
         <DocumentationFile>$(IntNoSlash)/$(MSBuildProjectName).xml</DocumentationFile>
 
         <TransformOnBuild>true</TransformOnBuild>
