@@ -65,6 +65,14 @@
         <DebugType>pdbonly</DebugType>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(PlatformToolset)' == 'v143'">
+        <WindowsDriverVersion>10.0.22621.0</WindowsDriverVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PlatformToolset)' == 'v142'">
+        <WindowsDriverVersion>10.0.19041.0</WindowsDriverVersion>
+    </PropertyGroup>
+
     <!-- Set Folder Variables -->
     <PropertyGroup>
         <WorkspaceFolder>$(MSBuildThisFileDirectory.TrimEnd('\/'))</WorkspaceFolder>

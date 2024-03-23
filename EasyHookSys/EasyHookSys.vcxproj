@@ -61,7 +61,7 @@
     <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
     <Platform Condition="'$(Platform)' == ''">Win32</Platform>
     <RootNamespace>EasyHookSys</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.22621.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>$(WindowsDriverVersion)</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(WorkspaceFolder)\EasyHookSys\EasyHookSys.props" />
