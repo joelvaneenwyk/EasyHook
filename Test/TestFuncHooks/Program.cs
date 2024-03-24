@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace TestFuncHooks
 {
-    class Program
+    internal class Program
     {
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
         public struct TEST_FUNC_HOOKS_OPTIONS
@@ -27,8 +24,9 @@ namespace TestFuncHooks
             public string ModuleRedirect;
             [MarshalAs(UnmanagedType.LPStr)]
             public string FnRedirect;
-            IntPtr FnAddress;
-            IntPtr RelocAddress;
+
+            private IntPtr FnAddress;
+            private IntPtr RelocAddress;
             [MarshalAs(UnmanagedType.LPStr)]
             public string EntryDisasm;
             [MarshalAs(UnmanagedType.LPStr)]
@@ -71,16 +69,16 @@ namespace TestFuncHooks
             public static extern Int32 ReleaseTestFuncHookResults(IntPtr results, int resultCount);
         }
 
-        static bool IsDisamSame(string disam1, string disam2)
+        private static bool IsDisamSame(string disam1, string disam2)
         {
-            var d1 = disam1.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var d2 = disam2.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] d1 = disam1.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] d2 = disam2.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (d1.Length != d2.Length)
                 return false;
             else
             {
-                for (var i = 0; i < d1.Length; i++)
+                for (int i = 0; i < d1.Length; i++)
                 {
                     d1[i] = d1[i].Substring(0, d1[i].IndexOf("IP:"));
                     d2[i] = d2[i].Substring(0, d2[i].IndexOf("IP:"));
@@ -93,13 +91,13 @@ namespace TestFuncHooks
             return true;
         }
 
-        static void PrintResults(string moduleName, TEST_FUNC_HOOKS_RESULT[] results)
+        private static void PrintResults(string moduleName, TEST_FUNC_HOOKS_RESULT[] results)
         {
             int errorCount = 0;
             int containAddress = 0;
             int noRedirect = 0;
 
-            foreach (var item in results)
+            foreach (TEST_FUNC_HOOKS_RESULT item in results)
             {
                 if (!String.IsNullOrEmpty(item.Error))
                     errorCount++;
@@ -112,7 +110,7 @@ namespace TestFuncHooks
             Console.WriteLine(String.Format("{0,-25}{1,15}{2,12}{3,12}{4,15}", moduleName, errorCount, containAddress, noRedirect, (errorCount + containAddress + noRedirect)));
         }
 
-        static bool TryGetProcessById(int pid, out System.Diagnostics.Process process)
+        private static bool TryGetProcessById(int pid, out System.Diagnostics.Process process)
         {
             process = null;
             try
@@ -126,7 +124,7 @@ namespace TestFuncHooks
             return false;
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             int targetPID = 0;
             bool is64 = false;
@@ -193,13 +191,13 @@ namespace TestFuncHooks
                 {
                     options.FilterByName = null;
                     options.Filename = @"EntryPoints64\_" + Path.GetFileNameWithoutExtension(module.FileName) + ".txt";
-                    var moduleName = Path.GetFileName(module.FileName);
+                    string moduleName = Path.GetFileName(module.FileName);
                     
                     NativeAPI_Pub_x64.TestFuncHooks(targetPID, moduleName, options, out resultsPtr, out resultCount);
                     if (resultCount > 0)
                     {
                         results = new TEST_FUNC_HOOKS_RESULT[resultCount];
-                        for (var i = 0; i < resultCount; i++)
+                        for (int i = 0; i < resultCount; i++)
                         {
                             results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(new IntPtr(resultsPtr.ToInt64() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))), typeof(TEST_FUNC_HOOKS_RESULT));
                         }
@@ -223,12 +221,12 @@ namespace TestFuncHooks
                 {
                     options.FilterByName = null;
                     options.Filename = @"EntryPoints32\_" + Path.GetFileNameWithoutExtension(module.FileName) + ".txt";
-                    var moduleName = Path.GetFileName(module.FileName);
+                    string moduleName = Path.GetFileName(module.FileName);
                     NativeAPI_Pub_x86.TestFuncHooks(targetPID, moduleName, options, out resultsPtr, out resultCount);
                     if (resultCount > 0)
                     {
                         results = new TEST_FUNC_HOOKS_RESULT[resultCount];
-                        for (var i = 0; i < resultCount; i++)
+                        for (int i = 0; i < resultCount; i++)
                         {
                             results[i] = (TEST_FUNC_HOOKS_RESULT)Marshal.PtrToStructure(new IntPtr(resultsPtr.ToInt32() + i * Marshal.SizeOf(typeof(TEST_FUNC_HOOKS_RESULT))), typeof(TEST_FUNC_HOOKS_RESULT));
                         }

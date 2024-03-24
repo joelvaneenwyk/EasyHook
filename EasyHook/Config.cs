@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\Config.cs)
+// EasyHook (File: EasyHook\Config.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -25,11 +25,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
-using System.IO.Compression;
 using System.Security.Cryptography;
 
 namespace EasyHook

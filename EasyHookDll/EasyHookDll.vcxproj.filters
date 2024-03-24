@@ -166,7 +166,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="EasyHook.def">
+    <None Include="EasyHook32.def">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="EasyHook64.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

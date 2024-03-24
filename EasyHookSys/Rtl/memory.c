@@ -120,7 +120,11 @@ void RtlZeroMemory(
 
 void* RtlAllocateMemory(BOOL InZeroMemory, ULONG InSize)
 {
+    // warning C4996: 'ExAllocatePoolWithTag': ExAllocatePoolWithTag is deprecated, use ExAllocatePool2.
+#pragma warning(push)
+#pragma warning(disable: 4996)
     void*       Result = ExAllocatePoolWithTag(NonPagedPool, InSize, 'HOOK');
+#pragma warning(pop)
 
     if(InZeroMemory && (Result != NULL))
         RtlZeroMemory(Result, InSize);

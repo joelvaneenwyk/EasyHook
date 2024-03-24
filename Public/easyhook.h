@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -64,7 +64,7 @@ extern "C"{
     #endif
 #endif
 
-/* 
+/*
     This is the typical sign that a defined method is exported...
 
     Methods marked with this attribute need special attention
@@ -184,7 +184,7 @@ DRIVER_SHARED_API(NTSTATUS, LhGetHookBypassAddress(TRACED_HOOK_HANDLE pHandle, P
 typedef struct _MODULE_INFORMATION_* PMODULE_INFORMATION;
 
 typedef struct _MODULE_INFORMATION_
-{	
+{
 	PMODULE_INFORMATION		Next;
 	UCHAR*					BaseAddress;
 	ULONG					ImageSize;
@@ -199,14 +199,14 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierPointerToModule(
 			MODULE_INFORMATION* OutModule));
 
 DRIVER_SHARED_API(NTSTATUS, LhEnumModules(
-			HMODULE* OutModuleArray, 
+			HMODULE* OutModuleArray,
             ULONG InMaxModuleCount,
             ULONG* OutModuleCount));
 
 DRIVER_SHARED_API(NTSTATUS, LhBarrierGetCallingModule(MODULE_INFORMATION* OutModule));
 
 DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
-            PVOID* OutMethodArray, 
+            PVOID* OutMethodArray,
             ULONG InMaxMethodCount,
             ULONG* OutMethodCount));
 
@@ -251,6 +251,8 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
 		EASYHOOK_INTERFACE_API_v_1			API_v_1;
 	}EASYHOOK_DEVICE_EXTENSION, *PEASYHOOK_DEVICE_EXTENSION;
 
+	#pragma warning(disable: 4505)  // Unreferenced local function has been removed
+
 	static NTSTATUS EasyHookQueryInterface(
 		ULONG InInterfaceVersion,
 		PVOID OutInterface,
@@ -258,19 +260,19 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
 	{
 	/*
 		Description:
-			
+
 			Provides a convenient way to load the desired EasyHook interface.
 			The method will only work if the EasyHook support driver is loaded, of course.
 			If you don't need the interface anymore, you have to release the
 			file object with ObDereferenceObject().
 
 		Parameters:
-			
+
 			- InInterfaceVersion
 
 				The desired interface version. Any future EasyHook driver will ALWAYS
 				be backward compatible. This is the reason why I provide such a flexible
-				interface mechanism. 
+				interface mechanism.
 
 			- OutInterface
 
@@ -308,7 +310,7 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
 			switch(InInterfaceVersion)
 			{
 			case EASYHOOK_INTERFACE_v_1: memcpy(OutInterface, &DevExt->API_v_1, sizeof(DevExt->API_v_1)); break;
-			default: 
+			default:
 				return STATUS_INVALID_PARAMETER_1;
 			}
 
@@ -371,7 +373,7 @@ DRIVER_SHARED_API(NTSTATUS, LhBarrierCallStackTrace(
         LPSTR Error;
     } TEST_FUNC_HOOKS_RESULT;
 
-    EASYHOOK_NT_EXPORT TestFuncHooks(ULONG pId, 
+    EASYHOOK_NT_EXPORT TestFuncHooks(ULONG pId,
         PCHAR module,
         TEST_FUNC_HOOKS_OPTIONS options,
         TEST_FUNC_HOOKS_RESULT** outResults,

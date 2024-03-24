@@ -1,6 +1,19 @@
-#ignore thumbnails created by windows
+#
+# EasyHook
+#
+
+.build/
+*Backup.csproj
+
+# Ignore thumbnails created by windows
 Thumbs.db
-#Ignore files build by Visual Studio
+
+/EasyHook.*.nupkg
+/EasyHook.*.symbols.nupkg
+/cmake-build-*/
+.vs/
+
+# Ignore intermediate files created by Visual Studio
 *.obj
 *.exe
 *.pdb
@@ -29,5 +42,7 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-Packages
 .vs/*
+
+Packages/**
+!Packages/*.*

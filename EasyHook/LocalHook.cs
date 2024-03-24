@@ -24,9 +24,7 @@
 // about the project and latest updates.
 
 using System;
-using System.Threading;
 using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
@@ -162,28 +160,27 @@ namespace EasyHook
         {
             get
             {
-                IntPtr Callback;
-
-                return NativeAPI_EasyHook.LhBarrierGetCallback(out Callback) == NativeAPI.STATUS_SUCCESS;
+                IntPtr _;
+                return NativeAPI_EasyHook.LhBarrierGetCallback(out _) == NativeAPI.STATUS_SUCCESS;
             }
         }
 
         ///	<summary>
         ///	The user callback initially passed to either <see cref="LocalHook.Create"/> or <see cref="LocalHook.CreateUnmanaged"/>.
-        /// Executes in max. one micro secound.
+        /// Executes in max. one micro second.
         ///	</summary>
         ///	<exception cref="NotSupportedException"> The current thread is not within a valid hook handler. </exception>
-        public static Object Callback 
-        { 
-            get 
+        public static Object Callback
+        {
+            get
             {
                 return Handle.Callback;
-            } 
+            }
         }
 
         ///	<summary>
         ///	The hook handle initially returned by either <see cref="LocalHook.Create"/> or <see cref="LocalHook.CreateUnmanaged"/>.
-        /// Executes in max. one micro secound.
+        /// Executes in max. one micro second.
         ///	</summary>
         ///	<exception cref="NotSupportedException"> The current thread is not within a valid hook handler. </exception>
         public static LocalHook Handle
@@ -236,7 +233,7 @@ namespace EasyHook
             if ((Pointer == 0) || (Pointer == ~0))
                 return null;
 
-        TRY_AGAIN:
+TRY_AGAIN:
             for (int i = 0; i < ModuleArray.Length; i++)
             {
                 if ((Pointer >= ModuleArray[i].BaseAddress.ToInt64()) &&
@@ -400,9 +397,9 @@ namespace EasyHook
 
                 try
                 {
-                    if(StackBuffer == null)
+                    if (StackBuffer == null)
                         StackBuffer = new StackTraceBuffer();
-                    
+
                     Int16 Count = NativeAPI.RtlCaptureStackBackTrace(0, 32, StackBuffer.Unmanaged, IntPtr.Zero);
                     ProcessModule[] Result = new ProcessModule[Count];
 
@@ -493,7 +490,8 @@ namespace EasyHook
         /// <exception cref="ObjectDisposedException">
         /// The underlying hook is already disposed.
         /// </exception>
-        public HookAccessControl ThreadACL {
+        public HookAccessControl ThreadACL
+        {
             get
             {
                 if (IntPtr.Zero == m_Handle)
@@ -694,7 +692,7 @@ namespace EasyHook
                     GCHandle.ToIntPtr(Result.m_SelfHandle),
                     Result.m_Handle);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Marshal.FreeCoTaskMem(Result.m_Handle);
                 Result.m_Handle = IntPtr.Zero;

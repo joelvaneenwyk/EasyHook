@@ -25,9 +25,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Reflection;
 using System.Threading;
 
@@ -41,7 +39,7 @@ namespace EasyHook
                 Int32 InHostPID,
                 Int32 InTargetPID,
                 Int32 InWakeUpTID,
-                Int32 InNativeOptions,
+                InjectionNativeOptions InNativeOptions,
                 String InLibraryPath_x86,
                 String InLibraryPath_x64,
                 String helperLibrary_x86,

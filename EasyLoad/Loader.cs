@@ -24,7 +24,6 @@
 // about the project and latest updates.
 
 using System;
-using System.Text;
 using RGiesecke.DllExport;
 using System.Runtime.InteropServices;
 using System.Reflection;
@@ -42,7 +41,7 @@ namespace EasyLoad
         /// </summary>
         /// <param name="inParam"></param>
         /// <returns>0 for success, -1 for fail</returns>
-        public int Load(String inParam)
+        public int Load(string inParam)
         {
             return EasyHook.InjectionLoader.Main(inParam);
         }
@@ -53,12 +52,12 @@ namespace EasyLoad
     /// </summary>
     public static class Loader
     {
-        static object _lock = new object();
-        static AppDomain _easyHookDomain;
+        static readonly object _lock = new object();
+        private static AppDomain _easyHookDomain;
         /// <summary>
         /// Keep track of injections to determine when it is safe to unload the AppDomain
         /// </summary>
-        static int _injectCount = 0;
+        private static int _injectCount;
 
         static Loader()
         {
@@ -88,7 +87,7 @@ namespace EasyLoad
         /// <param name="inParam"></param>
         /// <returns>0 if successfully loaded into new AppDomain, 1 if could not use new AppDomain but successfully loaded into default, or -1 for fail</returns>
         [DllExport("Load", System.Runtime.InteropServices.CallingConvention.StdCall)]
-        public static int Load([MarshalAs(UnmanagedType.LPWStr)]String inParam)
+        public static int Load([MarshalAs(UnmanagedType.LPWStr)] string inParam)
         {
             try
             {
@@ -112,7 +111,7 @@ namespace EasyLoad
                     catch (OutOfMemoryException)
                     {
                         // Creation of AppDomain failed, so fall back to using default domain (means it cannot be unloaded)
-                        
+
                         // The reason is there could be an issue with the target application's stack commit size.
                         // The default stack commit size must be <= 253952 (or 0x3E000) - due to bug in .NET Framework, 
                         // this can be checked with dumpbin.exe and edited with editbin.exe.
@@ -131,7 +130,7 @@ namespace EasyLoad
                 {
                     // This is where the currentDomain.AssemblyResolve that we setup within the static 
                     // constructor is required.
-                    var proxy = (LoadEasyHookProxy)_easyHookDomain.CreateInstanceFrom(
+                    LoadEasyHookProxy proxy = (LoadEasyHookProxy)_easyHookDomain.CreateInstanceFrom(
                                     proxyType.Assembly.Location,
                                     proxyType.FullName).Unwrap();
 
@@ -176,7 +175,7 @@ namespace EasyLoad
                     catch (System.CannotUnloadAppDomainException)
                     {
                         // Usually means that one or more threads within the AppDomain haven't finished exiting (e.g. still within a finalize)
-                        var i = 0;
+                        int i = 0;
                         while (i < 3) // try up to 3 times to unload the AppDomain
                         {
                             System.Threading.Thread.Sleep(1000);

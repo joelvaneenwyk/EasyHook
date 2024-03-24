@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "name": "x64-Release",
+            "generator": "Visual Studio 17 2022",
+            "configurationType": "Release",
+            "buildRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\build\\${name}",
+            "installRoot": "${env.USERPROFILE}\\CMakeBuilds\\${workspaceHash}\\install\\${name}",
+            "cmakeCommandArgs": "",
+            "buildCommandArgs": "",
+            "ctestCommandArgs": "",
+            "inheritEnvironments": ["msvc_x64_x64"],
+            "variables": []
+        }
+    ]
+}

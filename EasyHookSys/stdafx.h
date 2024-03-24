@@ -26,6 +26,14 @@
 #ifndef _STDAFX_H_
 #define _STDAFX_H_
 
+#include <vadefs.h>
+
+// C4514: unreferenced inline function has been removed (/Wall)
+// C4820: '<typename>' : 'N' bytes padding added after data member (/Wall)
+#ifndef _VCRUNTIME_DISABLED_WARNINGS
+#   define _VCRUNTIME_DISABLED_WARNINGS 4339 4412 4514 4820
+#endif
+
 #include "easyhook.h"
 #include "drivershared.h"
 

@@ -1,16 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Security.Principal;
-using System.Security;
 using System.Runtime.Remoting;
-using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Threading;
 using EasyHook;
@@ -25,7 +17,7 @@ namespace ProcessMonitor
     public partial class Form1 : Form
     {
         private List<Process> LastProcesses = new List<Process>();
-        static internal List<Int32> HookedProcesses = new List<Int32>();
+        internal static List<Int32> HookedProcesses = new List<Int32>();
         private String ChannelName = null;
         private IpcServerChannel DemoServer;
 
@@ -46,8 +38,8 @@ namespace ProcessMonitor
          * In general you shouldn't access the GUI directly from other threads,
          * so we are using an asynchronous approach!
          */
-        static internal Queue<MonitorEntry> MonitorQueue = new Queue<MonitorEntry>();
-        static internal Boolean IsMonitoring = true;
+        internal static Queue<MonitorEntry> MonitorQueue = new Queue<MonitorEntry>();
+        internal static Boolean IsMonitoring = true;
 
         static bool _noGAC = false;
         public Form1(bool noGAC)

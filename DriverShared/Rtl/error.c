@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -33,13 +33,13 @@ EASYHOOK_NT_EXPORT RtlGetLastError()
     return LastErrorCode;
 }
 
-PWCHAR RtlGetLastErrorString()
+EXTERN_C PWCHAR EASYHOOK_API RtlGetLastErrorString()
 {
     return LastError;
 }
 
 #ifndef DRIVER
-PWCHAR RtlGetLastErrorStringCopy()
+EXTERN_C PWCHAR EASYHOOK_API RtlGetLastErrorStringCopy()
 {
     // https://easyhook.codeplex.com/workitem/24958
     ULONG len = (ULONG)(wcslen(LastError)+1)*sizeof(TCHAR);
@@ -78,7 +78,7 @@ WCHAR* RtlErrorCodeToString(LONG InCode)
         case STATUS_INVALID_PARAMETER_5: return L"STATUS_INVALID_PARAMETER_5";
         case STATUS_INVALID_PARAMETER_6: return L"STATUS_INVALID_PARAMETER_6";
         case STATUS_INVALID_PARAMETER_7: return L"STATUS_INVALID_PARAMETER_7";
-        case STATUS_INVALID_PARAMETER_8: return L"STATUS_INVALID_PARAMETER_8"; 
+        case STATUS_INVALID_PARAMETER_8: return L"STATUS_INVALID_PARAMETER_8";
         default: return L"UNKNOWN";
     }
 }
@@ -97,12 +97,12 @@ void RtlSetLastError(LONG InCode, NTSTATUS InNtStatus, WCHAR* InMessage)
         {
             WCHAR msg[1024] = { 0 };
 
-            if (InNtStatus == STATUS_SUCCESS) 
+            if (InNtStatus == STATUS_SUCCESS)
             {
                 LPTSTR lpMsgBuf = NULL;
 
                 FormatMessage(
-                    FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+                    FORMAT_MESSAGE_ALLOCATE_BUFFER |
                     FORMAT_MESSAGE_FROM_SYSTEM |
                     FORMAT_MESSAGE_IGNORE_INSERTS,
                     NULL,
@@ -113,11 +113,11 @@ void RtlSetLastError(LONG InCode, NTSTATUS InNtStatus, WCHAR* InMessage)
                 _snwprintf_s(msg, 1024, _TRUNCATE, L"%s (%s)\n", InMessage, lpMsgBuf);
                 LocalFree(lpMsgBuf);
             }
-            else 
+            else
             {
                 _snwprintf_s(msg, 1024, _TRUNCATE, L"%s (%s)\n", InMessage, RtlErrorCodeToString(InNtStatus));
             }
-            DEBUGMSG(msg); 
+            DEBUGMSG(msg);
         }
 #endif
         LastError = (PWCHAR)InMessage;
@@ -135,6 +135,6 @@ void RtlSetLastError(LONG InCode, NTSTATUS InNtStatus, WCHAR* InMessage)
 	#endif
 
 			FatalAppExitW(0, lpMessageText);
-		
+
 	}
 #endif

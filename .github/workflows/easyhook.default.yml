@@ -1,0 +1,61 @@
+name: EasyHook-Default
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: EasyHook.sln
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        vs:
+          - { name: vs2022, range: "[17,18)", os: windows-2022, toolset: v143, package: false }
+          # - { name: vs2019, range: "[16,17)", os: windows-2019, toolset: v142, package: true }
+        config: [Debug, Release]
+        platform:
+          - x64
+          - x86
+          # Disabled for now and may remove the platform altogether.
+          # - Any CPU
+
+    # e.g. "⚙️ vs2022:Debug:x64"
+    name: "⚙️ ${{ matrix.vs.name }} - ${{ matrix.config }} - ${{ matrix.platform }}"
+    runs-on: ${{ matrix.vs.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+        with:
+          vs-version: ${{ matrix.vs.range }}
+
+      - name: Restore NuGet packages
+        run: nuget restore "${{env.SOLUTION_FILE_PATH}}"
+
+      - name: ⚙️ Build
+        run: >
+          msbuild
+          -target:Restore,Build
+          -maxCpuCount
+          -p:RestorePackagesConfig=true
+          -p:Configuration="${{ matrix.config }}"
+          -p:Platform="${{ matrix.platform }}"
+          "${{env.SOLUTION_FILE_PATH}}"
+
+      - name: 🔥 Install
+        run: Tools\ci_install.bat ${{ matrix.vs.name }}
+        shell: cmd
+        if: ${{ matrix.vs.package }}
+
+      - name: 📦 Package
+        run: Tools\build_package.bat ${{ matrix.vs.name }}
+        shell: cmd
+        if: ${{ matrix.vs.package }}

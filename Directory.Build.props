@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- Set Default Properties -->
+    <PropertyGroup>
+        <!--
+        See: https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022
+        -->
+        <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+
+        <!-- SolutionDir is not defined when building projects explicitly -->
+        <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+
+        <!-- SolutionDir is not defined when building projects explicitly -->
+        <TargetArchitecture Condition=" '$(TargetArchitecture)' == '' ">x64</TargetArchitecture>
+        <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+        <DefaultPlatformToolset Condition=" '$(DefaultPlatformToolset)' == '' ">v143</DefaultPlatformToolset>
+        <PlatformToolset Condition=" '$(PlatformToolset)' == '' ">$(DefaultPlatformToolset)</PlatformToolset>
+        <AnyPlatformName>AnyCPU</AnyPlatformName>
+        <NoWarn>CS1591,MSB3270</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)'=='x86' or '$(Platform)'=='Win32' ">
+        <PlatformNative>Win32</PlatformNative>
+        <PlatformName>x86</PlatformName>
+        <PlatformBits>32</PlatformBits>
+        <PlatformTargetMachine>MachineX86</PlatformTargetMachine>
+        <AlternatePlatformName>x64</AlternatePlatformName>
+        <AlternatePlatformNativeName>x64</AlternatePlatformNativeName>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)'=='x64' ">
+        <PlatformNative>x64</PlatformNative>
+        <PlatformName>x64</PlatformName>
+        <PlatformBits>64</PlatformBits>
+        <PlatformTargetMachine>MachineX64</PlatformTargetMachine>
+        <AlternatePlatformName>x86</AlternatePlatformName>
+        <AlternatePlatformNativeName>Win32</AlternatePlatformNativeName>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Platform)'=='AnyCPU' ">
+        <PlatformNative>AnyCPU</PlatformNative>
+        <PlatformName>AnyCPU</PlatformName>
+        <PlatformBits></PlatformBits>
+        <TargetMachine></TargetMachine>
+        <AlternatePlatformName></AlternatePlatformName>
+        <AlternatePlatformNativeName></AlternatePlatformNativeName>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <DefineConstants>TRACE;NET4</DefineConstants>
+        <PlatformTarget>$(PlatformName)</PlatformTarget>
+        <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+        <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+        <TargetFrameworkProfile></TargetFrameworkProfile>
+        <ErrorReport>prompt</ErrorReport>
+        <AssemblyCopyright>Copyright &#169; 2020 EasyHook Team</AssemblyCopyright>
+        <AssemblyTitlePostfix></AssemblyTitlePostfix>
+        <RuntimeIdentifiers>win-x86;win-x64;win</RuntimeIdentifiers>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <Optimize>false</Optimize>
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <Optimize>true</Optimize>
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PlatformToolset)' == 'v143' or '$(VisualStudioVersion)' != '12.0' or '$(PlatformToolset)' == ''">
+        <_NT_TARGET_VERSION>0x601</_NT_TARGET_VERSION>
+        <EasyHookPlatformToolset>v143</EasyHookPlatformToolset>
+        <EasyHookDriverWindowsVersion>10.0.22621.0</EasyHookDriverWindowsVersion>
+        <EasyHookDriverKernelVersion>WindowsKernelModeDriver10.0</EasyHookDriverKernelVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(PlatformToolset)' == 'v142' or '$(VisualStudioVersion)' == '12.0'">
+        <_NT_TARGET_VERSION>0x601</_NT_TARGET_VERSION>
+        <EasyHookPlatformToolset>v142</EasyHookPlatformToolset>
+        <EasyHookDriverKernelVersion>WindowsKernelModeDriver8.1</EasyHookDriverKernelVersion>
+        <EasyHookDriverWindowsVersion>10.0.19041.0</EasyHookDriverWindowsVersion>
+    </PropertyGroup>
+
+    <!-- Set Folder Variables -->
+    <PropertyGroup>
+        <WorkspaceFolder>$(MSBuildThisFileDirectory.TrimEnd('\/'))</WorkspaceFolder>
+
+        <IOutNoSlash>$(WorkspaceFolder)/bin/$(Configuration)</IOutNoSlash>
+        <IIntNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)</IIntNoSlash>
+
+        <OutNoSlash>$(IOutNoSlash)/$(PlatformName)</OutNoSlash>
+        <IntNoSlash>$(IIntNoSlash)/$(PlatformName)</IntNoSlash>
+
+        <OutAlternatePlatformNoSlash>$(IOutNoSlash)/$(AlternatePlatformName)</OutAlternatePlatformNoSlash>
+        <IntAlternatePlatformNoSlash>$(IIntNoSlash)/$(AlternatePlatformName)</IntAlternatePlatformNoSlash>
+
+        <OutAnyPlatformNoSlash>$(IOutNoSlash)/$(AnyPlatformName)</OutAnyPlatformNoSlash>
+        <IntAnyPlatformNoSlash>$(IIntNoSlash)/$(AnyPlatformName)</IntAnyPlatformNoSlash>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <EasyHookRootDir>.</EasyHookRootDir>
+        <PackageDir>$(WorkspaceFolder)/bin/Package</PackageDir>
+        <EasyHookBuildDir>$(WorkspaceFolder)/bin/Release/x64</EasyHookBuildDir>
+    </PropertyGroup>
+
+    <!-- Set Base Variables -->
+    <PropertyGroup>
+        <ProjectIdentifier>EasyHook</ProjectIdentifier>
+        <ProjectNamespace>EasyHook</ProjectNamespace>
+        <ProjectUrl>https://github.com/joelvaneenwyk/$(ProjectIdentifier)</ProjectUrl>
+
+        <!-- SolutionDir is not defined when building projects explicitly -->
+        <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">
+            $(WorkspaceFolder)</SolutionDir>
+        <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+        <VSToolsPath
+            Condition="'$(VSToolsPath)' == '' and Exists('$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)')"
+        >$(MSBuildExtensionsPath32)/Microsoft/VisualStudio/v$(VisualStudioVersion)</VSToolsPath>
+    </PropertyGroup>
+
+    <!-- Normalize Output Paths -->
+    <PropertyGroup>
+        <OutputPath>$([System.IO.Path]::Combine($(OutNoSlash),$(DirectorySeparatorChar)))</OutputPath>
+        <IntermediateOutputPath>$([System.IO.Path]::Combine($(IntNoSlash),$(DirectorySeparatorChar)))</IntermediateOutputPath>
+    </PropertyGroup>
+
+    <!-- Set Base Paths -->
+    <PropertyGroup>
+        <!--
+        We intentionally do NOT set 'OutDir' and 'IntDir' since we would rather rely on
+        internal implementation to set these.
+        -->
+        <BaseOutputPath>$(OutputPath)</BaseOutputPath>
+        <BaseIntermediateOutputPath>$(IntermediateOutputPath)</BaseIntermediateOutputPath>
+
+        <IntermediateDirectory>$(IntNoSlash)\</IntermediateDirectory>
+        <IntDir>$(IntNoSlash)\</IntDir>
+        <DocumentationFile>$(IntNoSlash)/$(MSBuildProjectName).xml</DocumentationFile>
+
+        <TransformOnBuild>true</TransformOnBuild>
+        <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+        <TransformOutOfDateOnly>true</TransformOutOfDateOnly>
+
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <Deterministic>true</Deterministic>
+        <UseCommonOutputDirectory>false</UseCommonOutputDirectory>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    </PropertyGroup>
+</Project>

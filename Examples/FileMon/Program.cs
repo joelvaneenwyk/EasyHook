@@ -1,54 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Remoting;
-using System.Text;
 using System.IO;
 using EasyHook;
-using System.Windows.Forms;
 
 namespace FileMon
 {
     public class FileMonInterface : MarshalByRefObject
     {
-        public void IsInstalled(Int32 InClientPID)
+        private readonly Dictionary<int, List<string>> _processIdToPaths = new Dictionary<int, List<string>>();
+
+        public void IsInstalled(int inputClientProcessId)
         {
-            Console.WriteLine("FileMon has been installed in target {0}.\r\n", InClientPID);
+            Console.WriteLine("FileMon has been installed in target {0}.\r\n", inputClientProcessId);
         }
 
-        public void OnCreateFile(Int32 InClientPID, String[] InFileNames)
+        public void OnCreateFile(int inputClientProcessId, string[] inputPaths)
         {
-            for (int i = 0; i < InFileNames.Length; i++)
+            List<string> outputPaths;
+
+            lock (this._processIdToPaths)
             {
-                Console.WriteLine(InFileNames[i]);
+                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
+                {
+                    outputPaths = new List<string>();
+                    this._processIdToPaths.Add(inputClientProcessId, outputPaths);
+                }
+            }
+
+            lock (this._processIdToPaths)
+            {
+                outputPaths?.AddRange(inputPaths);
+            }
+
+            foreach (string fileName in inputPaths)
+            {
+                Console.WriteLine(fileName);
             }
         }
 
-        public void ReportException(Exception InInfo)
+        public string[] GetPaths(int inputClientProcessId)
         {
-            Console.WriteLine("The target process has reported an error:\r\n" + InInfo.ToString());
+            lock (this._processIdToPaths)
+            {
+                List<string> outputPaths;
+                if (!this._processIdToPaths.TryGetValue(inputClientProcessId, out outputPaths))
+                {
+                    outputPaths = new List<string>();
+                }
+                return outputPaths.ToArray();
+            }
+        }
+
+        public void ReportException(Exception exception)
+        {
+            Console.WriteLine("The target process has reported an error:\r\n" + exception);
         }
 
         public void Ping()
         {
+            // No operation needed here just here to keep connection alive.
         }
     }
 
-    class Program
+    internal class Program
     {
-        static String ChannelName = null;
+        private static string _channelName;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Int32 TargetPID = 0;
+            int targetProcessId = 0;
             string targetExe = null;
 
             // Load the parameter
-            while ((args.Length != 1) || !Int32.TryParse(args[0], out TargetPID) || !File.Exists(args[0]))
+            while (args.Length != 1 ||
+                   !int.TryParse(args[0], out targetProcessId) ||
+                   !File.Exists(args[0]))
             {
-                if (TargetPID > 0)
+                if (targetProcessId > 0)
                 {
                     break;
                 }
+
                 if (args.Length != 1 || !File.Exists(args[0]))
                 {
                     Console.WriteLine();
@@ -59,7 +92,7 @@ namespace FileMon
 
                     args = new string[] { Console.ReadLine() };
 
-                    if (String.IsNullOrEmpty(args[0])) return;
+                    if (string.IsNullOrEmpty(args[0])) return;
                 }
                 else
                 {
@@ -70,30 +103,58 @@ namespace FileMon
 
             try
             {
-                RemoteHooking.IpcCreateServer<FileMonInterface>(ref ChannelName, WellKnownObjectMode.SingleCall);
+                RemoteHooking.IpcCreateServer<FileMonInterface>(ref _channelName, WellKnownObjectMode.SingleCall);
 
-                string injectionLibrary = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "FileMonInject.dll");
-                if (String.IsNullOrEmpty(targetExe))
+                string injectionLibrary = Path.Combine(
+                    Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? string.Empty,
+                    "FileMonInject.dll");
+
+                if (string.IsNullOrEmpty(targetExe))
                 {
                     RemoteHooking.Inject(
-                        TargetPID,
+                        targetProcessId,
                         injectionLibrary,
                         injectionLibrary,
-                        ChannelName);
+                        _channelName);
 
-                    Console.WriteLine("Injected to process {0}", TargetPID);
+                    Console.WriteLine("Injected to process {0}", targetProcessId);
                 }
                 else
                 {
-                    RemoteHooking.CreateAndInject(targetExe, "", 0, InjectionOptions.DoNotRequireStrongName, injectionLibrary, injectionLibrary, out TargetPID, ChannelName);
-                    Console.WriteLine("Created and injected process {0}", TargetPID);
+                    var remoteProcess = new RemoteHookProcess();
+
+                    remoteProcess.ErrorDataReceived += (sender, argData) =>
+                    {
+                        Console.WriteLine($"[stderr] {argData.Data}");
+                    };
+
+                    remoteProcess.OutputDataReceived += (sender, argData) =>
+                    {
+                        Console.WriteLine($"[stdout] {argData.Data}");
+                    };
+
+                    bool launchResult = remoteProcess.Launch(
+                        targetExe, "",
+                        0, InjectionOptions.DoNotRequireStrongName,
+                        injectionLibrary, injectionLibrary,
+                        _channelName);
+
+                    if (launchResult && remoteProcess.WaitForExit() == 0)
+                    {
+                        Console.WriteLine($"Created and injected '{remoteProcess.RemoteProcessId}' process: '{targetExe}'");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Failed to create and inject: '{targetExe}'");
+                    }
                 }
-                Console.WriteLine("<Press any key to exit>");
-                Console.ReadKey();
             }
-            catch (Exception ExtInfo)
+            catch (Exception exception)
             {
-                Console.WriteLine("There was an error while connecting to target:\r\n{0}", ExtInfo.ToString());
+                Console.WriteLine("There was an error while connecting to target:\r\n{0}", exception);
+            }
+            finally
+            {
                 Console.WriteLine("<Press any key to exit>");
                 Console.ReadKey();
             }

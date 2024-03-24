@@ -31,7 +31,6 @@
 // Other fusion API documentation: https://support.microsoft.com/en-us/kb/317540
 //-------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -507,23 +506,23 @@ namespace System.GACManagedAccess
         /// <summary>
         /// FUSION_REFCOUNT_UNINSTALL_SUBKEY_GUID - The assembly is referenced by an application that appears in Add/Remove Programs. The szIdentifier field is the token that is used to register the application with Add/Remove programs.
         /// </summary>
-        public readonly static Guid UninstallSubkeyGuid = new Guid("8cedc215-ac4b-488b-93c0-a50a49cb2fb8");
+        public static readonly Guid UninstallSubkeyGuid = new Guid("8cedc215-ac4b-488b-93c0-a50a49cb2fb8");
         /// <summary>
         /// FUSION_REFCOUNT_FILEPATH_GUID - The assembly is referenced by an application that is represented by a file in the file system. The szIdentifier field is the path to this file.
         /// </summary>
-        public readonly static Guid FilePathGuid = new Guid("b02f9d65-fb77-4f7a-afa5-b391309f11c9");
+        public static readonly Guid FilePathGuid = new Guid("b02f9d65-fb77-4f7a-afa5-b391309f11c9");
         /// <summary>
         /// FUSION_REFCOUNT_OPAQUE_STRING_GUID - The assembly is referenced by an application that is only represented by an opaque string. The szIdentifier is this opaque string. The GAC does not perform existence checking for opaque references when you remove this.
         /// </summary>
-        public readonly static Guid OpaqueGuid = new Guid("2ec93463-b0c3-45e1-8364-327e96aea856");
+        public static readonly Guid OpaqueGuid = new Guid("2ec93463-b0c3-45e1-8364-327e96aea856");
         /// <summary>
         /// This GUID cannot be used for installing into GAC. FUSION_REFCOUNT_MSI_GUID - The assembly is referenced by an application that has been installed by using Windows Installer. The szIdentifier field is set to MSI, and szNonCannonicalData is set to Windows Installer. This scheme must only be used by Windows Installer itself.
         /// </summary>
-        public readonly static Guid MsiGuid = new Guid("25df0fc1-7f97-4070-add7-4b13bbfd7cb8");
+        public static readonly Guid MsiGuid = new Guid("25df0fc1-7f97-4070-add7-4b13bbfd7cb8");
         /// <summary>
         /// This GUID cannot be used for installing into GAC.
         /// </summary>
-        public readonly static Guid OsInstallGuid = new Guid("d16d444c-56d8-11d5-882d-0080c847b195");
+        public static readonly Guid OsInstallGuid = new Guid("d16d444c-56d8-11d5-882d-0080c847b195");
     }
 
     #endregion
@@ -585,7 +584,7 @@ namespace System.GACManagedAccess
             hr = Utils.CreateAssemblyCache(out ac, 0);
             if (hr >= 0)
             {
-                foreach (var assemblyPath in assemblyPaths)
+                foreach (string assemblyPath in assemblyPaths)
                 {
                     hr = ac.InstallAssembly((int)flags, assemblyPath, reference);
                     if (hr < 0)
@@ -648,7 +647,7 @@ namespace System.GACManagedAccess
             int hr = Utils.CreateAssemblyCache(out ac, 0);
             if (hr >= 0)
             {
-                for (var i = 0; i < assemblyNames.Length; i++)
+                for (int i = 0; i < assemblyNames.Length; i++)
                 {
                     hr = ac.UninstallAssembly(0, assemblyNames[i], reference, out dispResult);
                     if (hr < 0)

@@ -3,9 +3,10 @@
 ;
 
 [Version]
+PnpLockdown=1
 Signature="$WINDOWS NT$"
-Class=Sample ; TODO: edit Class
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
+Class=EasyHook
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD9171}
 Provider=%ManufacturerName%
 CatalogFile=EasyHookSys.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages
@@ -17,9 +18,9 @@ EasyHookSys_Device_CoInstaller_CopyFiles = 11
 ; ================= Class section =====================
 
 [ClassInstall32]
-Addreg=SampleClassReg
+Addreg=EasyHookClassReg
 
-[SampleClassReg]
+[EasyHookClassReg]
 HKR,,,0,%ClassName%
 HKR,,Icon,,-5
 
@@ -81,7 +82,7 @@ KmdfLibraryVersion = $KMDFVERSION$
 [Strings]
 SPSVCINST_ASSOCSERVICE= 0x00000002
 ManufacturerName="EasyHook" ; TODO: add ManufacturerName
-ClassName="Sample" ; TODO: edit ClassName
+ClassName="EasyHook" ; TODO: edit ClassName
 DiskName = "EasyHookSys Installation Disk"
 EasyHookSys.DeviceDesc = "EasyHookSys Device"
 EasyHookSys.SVCDESC = "EasyHookSys Service"

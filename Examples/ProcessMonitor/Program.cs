@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Text;
-using EasyHook;
 
 namespace ProcessMonitor
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             // Default to not using the GAC
             bool noGAC = true;

@@ -24,11 +24,8 @@
 // about the project and latest updates.
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.ConstrainedExecution;
-using System.Diagnostics;
 
 namespace EasyHook
 {

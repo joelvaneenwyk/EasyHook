@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -75,7 +75,7 @@ void LhBarrierProcessDetach();
 ULONGLONG LhBarrierIntro(LOCAL_HOOK_INFO* InHandle, void* InRetAddr, void** InAddrOfRetAddr);
 void* __stdcall LhBarrierOutro(LOCAL_HOOK_INFO* InHandle, void** InAddrOfRetAddr);
 
-LONG DbgRelocateRIPRelative(
+EXTERN_C LONG EASYHOOK_API DbgRelocateRIPRelative(
 	        ULONGLONG InOffset,
 	        ULONGLONG InTargetOffset,
             BOOL* OutWasRelocated);
@@ -95,7 +95,7 @@ union\
 	ULONG64 UNUSED;\
 	Decl;\
 }\
-    
+
 #define UNUSED2(y) __Unused_##y
 #define UNUSED1(y) UNUSED2(y)
 #define UNUSED UNUSED1(__COUNTER__)
@@ -115,9 +115,9 @@ typedef struct _REMOTE_INFO_
 	WRAP_ULONG64(void* VirtualProtect); // fixed; 72
 	WRAP_ULONG64(void* ExitThread); // fixed; 80
 	WRAP_ULONG64(void* GetLastError); // fixed; 88
-	
+
     BOOL            IsManaged;
-	HANDLE          hRemoteSignal; 
+	HANDLE          hRemoteSignal;
 	DWORD           HostProcess;
 	DWORD           Size;
 	BYTE*           UserData;
