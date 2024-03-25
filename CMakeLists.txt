@@ -15,7 +15,7 @@ include(CSharpUtilities)
 
 # Set the C# language version (defaults to 3.0 if not set).
 set(CMAKE_CSharp_FLAGS "/langversion:latest")
-set(CMAKE_DOTNET_TARGET_FRAMEWORK "net6.0")
+set(CMAKE_DOTNET_TARGET_FRAMEWORK "net48")
 set(CMAKE_DOTNET_SDK "Microsoft.NET.Sdk")
 
 include(Tools/CMake/EasyHook.cmake)
