@@ -1,9 +1,17 @@
 {
   "version": 1,
   "dependencies": {
-    ".NETFramework,Version=v4.0": {
+    ".NETFramework,Version=v4.8": {
+      "JetBrains.Annotations": {
+        "type": "Transitive",
+        "resolved": "2023.3.0",
+        "contentHash": "PHfnvdBUdGaTVG9bR/GEfxgTwWM0Z97Y6X3710wiljELBISipSfF5okn/vz+C2gfO+ihoEyVPjaJwn8ZalVukA=="
+      },
       "easyhook": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "JetBrains.Annotations": "[2023.3.0, )"
+        }
       },
       "filemon": {
         "type": "Project",
@@ -12,8 +20,8 @@
         }
       }
     },
-    ".NETFramework,Version=v4.0/win": {},
-    ".NETFramework,Version=v4.0/win-x64": {},
-    ".NETFramework,Version=v4.0/win-x86": {}
+    ".NETFramework,Version=v4.8/win": {},
+    ".NETFramework,Version=v4.8/win-x64": {},
+    ".NETFramework,Version=v4.8/win-x86": {}
   }
 }
