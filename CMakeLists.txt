@@ -7,9 +7,9 @@ cmake_minimum_required(VERSION 3.15)
 # This is your project statement. You should always list languages;
 # Listing the version is nice here since it sets lots of useful variables
 project(
-		EasyHook
-		VERSION 2.7.8364
-		LANGUAGES ASM_MASM C CXX CSharp)
+	EasyHook
+	VERSION 2.7.8364
+	LANGUAGES ASM_MASM C CXX CSharp)
 
 include(CSharpUtilities)
 
