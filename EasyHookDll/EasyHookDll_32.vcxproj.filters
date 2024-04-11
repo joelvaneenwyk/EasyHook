@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A3FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Source Files\LocalHook">
@@ -158,11 +158,17 @@
     </MASM>
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="EasyHookDll_32.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
     <ResourceCompile Include="EasyHookDll_64.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="EasyHook32.def">
+      <Filter>Source Files</Filter>
+    </None>
     <None Include="EasyHook64.def">
       <Filter>Source Files</Filter>
     </None>

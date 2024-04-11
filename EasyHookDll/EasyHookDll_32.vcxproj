@@ -3,25 +3,25 @@
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
-      <Platform>x64</Platform>
+      <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{8390DFD6-9D3B-43F8-A6A3-1FCB6D13BF5D}</ProjectGuid>
+    <ProjectGuid>{e64d63c1-559f-4d4b-a140-24036fe67246}</ProjectGuid>
     <RootNamespace>EasyHookDll</RootNamespace>
     <CharacterSet>Unicode</CharacterSet>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
@@ -31,29 +31,30 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v143</PlatformToolset>
-    <TargetName>EasyHook64</TargetName>
+    <TargetName>EasyHook32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfAtl>Static</UseOfAtl>
     <PlatformToolset>v143</PlatformToolset>
-    <TargetName>EasyHook64</TargetName>
+    <TargetName>EasyHook32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v143</PlatformToolset>
-    <TargetName>EasyHook64</TargetName>
+    <TargetName>EasyHook32</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfAtl>Static</UseOfAtl>
     <PlatformToolset>v143</PlatformToolset>
-    <TargetName>EasyHook64</TargetName>
+    <TargetName>EasyHook32</TargetName>
   </PropertyGroup>
-  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')" Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')"  Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.props')" Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.props')"
+    Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ImportGroup Label="ExtensionSettings">
@@ -98,32 +99,6 @@
       <UseSafeExceptionHandlers>false</UseSafeExceptionHandlers>
     </MASM>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(WorkspaceFolder)\DriverShared;$(WorkspaceFolder)\;$(WorkspaceFolder)\Public;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;EASYHOOK_EXPORTS;_ALLOW_RTCc_IN_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <SmallerTypeCheck>true</SmallerTypeCheck>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Aux_ulib_x$(PlatformBits).lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-    </Link>
-    <MASM>
-      <UseSafeExceptionHandlers>false</UseSafeExceptionHandlers>
-    </MASM>
-  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>$(WorkspaceFolder)\DriverShared;$(WorkspaceFolder)\;$(WorkspaceFolder)\Public;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -151,42 +126,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-    </Link>
-    <MASM>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
-      <UseSafeExceptionHandlers>false</UseSafeExceptionHandlers>
-    </MASM>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <Midl>
-      <TargetEnvironment>X64</TargetEnvironment>
-    </Midl>
-    <ClCompile>
-      <AdditionalIncludeDirectories>$(WorkspaceFolder)\DriverShared;$(WorkspaceFolder)\;$(WorkspaceFolder)\Public;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <Optimization>Full</Optimization>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;_USRDLL;EASYHOOK_EXPORTS;_ALLOW_RTCc_IN_STL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
-      <ExceptionHandling>
-      </ExceptionHandling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <BufferSecurityCheck>false</BufferSecurityCheck>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <CallingConvention>StdCall</CallingConvention>
-      <CompileAs>CompileAsCpp</CompileAs>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <ExceptionHandling>Async</ExceptionHandling>
-    </ClCompile>
-    <Link>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Aux_ulib_x64.lib;psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Windows</SubSystem>
-      <OptimizeReferences>true</OptimizeReferences>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
     </Link>
     <MASM>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -267,13 +206,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\DriverShared\ASM\HookSpecific_x64.asm">
-      <ExcludedFromBuild Condition="'$(PlatformBits)'=='32'">true</ExcludedFromBuild>
-      <Command>cd /D "$(IntDir)" &amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
-      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
-    </MASM>
     <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm">
-      <ExcludedFromBuild Condition="'$(PlatformBits)'=='64'">true</ExcludedFromBuild>
       <Command>cd /D "$(IntDir)" &amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
       <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
     </MASM>
@@ -302,12 +235,17 @@
     <ResourceCompile Include="EasyHookDll_64.rc">
       <ExcludedFromBuild Condition="'$(PlatformBits)'!='64'">true</ExcludedFromBuild>
     </ResourceCompile>
+    <ResourceCompile Include="EasyHookDll_32.rc">
+      <ExcludedFromBuild Condition="'$(PlatformBits)'!='32'">true</ExcludedFromBuild>
+    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="EasyHook64.def" />
+    <None Include="EasyHook32.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.targets')" Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+    <Import
+      Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.targets')"
+      Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

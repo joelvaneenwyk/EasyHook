@@ -171,7 +171,11 @@
     <ClCompile Include="UnmanagedHook.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\EasyHookDll\EasyHookDll.vcxproj">
+    <ProjectReference Include="..\..\EasyHookDll\EasyHookDll_64.vcxproj">
+      <Project>{d087e484-dbc9-4a2e-8368-c1d0e524994d}</Project>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\EasyHookDll\EasyHookDll_32.vcxproj">
       <Project>{d087e484-dbc9-4a2e-8368-c1d0e524994d}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
