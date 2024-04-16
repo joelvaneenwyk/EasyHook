@@ -272,11 +272,6 @@
       <Command>cd /D "$(IntDir)" &amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
       <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
     </MASM>
-    <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm">
-      <ExcludedFromBuild Condition="'$(PlatformBits)'=='64'">true</ExcludedFromBuild>
-      <Command>cd /D "$(IntDir)" &amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
-      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
-    </MASM>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\DriverShared\Disassembler\libudis86\decode.h" />

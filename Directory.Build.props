@@ -39,8 +39,8 @@
         <IOutNoSlash>$(WorkspaceFolder)/bin/$(Configuration)</IOutNoSlash>
         <IIntNoSlash>$(WorkspaceFolder)/.build/$(MSBuildProjectName)/$(Configuration)</IIntNoSlash>
 
-        <OutNoSlash>$(IOutNoSlash)/$(PlatformName)</OutNoSlash>
-        <IntNoSlash>$(IIntNoSlash)/$(PlatformName)</IntNoSlash>
+        <OutNoSlash>$(IOutNoSlash)/$(TargetFramework)</OutNoSlash>
+        <IntNoSlash>$(IIntNoSlash)/$(PlatformName)/$(TargetFramework)</IntNoSlash>
 
         <OutAlternatePlatformNoSlash>$(IOutNoSlash)/$(AlternatePlatformName)</OutAlternatePlatformNoSlash>
         <IntAlternatePlatformNoSlash>$(IIntNoSlash)/$(AlternatePlatformName)</IntAlternatePlatformNoSlash>

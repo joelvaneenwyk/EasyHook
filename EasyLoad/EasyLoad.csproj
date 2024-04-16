@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Configurations>Debug;Release</Configurations>
-    <Platforms>$(PlatformName)</Platforms>
+    <Platforms>x64;AnyCPU</Platforms>
     <AssemblyNamePostfix>$(PlatformBits)</AssemblyNamePostfix>
     <TargetFramework>net48</TargetFramework>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>

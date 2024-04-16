@@ -206,12 +206,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm">
-      <Command>cd /D "$(IntDir)" &amp; ml64.exe /D_WIN32 /c /Cx "%(FullPath)"</Command>
-      <Outputs>$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
-    </MASM>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\DriverShared\Disassembler\libudis86\decode.h" />
     <ClInclude Include="..\DriverShared\Disassembler\libudis86\extern.h" />
     <ClInclude Include="..\DriverShared\Disassembler\libudis86\itab.h" />
@@ -232,15 +226,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="EasyHookDll_64.rc">
-      <ExcludedFromBuild Condition="'$(PlatformBits)'!='64'">true</ExcludedFromBuild>
-    </ResourceCompile>
     <ResourceCompile Include="EasyHookDll_32.rc">
       <ExcludedFromBuild Condition="'$(PlatformBits)'!='32'">true</ExcludedFromBuild>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="EasyHook32.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
