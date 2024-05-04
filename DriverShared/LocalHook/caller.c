@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,15 +40,15 @@
 
 	typedef struct _SYSTEM_MODULE_
 	{
-		ULONG_PTR		Reserved1; 
-		ULONG_PTR		Reserved2; 
-		PVOID			ImageBaseAddress; 
-		ULONG			ImageSize; 
-		ULONG			Flags; 
-		SHORT			Id; 
-		SHORT			Rank; 
-		SHORT			w018; 
-		SHORT			NameOffset; 
+		ULONG_PTR		Reserved1;
+		ULONG_PTR		Reserved2;
+		PVOID			ImageBaseAddress;
+		ULONG			ImageSize;
+		ULONG			Flags;
+		SHORT			Id;
+		SHORT			Rank;
+		SHORT			w018;
+		SHORT			NameOffset;
 		CHAR			Name[256];
 	}SYSTEM_MODULE, *PSYSTEM_MODULE;
 
@@ -128,7 +128,7 @@ EASYHOOK_NT_INTERNAL LhUpdateModuleInformation()
 		List[i].BaseAddress = Mod->ImageBaseAddress;
 		List[i].ImageSize = Mod->ImageSize;
 		List[i].ModuleName = Mod->Name + Mod->NameOffset;
-		
+
 		memcpy(List[i].Path, Mod->Name, 256);
 
 		if(i + 1 < NativeList->Count)
@@ -181,11 +181,11 @@ void LhModuleInfoFinalize()
 
 EASYHOOK_NT_INTERNAL LhUpdateModuleInformation()
 {
-	
+
 /*
 Description:
 
-    Is supposed to be called interlocked... "ProcessModules" is 
+    Is supposed to be called interlocked... "ProcessModules" is
     outsourced to prevent "__chkstk".
     Will just enumerate current process modules and extract
     required information for each of them.
@@ -314,7 +314,7 @@ FINALLY_OUTRO:
 
 
 EASYHOOK_NT_EXPORT LhEnumModules(
-			HMODULE* OutModuleArray, 
+			HMODULE* OutModuleArray,
             ULONG InMaxModuleCount,
             ULONG* OutModuleCount)
 {
@@ -326,7 +326,7 @@ Description:
 	to query each module information.
 
 Parameters:
-	
+
 	- OutModuleArray
 
 		An array receiveing module pointers. Set to NULL to only query "OutModuleCount".
@@ -368,8 +368,8 @@ Parameters:
 				OutModuleArray[ModIndex++] = (HMODULE)List->BaseAddress;
 
 				List = List->Next;
-			}	
-		}	
+			}
+		}
 		RtlReleaseLock(&GlobalHookLock);
 	}
 	else
@@ -409,11 +409,11 @@ Parameters:
     - OutModule
 
         Receives the owner of a given method.
-        
+
 Returns:
 
     STATUS_NOT_FOUND
-            
+
         No matching module could be found.
 */
     UCHAR*					Pointer = (UCHAR*)InPointer;
@@ -477,7 +477,7 @@ FINALLY_OUTRO:
 
 
 EASYHOOK_NT_EXPORT LhBarrierCallStackTrace(
-            PVOID* OutMethodArray, 
+            PVOID* OutMethodArray,
             ULONG InMaxMethodCount,
             ULONG* OutMethodCount)
 {
@@ -495,7 +495,7 @@ Parameters:
 
     - InMaxMethodCount
 
-        The length of the method array. 
+        The length of the method array.
 
     - OutMethodCount
 
@@ -560,7 +560,7 @@ Description:
 Returns:
 
     STATUS_NOT_FOUND
-            
+
         No matching module could be found.
 
 */

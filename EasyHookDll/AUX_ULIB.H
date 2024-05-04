@@ -31,7 +31,7 @@ Routine Description:
     state that may be required by other routines in the file.
 
     It is safe to call this routine in a multi-threaded environment.
-    
+
 Arguments:
 
     None.
@@ -52,21 +52,21 @@ AuxUlibInitialize (
 
 Routine Description:
 
-    This routine is used to set the current file system cache working set size. It 
-    requires that the caller has enabled the SE_INCREASE_QUOTA_PRIVILEGE 
+    This routine is used to set the current file system cache working set size. It
+    requires that the caller has enabled the SE_INCREASE_QUOTA_PRIVILEGE
     in the currently active token prior to invoking this routine.
 
     This API is supported on Windows 2000 and later.
-    
+
 Arguments:
 
-    MinimumFileCacheSize - The minimum file cache size. Use (SIZE_T)-1 if 
+    MinimumFileCacheSize - The minimum file cache size. Use (SIZE_T)-1 if
         the file cache is being flushed.
 
-    MaximumFileCacheSize - The maximum file cache size. Use (SIZE_T)-1 
+    MaximumFileCacheSize - The maximum file cache size. Use (SIZE_T)-1
         if the file cache is being flushed.
 
-    Flags - Flags relevant to the file cache size adjustment. Currently this must 
+    Flags - Flags relevant to the file cache size adjustment. Currently this must
         be zero.
 
 Return Value:
@@ -77,7 +77,7 @@ Return Value:
 
 --*/
 
-BOOL 
+BOOL
 WINAPI
 AuxUlibSetSystemFileCacheSize (
     IN SIZE_T MinimumFileCacheSize,
@@ -91,10 +91,10 @@ Routine Description:
 
     This routine is used to determine whether or not the caller is executing
     code while holding a system synchronization primitive. Such a situation
-    can arise when the OS temporarily calls into user-specified code as part 
+    can arise when the OS temporarily calls into user-specified code as part
     of the DLL load procedure.
 
-    A caller can benefit from this information by avoiding operations that 
+    A caller can benefit from this information by avoiding operations that
     could potentially lead to deadlocks, e.g., acquiring a process private lock.
 
     For example, consider the following case:
@@ -112,7 +112,7 @@ Routine Description:
         synchronization. It can be partially ameliorated if Thread A detects
         that it is running with DLL synchronization held and only try-acquires
         other locks (such as Lx) that it may wish to take
-    
+
 Arguments:
 
     SynchronizationHeld - Boolean value which indicates whether or not

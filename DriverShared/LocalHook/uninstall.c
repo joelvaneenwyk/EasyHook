@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -60,7 +60,7 @@ Parameters:
 
             if(Hook->HookProc != NULL)
             {
-                Hook->HookProc = NULL;  
+                Hook->HookProc = NULL;
 
                 IsAllocated = TRUE;
             }
@@ -184,7 +184,7 @@ Descriptions:
         RtlAcquireLock(&GlobalHookLock);
         {
             Hook = GlobalRemovalListHead.Next;
-            
+
             if(Hook == NULL)
             {
                 RtlReleaseLock(&GlobalHookLock);
@@ -262,7 +262,7 @@ void LhCriticalFinalize()
 Description:
 
     Will be called in the DLL_PROCESS_DETACH event and just uninstalls
-    all hooks. If it is possible also their memory is released. 
+    all hooks. If it is possible also their memory is released.
 */
     LhUninstallAllHooks();
 

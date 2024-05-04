@@ -1,4 +1,4 @@
-﻿// EasyLoad (File: EasyLoad\AssemblyInfo.cs)
+// EasyLoad (File: EasyLoad\AssemblyInfo.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //

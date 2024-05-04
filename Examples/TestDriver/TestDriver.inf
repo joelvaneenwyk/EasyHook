@@ -6,7 +6,7 @@
 PnpLockdown=1
 Signature="$WINDOWS NT$"
 Class=EasyHookTest
-ClassGuid={78A1C341-4539-11d3-B88D-00C04FADA171} 
+ClassGuid={78A1C341-4539-11d3-B88D-00C04FADA171}
 Provider=%ManufacturerName%
 CatalogFile=TestDriver.cat
 DriverVer= ; TODO: set DriverVer in stampinf property pages

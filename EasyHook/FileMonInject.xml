@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <!--
 EasyHook (File: EasyHook\FileMonInject.xml)
@@ -51,7 +51,7 @@ namespace FileMonInject
         {
             // connect to host...
             Interface = RemoteHooking.IpcConnectClient&lt;FileMon.FileMonInterface&gt;(InChannelName);
-            
+
             // validate connection...
             Interface.Ping();
         }
@@ -67,7 +67,7 @@ namespace FileMonInject
                     LocalHook.GetProcAddress("kernel32.dll", "CreateFileW"),
                     new DCreateFile(CreateFile_Hooked),
                     this);
-                
+
                 CreateFileHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
             }
             catch (Exception ExtInfo)
@@ -148,14 +148,14 @@ namespace FileMonInject
             UInt32 InFlagsAndAttributes,
             IntPtr InTemplateFile)
         {
-            
+
             try
             {
                 Main This = (Main)HookRuntimeInfo.Callback;
 
                 lock (This.Queue)
                 {
-                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" + 
+                    This.Queue.Push("[" + RemoteHooking.GetCurrentProcessId() + ":" +
                         RemoteHooking.GetCurrentThreadId() +  "]: \"" + InFileName + "\"");
                 }
             }

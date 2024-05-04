@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EasyHook;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -69,7 +69,7 @@ namespace ComplexParameterInject
 
                     _interface.Ping();
                 }
-            
+
             }
             catch
             {
@@ -134,5 +134,5 @@ namespace ComplexParameterInject
         }
     }
 
-    
+
 }

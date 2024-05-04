@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 
 <!--
 EasyHook (File: EasyHook\FileMonHost.xml)
@@ -84,7 +84,7 @@ about the project and latest updates.
                         "FileMonInject.dll",
                         "FileMonInject.dll",
                         ChannelName);
-                
+
                     Console.ReadLine();
                 }
                 catch (Exception ExtInfo)

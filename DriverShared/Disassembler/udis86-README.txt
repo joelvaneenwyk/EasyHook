@@ -38,11 +38,11 @@ udcli
 
 udcli is a small command-line tool for your quick disassembly needs.
 
-  $ echo "65 67 89 87 76 65 54 56 78 89 09 00 87" | udcli -32 -x 
+  $ echo "65 67 89 87 76 65 54 56 78 89 09 00 87" | udcli -32 -x
   0000000000000000 656789877665    mov [gs:bx+0x6576], eax
   0000000000000000 54              push esp
   0000000000000000 56              push esi
-  0000000000000000 7889            js 0x93 
+  0000000000000000 7889            js 0x93
   0000000000000000 0900            or [eax], eax
 
 

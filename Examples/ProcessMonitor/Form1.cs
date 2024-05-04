@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Diagnostics;
@@ -26,7 +26,7 @@ namespace ProcessMonitor
          * So if you get client requests with a process ID don't try to open the process
          * as this will fail in some cases. Just search the ID in the following list and
          * extract information that is already there...
-         * 
+         *
          * Of course you can change the way this list is implemented and the information
          * it contains but you should keep the code semantic.
          */
@@ -54,7 +54,7 @@ namespace ProcessMonitor
             /*
              * We will create a random named channel. This is where our injected
              * libraries will connect to!
-             * 
+             *
              * For people who don't know about NET-Remoting, please read some
              * valuable articles. In short, the client libraries will
              * just call the methods in "DemoInterface" and NET will pass
@@ -314,5 +314,5 @@ namespace ProcessMonitor
         }
     }
 
-    
+
 }

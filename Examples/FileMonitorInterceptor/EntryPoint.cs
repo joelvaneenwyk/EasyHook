@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -79,9 +79,9 @@ namespace FileMonitorInterceptor
         {
             try
             {
-                /* 
+                /*
                  * Note that we can do whatever we want in this callback. We could change the file path, return an access denied (pretend we're an antivirus program),
-                 * but we won't do that in this program. This program only monitors file access from processes. 
+                 * but we won't do that in this program. This program only monitors file access from processes.
                  */
 
                 var fileEntry = new FileEntry() {FullPath = filePath, Timestamp = DateTime.Now };

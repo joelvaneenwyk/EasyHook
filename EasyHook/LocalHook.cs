@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\LocalHook.cs)
+// EasyHook (File: EasyHook\LocalHook.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,7 +35,7 @@ namespace EasyHook
     /// Provides a managed interface to the native thread ACLs.
     /// </summary>
     /// <remarks>
-    /// Refer to the official guide to learn more about why thread ACLs are useful. 
+    /// Refer to the official guide to learn more about why thread ACLs are useful.
     /// They can be used to exclude/include dedicated threads from interception or to dynamically
     /// apply different kind of hooks to different threads. Even if you could do this
     /// in managed code, it is not that easy to implement and also EasyHook evaluates
@@ -200,7 +200,7 @@ namespace EasyHook
 
         /// <summary>
         /// Allows you to explicitly update the unmanaged module list which is required for
-        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>. 
+        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>.
         /// Normally this is not necessary, but if you hook a process that frequently loads/unloads modules, you
         /// may call this method in a <c>LoadLibrary</c> hook to always operate on the latest module list.
         /// </summary>
@@ -253,13 +253,13 @@ TRY_AGAIN:
 
         /// <summary>
         /// Determines the first unmanaged module on the current call stack. This is always the module
-        /// that invoked the hook. 
+        /// that invoked the hook.
         /// Executes in max. 15 micro secounds.
         /// </summary>
         /// <remarks>
         /// The problem is that if the calling module is a NET assembly
         /// and invokes the hook through a P-Invoke binding, you will get
-        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example 
+        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example
         /// but I think you got the idea. To solve this issue, refer to <see cref="UnmanagedStackTrace"/>
         /// and <see cref="ManagedStackTrace"/>!
         /// </remarks>
@@ -273,7 +273,7 @@ TRY_AGAIN:
 
         /// <summary>
         /// Determines the first managed module on the current call stack. This is always the module
-        /// that invoked the hook. 
+        /// that invoked the hook.
         /// Executes in max. 40 micro secounds.
         /// </summary>
         /// <remarks>
@@ -532,7 +532,7 @@ TRY_AGAIN:
         /// <code>
         /// if(InThreadID == 0)
         ///     InThreadID = GetCurrentThreadId();
-        /// 
+        ///
         /// if(GlobalACL.Contains(InThreadID))
         /// {
         ///     if(LocalACL.Contains(InThreadID))
@@ -544,7 +544,7 @@ TRY_AGAIN:
         /// 	{
         /// 		if(GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
@@ -560,12 +560,12 @@ TRY_AGAIN:
         /// 	{
         /// 		if(!GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
         /// }
-        /// 
+        ///
         /// return true;
         /// </code>
         /// </para>
@@ -596,10 +596,10 @@ TRY_AGAIN:
         /// <summary>
         /// If you want to immediately uninstall a hook, the only way is to dispose it. A disposed
         /// hook is guaranteed to never invoke your handler again but may still consume
-        /// memory even for process life-time! 
+        /// memory even for process life-time!
         /// </summary>
         /// <remarks>
-        /// As we are living in a manged world, you don't have to dispose a hook because the next 
+        /// As we are living in a manged world, you don't have to dispose a hook because the next
         /// garbage collection will do it for you, assuming that your code does not reference it
         /// anymore. But there are times when you want to uninstall it excplicitly, with no delay.
         /// If you dispose a disposed or not installed hook, nothing will happen!
@@ -661,7 +661,7 @@ TRY_AGAIN:
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">
@@ -744,7 +744,7 @@ TRY_AGAIN:
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">

@@ -1,4 +1,4 @@
-﻿
+
 using System.Diagnostics;
 namespace EasyHook.IPC
 {

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,7 +37,7 @@ Description:
     This method is intended for the managed layer only. It will
     provide a convenient way to install a service which seems to
     be impossible with NET code in any efficient manner.
-    
+
 Parameters:
 
     - InServiceName
@@ -54,7 +54,7 @@ Parameters:
 
         The channel name for the service to register its IPC channel.
         This should be randomly generated.
-		
+
 Returns:
 
     STATUS_ALREADY_REGISTERED
@@ -81,9 +81,9 @@ Returns:
 	if((hSCManager = OpenSCManagerW(NULL, NULL, SC_MANAGER_ALL_ACCESS)) == NULL)
 		THROW(STATUS_ACCESS_DENIED, L"Unable to open service control manager. Check for administrator privileges!");
 
-	/* 
+	/*
         Does service exist?
-        Internally the service will always be removed automatically. 
+        Internally the service will always be removed automatically.
         So there shouldn't be any problems. Only if two or more concurrent
         applications are using EasyHook, this will lead to an error, because
         it is very hard to don't get them confused.
@@ -104,9 +104,9 @@ Returns:
         THROW(STATUS_ALREADY_REGISTERED, L"The service is already registered. Use the service control manager to remove it!");
 	}
 
-	// quote InExePath 	
-	inExePathLength = RtlUnicodeLength(InExePath);	
-	if ((quotedInExePath = (WCHAR *)RtlAllocateMemory(TRUE,(inExePathLength+3)*sizeof(WCHAR)))==NULL)		
+	// quote InExePath
+	inExePathLength = RtlUnicodeLength(InExePath);
+	if ((quotedInExePath = (WCHAR *)RtlAllocateMemory(TRUE,(inExePathLength+3)*sizeof(WCHAR)))==NULL)
 		THROW(STATUS_NO_MEMORY, L"Unable to allocate memory to perform a string quote.");
 
 	RtlCopyMemory(quotedInExePath,InExePath,inExePathLength*sizeof(WCHAR));
@@ -114,14 +114,14 @@ Returns:
 
 	// install service
 	hService = CreateServiceW(
-		hSCManager,              
-		InServiceName,            
-		InServiceName,           
-		SERVICE_ALL_ACCESS,        
+		hSCManager,
+		InServiceName,
+		InServiceName,
+		SERVICE_ALL_ACCESS,
 		SERVICE_WIN32_OWN_PROCESS,
-		SERVICE_DEMAND_START,    
-		SERVICE_ERROR_NORMAL,     
-		quotedInExePath,            
+		SERVICE_DEMAND_START,
+		SERVICE_ERROR_NORMAL,
+		quotedInExePath,
 		NULL, NULL, NULL, NULL, NULL);
 
 	RtlFreeMemory(quotedInExePath);

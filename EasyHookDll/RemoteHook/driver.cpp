@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,10 +45,10 @@ Parameters:
 
 		A name to register the driver in the service control manager.
 
-*/   
+*/
 	WCHAR				DriverPath[MAX_PATH + 1];
 	SC_HANDLE			hSCManager = NULL;
-	SC_HANDLE			hService = NULL;	
+	SC_HANDLE			hService = NULL;
 	NTSTATUS			NtStatus;
 
 	GetFullPathNameW(InDriverPath, MAX_PATH, DriverPath, NULL);
@@ -57,15 +57,15 @@ Parameters:
 		THROW(STATUS_NOT_FOUND, L"The EasyHook driver file does not exist.");
 
 	if((hSCManager = OpenSCManagerW(
-			NULL, 
-			NULL, 
+			NULL,
+			NULL,
 			SC_MANAGER_ALL_ACCESS)) == NULL)
 		THROW(STATUS_ACCESS_DENIED, L"Unable to open service control manager. Are you running as administrator?");
 
 	// does service exist?
 	if((hService = OpenService(
-			hSCManager, 
-			InDriverName, 
+			hSCManager,
+			InDriverName,
 			SERVICE_ALL_ACCESS)) == NULL)
 	{
 		if(GetLastError() != ERROR_SERVICE_DOES_NOT_EXIST)
@@ -73,14 +73,14 @@ Parameters:
 
 		// Create the service
 		if((hService = CreateServiceW(
-				hSCManager,              
-				InDriverName,            
-				InDriverName,           
-				SERVICE_ALL_ACCESS,        
+				hSCManager,
+				InDriverName,
+				InDriverName,
+				SERVICE_ALL_ACCESS,
 				SERVICE_KERNEL_DRIVER,
-				SERVICE_DEMAND_START,    
-				SERVICE_ERROR_NORMAL,     
-				DriverPath,            
+				SERVICE_DEMAND_START,
+				SERVICE_ERROR_NORMAL,
+				DriverPath,
 				NULL, NULL, NULL, NULL, NULL)) == NULL)
 			THROW(STATUS_INTERNAL_ERROR, L"Unable to install driver.");
 	}
@@ -91,7 +91,7 @@ Parameters:
 		THROW(STATUS_INTERNAL_ERROR, L"Unable to start driver!");
 
 	RETURN;
-	
+
 THROW_OUTRO:
 FINALLY_OUTRO:
 	{
@@ -114,15 +114,15 @@ EASYHOOK_NT_EXPORT RhInstallSupportDriver()
 /*
 Description:
 
-    Installs the EasyHook support driver. 
+    Installs the EasyHook support driver.
 	This will allow your driver to successfully obtain the EasyHook driver
 	API using EasyHookQueryInterface().
 
-*/   
+*/
 	WCHAR*				DriverName = L"EasyHook32Drv.sys";
 
 	if(RhIsX64System())
 		DriverName = L"EasyHook64Drv.sys";
-	
+
 	return RhInstallDriver(DriverName, DriverName);
 }

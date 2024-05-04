@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -42,7 +42,7 @@ void LhCriticalInitialize()
 {
 /*
 Description:
-    
+
     Fail safe initialization of global hooking structures...
 */
     RtlZeroMemory(&GlobalHookListHead, sizeof(GlobalHookListHead));
@@ -111,12 +111,12 @@ EASYHOOK_NT_INTERNAL LhAllocateHook(
 /*
 Description:
 
-    For internal use only, this method allocates a hook for the given 
-    entry point, preparing the redirection of all calls to the given 
+    For internal use only, this method allocates a hook for the given
+    entry point, preparing the redirection of all calls to the given
     hooking method. Upon completion the original entry point remains
     unchanged.
-    
-    Originally located within LhInstallHook, this code has been split 
+
+    Originally located within LhInstallHook, this code has been split
     out to improve testing.
 
 Parameters:
@@ -140,7 +140,7 @@ Parameters:
     - OutHook
 
         OutHook will point to a newly allocated Hook, with completed trampoline
-        code including relocated entry point. The original entry point is still 
+        code including relocated entry point. The original entry point is still
         unchanged at this point.
 
     - RelocSize
@@ -150,17 +150,17 @@ Parameters:
 Returns:
 
     STATUS_NO_MEMORY
-    
+
         Unable to allocate memory around the target entry point.
-    
+
     STATUS_NOT_SUPPORTED
-    
+
         The target entry point contains unsupported instructions.
-    
+
     STATUS_INSUFFICIENT_RESOURCES
-    
+
         The limit of MAX_HOOK_COUNT simultaneous hooks was reached.
-    
+
 */
 
     ULONG           			EntrySize;
@@ -177,8 +177,8 @@ Returns:
 	// 48 b8 00 00 00 00 00 00 00 00  mov rax, 0x0
 	// 48 87 04 24                    xchg   QWORD PTR[rsp], rax
 	// c3                             ret
-	UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = { 
-		0x50, 
+	UCHAR			            Jumper_x64[X64_DRIVER_JMPSIZE] = {
+		0x50,
 		0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 		0x48, 0x87, 0x04, 0x24,
 		0xc3
@@ -226,7 +226,7 @@ Returns:
 #endif
     Hook->HookProc = (UCHAR*)InHookProc;
     Hook->TargetProc = (UCHAR*)InEntryPoint;
-    Hook->EntrySize = EntrySize;	
+    Hook->EntrySize = EntrySize;
     Hook->IsExecutedPtr = (int*)((UCHAR*)Hook + 2048);
     Hook->Callback = InCallback;
     *Hook->IsExecutedPtr = 0;
@@ -240,7 +240,7 @@ Returns:
     Hook->HookOutro = (PVOID)LhBarrierOutro;
 
     // copy trampoline
-    Hook->Trampoline = MemoryPtr; 
+    Hook->Trampoline = MemoryPtr;
     MemoryPtr += GetTrampolineSize();
 
     Hook->NativeSize += GetTrampolineSize();
@@ -258,7 +258,7 @@ Returns:
 		points to this location.
     */
     *RelocSize = 0;
-    Hook->OldProc = MemoryPtr; 
+    Hook->OldProc = MemoryPtr;
 
     FORCE(LhRelocateEntryPoint(Hook->TargetProc, EntrySize, Hook->OldProc, RelocSize));
 
@@ -266,7 +266,7 @@ Returns:
 	MemoryPtr += *RelocSize + MAX_JMP_SIZE;
 	Hook->NativeSize += *RelocSize + MAX_JMP_SIZE;
 
-    // add jumper to end of relocated entry point that will continue execution at 
+    // add jumper to end of relocated entry point that will continue execution at
 	// the next instruction within the original method.
 #ifdef X64_DRIVER
 
@@ -292,7 +292,7 @@ Returns:
 #endif
 
     // backup original entry point (8 bytes)
-    Hook->TargetBackup = *((ULONGLONG*)Hook->TargetProc); 
+    Hook->TargetBackup = *((ULONGLONG*)Hook->TargetProc);
 
 #ifdef X64_DRIVER
 	// 64-bit driver requires backup of additional 8 bytes supporting up to MAX_JMP_SIZE
@@ -387,17 +387,17 @@ Parameters:
 Returns:
 
     STATUS_NO_MEMORY
-    
+
         Unable to allocate memory around the target entry point.
-    
+
     STATUS_NOT_SUPPORTED
-    
+
         The target entry point contains unsupported instructions.
-    
+
     STATUS_INSUFFICIENT_RESOURCES
-    
+
         The limit of MAX_HOOK_COUNT simultaneous hooks was reached.
-    
+
 */
     LOCAL_HOOK_INFO*			Hook = NULL;
     ULONG                       Index;
@@ -441,7 +441,7 @@ Returns:
 
     // allocate hook and prepare trampoline / hook stub
     FORCE(LhAllocateHook(InEntryPoint, InHookProc, InCallback, &Hook, &RelocSize));
-    
+
 	// Prepare jumper from entry point to hook stub...
 #if X64_DRIVER
 
@@ -595,13 +595,13 @@ ULONG GetTrampolineSize()
 
 	if(___TrampolineSize != 0)
 		return ___TrampolineSize;
-	
+
 	// search for signature
 	for(Index = 0; Index < 2000 /* some always large enough value*/; Index++)
 	{
 		Signature = *((ULONG*)Ptr);
 
-		if(Signature == 0x12345678)	
+		if(Signature == 0x12345678)
 		{
 			___TrampolineSize = (ULONG)(Ptr - BasePtr);
 
