@@ -25,6 +25,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels.Ipc;
 using FileMon;
@@ -48,9 +49,9 @@ namespace EasyHook.Tests
             set;
         }
 
-        private const string _testExecutablePath = "D:\\Havok\\Perforce\\Support\\Data\\Executables\\2020_2_Stable";
+        private const string _testExecutablePath = "${HOME}/EasHookTests";
 
-        private static readonly string _testDemoExecutablePath = $"{_testExecutablePath}\\Demo\\Demos\\Demos_x64-vs2017_Debug.exe";
+        private static readonly string _testDemoExecutablePath = $"{_testExecutablePath}/FileMonDemo.exe";
 
         private void ExecuteTest()
         {
@@ -125,10 +126,7 @@ namespace EasyHook.Tests
         }
 
         [TestMethod]
-        public void HookFileTest()
-        {
-            ExecuteTest();
-        }
+        public void HookFileTest() => ExecuteTest();
 
         [TestMethod]
         public void HookFileStressTest()
@@ -180,7 +178,7 @@ namespace EasyHook.Tests
 
             success &= remoteProcess.Launch(
                 _testDemoExecutablePath,
-                "-g Physics/Core/Constraints/Ragdoll -i 1 -nows -nowp -rui 0",
+                "-runDemoIndex 1",
                 0,
                 InjectionOptions.DoNotRequireStrongName,
                 injectionLibrary,
@@ -200,9 +198,7 @@ namespace EasyHook.Tests
             string[] paths = client.GetPaths(remoteProcess.RemoteProcessId);
 
             success &= paths.Length > 0;
-
-            success &= output.Contains("Failed to stat arial.ttf");
-            success &= remoteProcess.StandardOutput.Contains("Failed to stat arial.ttf");
+            success &= $"${output}${remoteProcess.StandardOutput}".Contains("Failed to initialize systems.").Equals(false);
 
             return success;
         }

@@ -85,7 +85,7 @@ namespace EasyHook
             public Exception Error = null;
         }
 
-        private static SortedList<Int32, InjectionWait> InjectionList = new SortedList<Int32, InjectionWait>();
+        private static readonly SortedList<Int32, InjectionWait> InjectionList = new SortedList<Int32, InjectionWait>();
 
         public static void BeginInjection(Int32 InTargetPID)
         {

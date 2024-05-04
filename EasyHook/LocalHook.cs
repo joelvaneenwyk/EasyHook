@@ -238,7 +238,9 @@ TRY_AGAIN:
             {
                 if ((Pointer >= ModuleArray[i].BaseAddress.ToInt64()) &&
                     (Pointer <= ModuleArray[i].BaseAddress.ToInt64() + ModuleArray[i].ModuleMemorySize))
+                {
                     return ModuleArray[i];
+                }
             }
 
             if ((DateTime.Now.Ticks - LastUpdate) > 1000 * 1000 * 10 /* 1000 ms*/)
@@ -514,7 +516,10 @@ TRY_AGAIN:
                 if (IntPtr.Zero == m_Handle)
                     throw new ObjectDisposedException(typeof(LocalHook).FullName);
 
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
                 IntPtr address = IntPtr.Zero;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
                 NativeAPI.LhGetHookBypassAddress(m_Handle, out address);
                 return address;
             }
