@@ -97,7 +97,7 @@
 .gitignore     export-ignore
 .gitkeep       export-ignore
 
-*.cs       text diff=csharp
+*.cs       text diff=csharp working-tree-encoding=UTF-8
 *.cshtml   text diff=html
 *.csx      text diff=csharp
 *.sln      text eol=crlf
