@@ -25,6 +25,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <DefineConstants>TRACE;NET4</DefineConstants>
     <DefineConstants>DEBUG;TRACE;NET4</DefineConstants>
+    <Platforms>AnyCPU;x64;x86</Platforms>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.Remoting" />

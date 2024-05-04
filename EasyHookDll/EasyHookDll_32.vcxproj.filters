@@ -153,23 +153,14 @@
     <MASM Include="..\DriverShared\ASM\HookSpecific_x86.asm">
       <Filter>Source Files\ASM</Filter>
     </MASM>
-    <MASM Include="..\DriverShared\ASM\HookSpecific_x64.asm">
-      <Filter>Source Files\ASM</Filter>
-    </MASM>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EasyHookDll_32.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="EasyHookDll_64.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="EasyHook32.def">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="EasyHook64.def">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

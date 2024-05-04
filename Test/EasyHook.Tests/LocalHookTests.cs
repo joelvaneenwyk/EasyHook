@@ -37,17 +37,17 @@ namespace EasyHook.Tests
     {
         // Se we can call in test with args list
         [DllImport("msvcrt.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fprintf(IntPtr file, [MarshalAs(UnmanagedType.LPStr)]string format, __arglist);
+        private static extern int fprintf(IntPtr file, [MarshalAs(UnmanagedType.LPStr)]string format, __arglist);
 
         // So we can call original from inside hook with RuntimeArgumentHandle
         [DllImport("msvcrt.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fprintf(IntPtr file, string format, RuntimeArgumentHandle args);
+        private static extern int fprintf(IntPtr file, string format, RuntimeArgumentHandle args);
 
         [DllImport("msvcrt.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern IntPtr fopen([MarshalAs(UnmanagedType.LPStr)]string file, [MarshalAs(UnmanagedType.LPStr)]string access);
+        private static extern IntPtr fopen([MarshalAs(UnmanagedType.LPStr)]string file, [MarshalAs(UnmanagedType.LPStr)]string access);
 
         [DllImport("msvcrt.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int fclose(IntPtr file);
+        private static extern int fclose(IntPtr file);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl, CharSet = CharSet.Ansi, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.I4)]
@@ -63,10 +63,10 @@ namespace EasyHook.Tests
             fpfHook.ThreadACL.SetExclusiveACL(new Int32[] { });
 
             var f = fopen("test.txt", "w");
-            fprintf(f, "My name is %s\n", __arglist("Bart"));
+            int v = fprintf(f, "My name is %s\n", __arglist("Bart"));
             fclose(f);
 
-            var txt = File.ReadAllLines("test.txt").FirstOrDefault();
+            string txt = File.ReadAllLines("test.txt").FirstOrDefault();
             File.Delete("test.txt");
             Assert.AreEqual("Your name is Bart", txt);
 
@@ -74,10 +74,8 @@ namespace EasyHook.Tests
             EasyHook.LocalHook.Release();
         }
 
-        private int fpf_Hook(IntPtr hFile, string format, RuntimeArgumentHandle args)
-        {
-            return fprintf(hFile, "Your name is %s\n", args);
-        }
+        private int fpf_Hook(IntPtr hFile, string format, RuntimeArgumentHandle args) =>
+            fprintf(hFile, "Your name is %s\n", args);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
@@ -105,7 +103,7 @@ namespace EasyHook.Tests
         [TestMethod]
         [ExpectedException(typeof(InsufficientMemoryException),
             "Adding too many hooks should result in System.InsufficientMemoryException.")]
-        public void InstallTooManyHooks_ThrowException()
+        public void InstallTooManyHooksThrowException()
         {
             int maxHookCount = 1024;
 

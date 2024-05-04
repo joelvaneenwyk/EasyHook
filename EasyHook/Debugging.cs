@@ -138,7 +138,7 @@ namespace EasyHook
                 Buffer = IntPtr.Zero;
             }
         }
-        private static NameBuffer Buffer = new NameBuffer();
+        private static readonly NameBuffer Buffer = new NameBuffer();
 
         /// <summary>
         /// Reads the kernel object name for a given windows usermode handle.

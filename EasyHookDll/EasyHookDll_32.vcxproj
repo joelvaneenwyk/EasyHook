@@ -51,10 +51,9 @@
     <PlatformToolset>v143</PlatformToolset>
     <TargetName>EasyHook32</TargetName>
   </PropertyGroup>
-  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')"  Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Condition="exists('$(VCTargetsPath)\Microsoft.Cpp.props')" Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.props')"
-    Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.props')" Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ImportGroup Label="ExtensionSettings">
@@ -238,8 +237,6 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import
-      Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.targets')"
-      Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+    <Import Condition="exists('$(VCTargetsPath)\BuildCustomizations\masm.targets')" Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>
