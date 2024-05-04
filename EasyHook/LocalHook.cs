@@ -154,7 +154,7 @@ namespace EasyHook
         /// <summary>
         ///	Is the current thread within a valid hook handler? This is only the case
         ///	if your handler was called through the hooked entry point...
-        ///	Executes in max. one micro secound.
+        ///	Executes in max. one micro second.
         /// </summary>
         public static Boolean IsHandlerContext
         {
@@ -222,7 +222,7 @@ namespace EasyHook
         /// Retrives the unmanaged module that contains the given pointer. If no module can be
         /// found, <c>null</c> is returned. This method will automatically update the unmanaged
         /// module list from time to time.
-        /// Executes in less than one micro secound.
+        /// Executes in less than one micro second.
         /// </summary>
         /// <param name="InPointer"></param>
         /// <returns></returns>
@@ -254,7 +254,7 @@ TRY_AGAIN:
         /// <summary>
         /// Determines the first unmanaged module on the current call stack. This is always the module
         /// that invoked the hook.
-        /// Executes in max. 15 micro secounds.
+        /// Executes in max. 15 micro seconds.
         /// </summary>
         /// <remarks>
         /// The problem is that if the calling module is a NET assembly
@@ -274,7 +274,7 @@ TRY_AGAIN:
         /// <summary>
         /// Determines the first managed module on the current call stack. This is always the module
         /// that invoked the hook.
-        /// Executes in max. 40 micro secounds.
+        /// Executes in max. 40 micro seconds.
         /// </summary>
         /// <remarks>
         /// Imagine your hook targets CreateFile. A NET assembly will now invoke this hook through
@@ -304,8 +304,8 @@ TRY_AGAIN:
 
         /// <summary>
         /// Returns the address where execution is continued, after you hook has
-        /// been completed. This is always the instruction behind the hook invokation.
-        /// Executes in max. one micro secound.
+        /// been completed. This is always the instruction behind the hook invocation.
+        /// Executes in max. one micro second.
         /// </summary>
         public static IntPtr ReturnAddress
         {
@@ -321,7 +321,7 @@ TRY_AGAIN:
 
         /// <summary>
         /// A stack address pointing to <see cref="ReturnAddress"/>.
-        /// Executes in max. one micro secound.
+        /// Executes in max. one micro second.
         /// </summary>
         public static IntPtr AddressOfReturnAddress
         {
@@ -371,7 +371,7 @@ TRY_AGAIN:
         /// Creates a call stack trace of the unmanaged code path that finally
         /// lead to your hook. To detect whether the desired module is within the
         /// call stack you will have to walk through the whole list!
-        /// Executes in max. 20 micro secounds.
+        /// Executes in max. 20 micro seconds.
         /// </summary>
         /// <remarks>
         /// This method is not supported on Windows 2000 and will just return the
@@ -423,7 +423,7 @@ TRY_AGAIN:
         /// Creates a call stack trace of the managed code path that finally
         /// lead to your hook. To detect whether the desired module is within the
         /// call stack you will have to walk through the whole list!
-        /// Executes in max. 80 micro secounds.
+        /// Executes in max. 80 micro seconds.
         /// </summary>
         public static System.Reflection.Module[] ManagedStackTrace
         {
@@ -588,7 +588,7 @@ TRY_AGAIN:
         }
 
         /// <summary>
-        /// Returns the gloabl thread ACL associated with ALL hooks. Refer to <see cref="IsThreadIntercepted"/>
+        /// Returns the global thread ACL associated with ALL hooks. Refer to <see cref="IsThreadIntercepted"/>
         /// for more information about access negotiation.
         /// </summary>
         public static HookAccessControl GlobalThreadACL { get { return m_GlobalThreadACL; } }
@@ -601,7 +601,7 @@ TRY_AGAIN:
         /// <remarks>
         /// As we are living in a manged world, you don't have to dispose a hook because the next
         /// garbage collection will do it for you, assuming that your code does not reference it
-        /// anymore. But there are times when you want to uninstall it excplicitly, with no delay.
+        /// anymore. But there are times when you want to uninstall it explicitly, with no delay.
         /// If you dispose a disposed or not installed hook, nothing will happen!
         /// </remarks>
         public void Dispose()
@@ -797,7 +797,7 @@ TRY_AGAIN:
         /// </summary>
         /// <remarks>
         /// If you wonder how to get native entry points in a managed environment,
-        /// this is the anwser. You will only be able to hook native code from a managed
+        /// this is the answer. You will only be able to hook native code from a managed
         /// environment if you have access to a method like this, returning the native
         /// entry point. Please note that you will also hook any managed code, which
         /// of course ultimately relies on the native windows API!

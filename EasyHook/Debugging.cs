@@ -142,7 +142,7 @@ namespace EasyHook
 
         /// <summary>
         /// Reads the kernel object name for a given windows usermode handle.
-        /// Executes in approx. 100 micro secounds.
+        /// Executes in approx. 100 micro seconds.
         /// </summary>
         /// <remarks><para>
         /// This allows you to translate a handle back to the associated filename for example.
