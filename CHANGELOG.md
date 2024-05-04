@@ -2,105 +2,60 @@
 
 ## Unreleased
 
-- Remove 'build_me.txt' and migrate over vcpkg info
-- Script cleanup, build debug by default, add launch setting for VSCode
-- Copy over PDBs
-- Cleaned up the README
-- Fixup the README and dependencies
-- Add support for latest version of VS2019
-- First pass at supporting capturing stdout/stderr
+### Code Cleanup and Refactoring
+
+- Clean up scripts, build debug by default, add launch setting for VSCode
+- Clean up the README
+- Fix the README and dependencies
 - Add header and run ReSharper cleanup
-- Intermediate/ugly commit but redirects are working
-- Removed unused code and cleaned up remaining code.
-- More code cleanup
-- Added file monitor unit tests.
-- Return the exit code and no longer support .NET 3.5 with concurrent addition
-- Use callback for all prints in remote hook process.
-- Re-enabled netfx3.5 support but removing dependency on concurrent generics
-- Generate PDB files in release for EasyLoad
-- Add some more comments and refactor.
-- Code cleanup and add ReSharper config.
-- Fixed file hook unit tests by using singleton.
-- Code cleanup pass.
-- Remove unused imports, add editorconfig, fix solution global files, etc.
-- Fix easy hook name warning by having two definitions.
-- Add enum for injection options.
-- Set ReSharper version to C# 6.0 to align with VS2015.
-- Formatting fixes/updates.
+- Remove unused code and clean up remaining code
+- Clean up code further
+- Clean up code and add ReSharper config
+- Clean up code
+- Remove unused imports, add editorconfig, fix solution global files, etc
+- Add more comments and refactor
+- Format and clean up whitespace
+- Fix/update formatting
+- Change trivial whitespace
+- Change encoding/whitespace e.g., removing BOM
+- Change trivial whitespace
+- Change trivial whitespace in C# source
+- Update C# files with automatic and trivial formatting
+- Update README formatting
+- Run pre-commit
+- Add dictionary
+
+### Build and CI/CD Configuration
+
+- Remove 'build_me.txt' and migrate over vcpkg info
+- Add support for latest version of VS2019
 - Fix CI build
-- Fix casing of 'tools' to 'Tools'
 - Add basic GitHub Action for msbuild default
 - Add all variants to build
-- Add solution file to GitHub action.
-- Minor tweaks.
+- Add solution file to GitHub action
 - Build for vs2015, vs2017, and vs2019
-- Add actions for each variant to build.
-- Use Windows image version to change Visual Studio version.
-- Fix typo in workflow.
+- Add actions for each variant to build
+- Use Windows image version to change Visual Studio version
+- Fix typo in workflow
 - Update workflow names to differentiate
-- Format and whitespace cleanup.
-- Fix driver build action configuration.
-- Specify generic Windows target instead of specific one as it depends on Windows version.
-- Add readonly modifier.
-- Trivial whitespace changes
-- Encoding/whitespace changes e.g., removing BOM
-- Remove `netfx3.5` and switch to VS2019 by default
-- Switched to .NET Framework v4.5.2 since we use VS2019 by default now.
-- Set ReSharper to check for C# 7.0 compliance instead of C# 6.0 since we can use more modern C# features now.
-- Add reference to `JetBrains.Annotations` so we can access additional attributes like `PublicAPI`.
-- Updated `DotSettings` files for ReSharper
-- Add new `packages.config` for tests
-- Trivial whitespace changes
+- Fix driver build action configuration
+- Specify generic Windows target instead of specific one as it depends on Windows version
+- Remove netfx3.5 and switch to VS2019 by default
+- Switch to .NET Framework v4.5.2 since we use VS2019 by default now
 - Remove 'netfx3.5' config and 'windows-2016' image from GitHub actions
-- Missed 'DotSettings' files and additional 'netfx3.5' removal
 - Remove AppVeyor configs as we switched to GitHub actions
-- Add missing 'app.config' files for 'FileMon' and 'ProcessMonitor'
-- Trivial whitespace changes in C# source
-- Add double quotes around adapter path in 'setup.bat' to support paths with spaces
-- chore: Project and solution cleanup
-- Remove AppVeyor config files from solution
-* Remove unused sections in '.editorconfig'
-- chore: `README.md` updates
-- Switch to using Package References
-- Added preliminary build support for VS2022
-- chore: Config cleanup
-- chore: Build script cleanup
-- Upgraded to VS2022 and removed Windows 7/8.1 support from 'EasyHookSys' and 'TestDriver' projects
+- Add preliminary build support for VS2022
+- Upgrade to VS2022 and remove Windows 7/8.1 support from 'EasyHookSys' and 'TestDriver' projects
 - Remove unsupported configs from EasyHook Driver GitHub actions
-- wip: CMake config files for 'EasyHook' and 'EasyHookDll'
-- chore: Script cleanup
-- Disabled precompiled headers in 'EasyHookDll'
-- Removed Win32 config from drivers/services
-- Add 'PnpLockdown=1' to 'TestDriver.inf' to fix warning
-- Disable warning about obsolete usage of 'SignalEndpointReady'
-- Upgrade GitHub actions to use 'actions/checkout@v3'
-- Add short section to README on how to setup WDK
-- Add IDEA config files for Rider and CLion
-- Updated CMake configs
-- Fixed CMake configuration settings to handle x86 and x64
-- Fixed some build warnings/errors
-- wip: Add 'clang-format' config that attempts to match existing code
-- Cleanup '.editorconfig' settings
-- chore: Add intermediate folders to exclude list for JetBrains
 - Specify 'cmd' shell explicitly to fix package CI build
 - Fix typo in GitHub package action
-- GitHub action updates
-- VSCode updates
-- Update LICENSE format
-- Updated README
-- Workflow syntax
+- Update GitHub action
+- Fix workflow syntax
 - Combine workflows together
 - Fix driver build
 - Specify the range inside the matrix
 - Upgrade projects to .NET Framework v4.8.1
 - Upgrade C++ projects to .NET Framework v4.8.1
-- Add/update 'app.config' files
-- Updated CMake settings
-- Ignore CMake intermediate output
-- Add driver projects to solution
-- Automatic and trivial formatting updates to C# files
-- README formatting updates
-- Ignore 'TestResults' folder
 - Fix build by using 'windows-2019' image
 - Combine package step with build
 - Use Framework v4.8 as that is available on 'windows-2019' runner
@@ -111,55 +66,113 @@
 - Avoid building as errors
 - Clarify build names
 - Use 'x86' as platform
-- Driver fixes
-- Add packages.lock.json files
+- Fix driver
 - Ignore build older
-- Add directory build props
-- workflow cleanup
+- Clean up workflow
 - Remove hardcoded paths per project
-- cleanup copy step
+- Clean up copy step
+- Fix more
+- Fix more obvious
+- Set driver version
+- Fix more
+- Add nit condition
+- Fix build
+- Fix more
+- Revert back to nuget restore
+- Remove feature branches from auto-builds
+- Disable analysis
+- Disable inf2cat
+- Disable broken targets
+- Disable tests
+- Upgrade all projects to Sdk style
+- Remove Packages folder
+- Update solution projects
+- Fix build script and remove deprecated upgrade script
+- Update scripts
+- Fix some issues after EasyHookDll additions
+- Fix the build by restoring x64 config properties in easy hook dll
+- Fix build: x86 was not building x64 dll
+
+### Code and Project Updates
+
+- Copy over PDBs
+- Support capturing stdout/stderr
+- Commit intermediate/ugly but redirects are working
+- Return the exit code and no longer support .NET 3.5 with concurrent addition
+- Use callback for all prints in remote hook process
+- Re-enable netfx3.5 support but remove dependency on concurrent generics
+- Generate PDB files in release for EasyLoad
+- Fix file hook unit tests by using singleton
+- Fix easy hook name warning by having two definitions
+- Add enum for injection options
+- Set ReSharper version to C# 6.0 to align with VS2015
+- Set ReSharper to check for C# 7.0 compliance instead of C# 6.0 since we can use more modern C# features now
+- Add reference to JetBrains.Annotations so we can access additional attributes like PublicAPI
+- Update DotSettings files for ReSharper
+- Add new packages.config for tests
+- Add missing 'app.config' files for 'FileMon' and 'ProcessMonitor'
+- Add double quotes around adapter path in 'setup.bat' to support paths with spaces
+- Clean up project and solution
+- Remove AppVeyor config files from solution
+- Remove unused sections in '.editorconfig'
+- Update README.md
+- Switch to using Package References
+- Clean up config
+- Clean up build script
+- Add CMake config files for 'EasyHook' and 'EasyHookDll'
+- Disable precompiled headers in 'EasyHookDll'
+- Remove Win32 config from drivers/services
+- Add 'PnpLockdown=1' to 'TestDriver.inf' to fix warning
+- Disable warning about obsolete usage of 'SignalEndpointReady'
+- Upgrade GitHub actions to use 'actions/checkout@v3'
+- Add short section to README on how to setup WDK
+- Add IDEA config files for Rider and CLion
+- Update CMake configs
+- Fix CMake configuration settings to handle x86 and x64
+- Fix some build warnings/errors
+- Add 'clang-format' config that attempts to match existing code
+- Clean up '.editorconfig' settings
+- Add intermediate folders to exclude list for JetBrains
+- Update VSCode
+- Update LICENSE format
+- Update README
+- Add/update 'app.config' files
+- Update CMake settings
+- Ignore CMake intermediate output
+- Add driver projects to solution
+- Ignore 'TestResults' folder
+- Add packages.lock.json files
+- Add directory build props
 - Move more shared properties to directory props
 - Add target machine to build props
 - Add helper build script to root
 - Remove more superfluous attributes
-- more fixes
-- more obvious fixes
-- set driver version
-- more fixes
-- nit add condition
 - Migrate easy hook tests to SDK style project
 - Remove platform toolset from getting set
-- cleanup config settings
-- Build fixes
-- more fixes
-- revert back to nuget restore
-- Remove feature branches from auto-builds
-- Diasble analysis
-- Disable inf2cat
-- Disable broken targets
-- Fix more isseus
-- disable tests
-- wip
-- Upgrade all projects to Sdk style
-- Remove Packages folder
-- Update solution projects
+- Clean up config settings
 - Update README
 - Add 'Directory.Build.targets' and move some properties there
-- Fix build script and remove deprecated upgrade script
 - Rename EasyHookDll project to "EasyHookDll_64" before creating 32-bit version
 - Add 32-bit only version of EasyHook project
-- script updates
-- Fix some issues after EasyHookDll additions
 - Add gitattributes
 - Enforce utf-8 on c# files to remove bom
-- re-normalize files
-- add precommit
-- add precommit to remove byte order marker (BOM)
-- remove BOM
-- wip: submitting partial working version and will fix EasyHookDll next
-- fix the build by restoring x64 config properties in easy hook dll
-- chore: run pre-commit
-- add dictionary
-- fix build: x86 was not building x64 dll
+- Re-normalize files
+- Add precommit
+- Add precommit to remove byte order marker (BOM)
+- Remove BOM
+- Submit partial working version and will fix EasyHookDll next
 
+### Initial Project Setup
 
+- Add 'CHANGELOG.md'
+- Add file monitor unit tests
+
+### Minor Tweaks and Fixes
+
+- Tweak minor
+- Fix casing of 'tools' to 'Tools'
+- Miss 'DotSettings' files and additional 'netfx3.5' removal
+- Clean up scripts
+- Add readonly modifier
+- Update workflow names to differentiate
+- Update GitHub action
