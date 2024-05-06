@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\COMClassInfo.cs)
+// EasyHook (File: EasyHook\COMClassInfo.cs)
 //
 // Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -41,7 +41,7 @@ namespace EasyHook
     /// COMClassInfo cci2 = new COMClassInfo(typeof(CLSID_DirectInputDevice8).GUID, typeof(IID_IDirectInputDevice8W).GUID, 3);
     /// // 3. Use class and interface Guids directly (no need to have class and interface types defined)
     /// COMClassInfo cci3 = new COMClassInfo(new Guid("25E609E5-B259-11CF-BFC7-444553540000"), new Guid("54D41081-DC15-4833-A41B-748F73A38179"), 3);
-    /// 
+    ///
     /// // Will output False if dinput8.dll is not already loaded
     /// Console.WriteLine(cci1.IsModuleLoaded());
     /// cci1.Query();
@@ -49,20 +49,20 @@ namespace EasyHook
     /// cci3.Query();
     /// // Will output True as dinput8.dll will be loaded by .Query() if not already
     /// Console.WriteLine(cci1.IsModuleLoaded());
-    /// 
+    ///
     /// // Output the function pointers we queried
     /// Console.WriteLine(cci1.FunctionPointers[0]);
     /// Console.WriteLine(cci2.FunctionPointers[0]);
     /// Console.WriteLine(cci3.FunctionPointers[0]);
-    /// 
+    ///
     /// ...
-    /// 
+    ///
     /// [ComVisible(true)]
     /// [Guid("25E609E5-B259-11CF-BFC7-444553540000")]
     /// public class CLSID_DirectInputDevice8
     /// {
     /// }
-    /// 
+    ///
     /// [ComVisible(true)]
     /// [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     /// [Guid("54D41081-DC15-4833-A41B-748F73A38179")]

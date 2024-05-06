@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,7 @@ EASYHOOK_NT_INTERNAL RhSetWakeUpThreadID(ULONG InThreadID)
 {
 /*
 Description:
-    
+
     Used in conjunction with RhCreateAndInject(). If the given thread
     later is resumed in RhWakeUpProcess(), the injection target will
     start its usual execution.
@@ -74,7 +74,7 @@ Description:
 
     if(ThreadID == 0)
         RETURN(STATUS_SUCCESS);
-    
+
     if((hThread = OpenThread(THREAD_SUSPEND_RESUME, FALSE, ThreadID)) == NULL)
         THROW(STATUS_INTERNAL_ERROR, L"Unable to open wake up thread.");
 
@@ -82,7 +82,7 @@ Description:
         THROW(STATUS_INTERNAL_ERROR, L"Unable to resume process main thread.");
 
     RETURN(STATUS_SUCCESS);
-    
+
 THROW_OUTRO:
 FINALLY_OUTRO:
     {
@@ -190,7 +190,7 @@ Description:
 	LPVOID Unknown1,
 	LPVOID Unknown2,
 	LPVOID Unknown3
-); 
+);
 
 EASYHOOK_NT_INTERNAL NtCreateThreadEx(
 	HANDLE InProcess,
@@ -227,7 +227,7 @@ Parameters:
 
     - InRemoteCallback
 
-        An uninterpreted callback passed to the remote start routine. 
+        An uninterpreted callback passed to the remote start routine.
         Must be valid in the context of the given process.
 
     - OutThread
@@ -285,7 +285,7 @@ EASYHOOK_NT_INTERNAL NtForceLdrInitializeThunk(HANDLE hProc)
 	/*
 	Description:
 
-	Allows us to retrieve remote function addresses for a suspended process by starting a 
+	Allows us to retrieve remote function addresses for a suspended process by starting a
 	remote thread that runs a single instruction function (ret). Thanks to werker: https://github.com/EasyHook/EasyHook/issues/9
 
 	Parameters:
@@ -444,7 +444,7 @@ Description:
 	of windows.
 */
 #ifndef _M_X64
-    
+
 	GetNativeSystemInfo_PROC*   pGetNativeSystemInfo;
     SYSTEM_INFO		            SysInfo;
 
@@ -527,7 +527,7 @@ Parameters:
 
     // compute current directory...
     RtlCopyMemory(FullExePath, CurrentDir, sizeof(FullExePath));
-    
+
     swprintf_s(FullCommandLine, MAX_CREATEPROCESS_COMMANDLINE, L"\"%s\" %s", FullExePath, InCommandLine);
 
     *FilePart = 0;
@@ -537,10 +537,10 @@ Parameters:
 	StartInfo.wShowWindow = TRUE;
 
     if(!CreateProcessW(
-		    FullExePath, 
-		    FullCommandLine, 
-            NULL, NULL,  
-            FALSE, 
+		    FullExePath,
+		    FullCommandLine,
+            NULL, NULL,
+            FALSE,
 		    InCustomFlags | CREATE_SUSPENDED,
 		    NULL,
 		    CurrentDir,
@@ -586,7 +586,7 @@ Description:
 
     Creates a suspended process and immediately injects the user library.
     This is done BEFORE any of the usual process initialization is called.
-    When the injection is made, NO thread has actually executed any instruction 
+    When the injection is made, NO thread has actually executed any instruction
     so far... It is just like your library entry point is the first thing
     executed in such a process and you can allow the original execution to
     take place by calling RhWakeUpProcess() in the injected library. But even
@@ -610,16 +610,16 @@ Parameters:
 
         All flags can be combined.
 
-        EASYHOOK_INJECT_DEFAULT: 
-            
+        EASYHOOK_INJECT_DEFAULT:
+
             No special behavior. The given libraries are expected to be unmanaged DLLs.
-            Further they should export an entry point named 
+            Further they should export an entry point named
             "NativeInjectionEntryPoint" (in case of 64-bit) and
-            "_NativeInjectionEntryPoint@4" (in case of 32-bit). The expected entry point 
+            "_NativeInjectionEntryPoint@4" (in case of 32-bit). The expected entry point
             signature is REMOTE_ENTRY_POINT.
 
-        EASYHOOK_INJECT_MANAGED: 
-        
+        EASYHOOK_INJECT_MANAGED:
+
             The given user library is a NET assembly. Further they should export a class
             named "EasyHook.InjectionLoader" with a static method named "Main". The
             signature of this method is expected to be "int (String)". Please refer
@@ -629,7 +629,7 @@ Parameters:
         EASYHOOK_INJECT_STEALTH:
 
             Uses the experimental stealth thread creation. If it fails
-            you may try it with default settings. 
+            you may try it with default settings.
 
     - InLibraryPath_x86
 
@@ -688,7 +688,7 @@ THROW_OUTRO:
         if(ProcessId != 0)
         {
             hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, ProcessId);
-            
+
             TerminateProcess(hProcess, 0);
 
             CloseHandle(hProcess);
@@ -710,7 +710,7 @@ FINALLY_OUTRO:
 BOOL EASYHOOK_API GetRemoteModuleExportDirectory(HANDLE hProcess, HMODULE hRemote, PIMAGE_EXPORT_DIRECTORY ExportDirectory, IMAGE_DOS_HEADER DosHeader, IMAGE_NT_HEADERS NtHeaders) {
 /*
 Description:
-	
+
 	Retrieves the export dictionary for the provided module.
 
 Parameters:
@@ -731,7 +731,7 @@ Parameters:
 
 		The preloaded DOS PE Header
 		e.g.: ReadProcessMemory(hProcess, (void*)hRemote, &DosHeader, sizeof(IMAGE_DOS_HEADER), NULL)
-        
+
 	- NtHeaders
 
 		The preloaded NT PE headers
@@ -753,31 +753,31 @@ Parameters:
 
     if(!ReadProcessMemory(hProcess, (void*)hRemote, ucAllocatedPEHeader, (SIZE_T)1000, NULL))
         return FALSE;
-    
+
     pImageSectionHeader = (PIMAGE_SECTION_HEADER)(ucAllocatedPEHeader + DosHeader.e_lfanew + sizeof(IMAGE_NT_HEADERS));
-    
+
     for(i = 0; i < NtHeaders.FileHeader.NumberOfSections; i++, pImageSectionHeader++) {
         if(!pImageSectionHeader)
             continue;
-        
+
         if(_stricmp((char*)pImageSectionHeader->Name, ".edata") == 0) {
             if(!ReadProcessMemory(hProcess, (void*)pImageSectionHeader->VirtualAddress, ExportDirectory, sizeof(IMAGE_EXPORT_DIRECTORY), NULL))
                 continue;
-            
-			
+
+
 			free(ucAllocatedPEHeader);
             return TRUE;
         }
-    
+
     }
-    
+
     dwEATAddress = NtHeaders.OptionalHeader.DataDirectory[0].VirtualAddress;
     if(!dwEATAddress)
         return FALSE;
-    
+
     if(!ReadProcessMemory(hProcess, (void*)((DWORD_PTR)hRemote + dwEATAddress), ExportDirectory, sizeof(IMAGE_EXPORT_DIRECTORY), NULL))
         return FALSE;
-    
+
     free(ucAllocatedPEHeader);
     return TRUE;
 }
@@ -846,7 +846,7 @@ Description:
 Parameters:
 
 	- pId
-		
+
 		The Id of the remote process
 
 	- hProcess
@@ -898,7 +898,7 @@ Example:
 
 	if(!hRemote)
         return NULL;
-    
+
 	// Load DOS PE header
     if(!ReadProcessMemory(hProcess, (void*)hRemote, &DosHeader, sizeof(IMAGE_DOS_HEADER), NULL) || DosHeader.e_magic != IMAGE_DOS_SIGNATURE)
         return NULL;
@@ -1059,7 +1059,7 @@ Parameters:
     - InTargetPID
 
         The process in which the library should be injected.
-    
+
     - InWakeUpTID
 
         If the target process was created suspended (RhCreateAndInject), then
@@ -1072,16 +1072,16 @@ Parameters:
 
         All flags can be combined.
 
-        EASYHOOK_INJECT_DEFAULT: 
-            
+        EASYHOOK_INJECT_DEFAULT:
+
             No special behavior. The given libraries are expected to be unmanaged DLLs.
-            Further they should export an entry point named 
+            Further they should export an entry point named
             "NativeInjectionEntryPoint" (in case of 64-bit) and
-            "_NativeInjectionEntryPoint@4" (in case of 32-bit). The expected entry point 
+            "_NativeInjectionEntryPoint@4" (in case of 32-bit). The expected entry point
             signature is REMOTE_ENTRY_POINT.
 
-        EASYHOOK_INJECT_MANAGED: 
-        
+        EASYHOOK_INJECT_MANAGED:
+
             The given user library is a NET assembly. Further they should export a class
             named "EasyHook.InjectionLoader" with a static method named "Main". The
             signature of this method is expected to be "int (String)". Please refer
@@ -1091,10 +1091,10 @@ Parameters:
         EASYHOOK_INJECT_STEALTH:
 
             Uses the experimental stealth thread creation. If it fails
-            you may try it with default settings. 
+            you may try it with default settings.
 
 		EASYHOOK_INJECT_HEART_BEAT:
-			
+
 			Is only used internally to workaround the managed process creation bug.
 			For curiosity, NET seems to hijack our remote thread if a managed process
 			is created suspended. It doesn't do anything with the suspended main thread,
@@ -1123,7 +1123,7 @@ Parameters:
 
 Returns:
 
-    
+
 
 */
 	HANDLE					hProc = NULL;
@@ -1188,7 +1188,7 @@ Returns:
 	*/
 #ifdef _M_X64
 	FORCE(RhIsX64Process(InTargetPID, &Is64BitTarget));
-      
+
     if(!Is64BitTarget)
         THROW(STATUS_WOW_ASSERTION, L"It is not supported to directly hook through the WOW64 barrier.");
 
@@ -1196,7 +1196,7 @@ Returns:
         THROW(STATUS_INVALID_PARAMETER_5, L"Unable to get full path to the given 64-bit library.");
 #else
 	FORCE(RhIsX64Process(InTargetPID, &Is64BitTarget));
-      
+
     if(Is64BitTarget)
         THROW(STATUS_WOW_ASSERTION, L"It is not supported to directly hook through the WOW64 barrier.");
 
@@ -1365,7 +1365,7 @@ Returns:
                 case 21: THROW(STATUS_INVALID_PARAMETER_4, L"Unable to find the required native entry point in the given 32-bit library.");
                 case 12: THROW(STATUS_INVALID_PARAMETER_4, L"Unable to find the required managed entry point in the given 32-bit library.");
 #endif
-                
+
                 case 13: THROW(STATUS_DLL_INIT_FAILED, L"The user defined managed entry point failed in the target process. Make sure that EasyHook is registered in the GAC. Refer to event logs for more information.");
 				case 1: THROW(STATUS_INTERNAL_ERROR, L"Unable to allocate memory in target process.");
 				case 2: THROW(STATUS_INTERNAL_ERROR, L"Unable to adjust target's PATH variable.");
@@ -1444,7 +1444,7 @@ ULONG GetInjectionSize()
 
 	if(___InjectionSize != 0)
 		return ___InjectionSize;
-	
+
 	// search for signature
 	BasePtr = Ptr = GetInjectionPtr();
 
@@ -1452,7 +1452,7 @@ ULONG GetInjectionSize()
 	{
 		Signature = *((ULONG*)Ptr);
 
-		if(Signature == 0x12345678)	
+		if(Signature == 0x12345678)
 		{
 			___InjectionSize = (ULONG)(Ptr - BasePtr);
 
@@ -1474,7 +1474,7 @@ ULONG GetInjectionSize()
 
 
 
-EASYHOOK_NT_EXPORT TestFuncHooks(ULONG pId, 
+EASYHOOK_NT_EXPORT TestFuncHooks(ULONG pId,
         PCHAR module,
         TEST_FUNC_HOOKS_OPTIONS options,
         TEST_FUNC_HOOKS_RESULT** outResults,
@@ -1490,7 +1490,7 @@ Parameters:
     - pId
 
         The process Id to test.
-    
+
     - module
 
         The name of the module to look for exports within.
@@ -1502,7 +1502,7 @@ Parameters:
 
     - outResults
 
-        Returns the array of results. This should be freed by a subsequent 
+        Returns the array of results. This should be freed by a subsequent
         call to ReleaseTestFuncHookResults.
 
     - resultCount
@@ -1581,7 +1581,7 @@ Returns:
 
 	if(!hRemote)
         return STATUS_NOT_FOUND;
-    
+
 	// Load DOS PE header
     if(!ReadProcessMemory(hProcess, (void*)hRemote, &DosHeader, sizeof(IMAGE_DOS_HEADER), NULL) || DosHeader.e_magic != IMAGE_DOS_SIGNATURE)
         return STATUS_NOT_FOUND;
@@ -1642,7 +1642,7 @@ Returns:
             if (_stricmp(pszFunctionName, options.FilterByName) == 0)
                 count++;
         }
-        else 
+        else
         {
             count++;
         }
@@ -1692,7 +1692,7 @@ Returns:
         dwAddressOfName        = (DWORD_PTR)hRemote + AddressOfNames[i];
 
 		memset(&pszFunctionName, 0, 256);
-        
+
         if(!ReadProcessMemory(hProcess, (void*)dwAddressOfName, pszFunctionName, 256, NULL))
             continue;
 
@@ -1704,9 +1704,9 @@ Returns:
 
         // Get next result obj
         result = &results[count++];
-        
+
         strcpy_s(result->FnName, MAX_PATH, pszFunctionName);
-        
+
         // Check if address of function is found in another module
         if(dwAddressOfFunction >= dwExportBase && dwAddressOfFunction <= dwExportSize) {
             memset(&pszRedirectName, 0, 256);
@@ -1759,7 +1759,7 @@ Returns:
 
                 if(!ReadProcessMemory(hProcess, (void*)dwAddressOfRedirectedName, pszRedirectedFunctionName, 256, NULL))
                 {
-                    
+
                     strcpy_s(result->Error, 1024, "Ordinal redirect unreadable");
                     continue;
                 }
@@ -1771,11 +1771,11 @@ Returns:
             }
         }
         result->FnAddress = (void*)dwAddressOfFunction;
-        
+
         entryPointSize = 0;
 
         a = 0;
-        
+
         // 1. Allocate memory and prepare the hook
         if (!RTL_SUCCESS(LhAllocateHook((void*)dwAddressOfFunction, (void*)dwAddressOfFunction, NULL, &hookBuf, &relocBufSize)))
         {
@@ -1800,7 +1800,7 @@ Returns:
                 for (b = 0; b < (int)(nextInstr - pEntryPoint); b++)
                 {
                     entryPoint[entryPointSize + b] = *opcodes;
-                
+
                     sprintf_s(asmBuf + strlen(asmBuf), 260 - strlen(asmBuf), "%02X ", *opcodes);
                     opcodes++;
                 }
@@ -1810,7 +1810,7 @@ Returns:
 
                 pEntryPoint = (DWORD_PTR)nextInstr;
             }
-            
+
             continue;
         }
         entryPointSize = hookBuf->EntrySize;
@@ -1852,14 +1852,14 @@ Returns:
                 pEntryPoint = (DWORD_PTR)nextInstr;
             }
         }
-        
+
         if (hookBuf != NULL)
             LhFreeMemory(&hookBuf);
         hookBuf = NULL;
     }
 
     // Write to file
-        
+
     if (options.Filename != NULL && strlen(options.Filename) > 0)
     {
         fopen_s(&f, options.Filename, "w");
@@ -1874,7 +1874,7 @@ Returns:
             result = &results[i];
 
             fprintf(f, "\nFunction: %s\n", result->FnName);
-            
+
             if (result->ModuleRedirect != NULL && strlen(result->ModuleRedirect))
                 fprintf(f, "\t(redirected to DLL: %s!%s)\n", result->ModuleRedirect, result->FnRedirect);
             if (result->FnRedirect != NULL && strlen(result->FnRedirect))
@@ -1903,7 +1903,7 @@ Returns:
     free(AddressOfFunctions);
     free(AddressOfNames);
     free(AddressOfOrdinals);
-    
+
     return 0;
 }
 
@@ -1920,7 +1920,7 @@ Parameters:
     - results
 
         Pointer to array of TEST_FUNC_HOOKS_RESULT to be freed.
-    
+
     - count
 
         The number of elements within results.

@@ -4,7 +4,7 @@
 
 ## Reinvention of Windows API Hooking
 
-This project supports extending (hooking) unmanaged code (APIs) with pure managed ones, from within a fully managed environment on 32- or 64-bit Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, Windows 10, and Windows 11.
+`EasyHook` supports extending (hooking) unmanaged code (APIs) with pure managed ones, from within a fully managed environment on both 32-bit and 64-bit versions of Windows Vista x64, Windows Server 2008 x64, Windows 7, Windows 8.1, Windows 10, and Windows 11.
 
 `EasyHook` currently supports injecting assemblies built for .NET Framework 4.0+ and can inject native DLLs.
 

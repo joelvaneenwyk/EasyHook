@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -115,7 +115,7 @@ Returns:
 	{
 		if((InTls->IdList[i] == 0) && (Index == -1))
 			Index = i;
-		
+
 		ASSERT(InTls->IdList[i] != CurrentId,L"barrier.c - InTls->IdList[i] != CurrentId");
 	}
 
@@ -128,7 +128,7 @@ Returns:
 
 	InTls->IdList[Index] = CurrentId;
 	RtlZeroMemory(&InTls->Entries[Index], sizeof(THREAD_RUNTIME_INFO));
-	
+
 	RtlReleaseLock(&InTls->ThreadSafe);
 
 	return TRUE;
@@ -140,7 +140,7 @@ Returns:
 
 
 BOOL TlsGetCurrentValue(
-            THREAD_LOCAL_STORAGE* InTls,                
+            THREAD_LOCAL_STORAGE* InTls,
             THREAD_RUNTIME_INFO** OutValue)
 {
 /*
@@ -257,7 +257,7 @@ BOOL AcquireSelfProtection()
 Description:
 
     To provide more convenience for writing the TDB, this self protection
-    will disable ALL hooks for the current thread until ReleaseSelfProtection() 
+    will disable ALL hooks for the current thread until ReleaseSelfProtection()
     is called. This allows one to call any API during TDB initialization
     without being intercepted...
 
@@ -331,11 +331,11 @@ Returns:
 
 #ifndef DRIVER
 BOOL IsThreadIntercepted(
-	HOOK_ACL* LocalACL, 
+	HOOK_ACL* LocalACL,
 	ULONG InThreadID)
 #else
 BOOL IsProcessIntercepted(
-	HOOK_ACL* LocalACL, 
+	HOOK_ACL* LocalACL,
 	ULONG InProcessID)
 #endif
 {
@@ -528,7 +528,7 @@ Description:
 
     Is expected to be called inside a hook handler. Otherwise it
     will fail with STATUS_NOT_SUPPORTED. The method retrieves
-    the address of the return address of the hook handler. 
+    the address of the return address of the hook handler.
 */
 	LPTHREAD_RUNTIME_INFO       Runtime;
     NTSTATUS                    NtStatus;
@@ -561,10 +561,10 @@ EASYHOOK_NT_EXPORT LhBarrierBeginStackTrace(PVOID* OutBackup)
 Description:
 
     Is expected to be called inside a hook handler. Otherwise it
-    will fail with STATUS_NOT_SUPPORTED. 
+    will fail with STATUS_NOT_SUPPORTED.
     Temporarily restores the call stack to allow stack traces.
 
-    You have to pass the stored backup pointer to 
+    You have to pass the stored backup pointer to
     LhBarrierEndStackTrace() BEFORE leaving the handler, otherwise
     the application will be left in an unstable state!
 */
@@ -601,7 +601,7 @@ EASYHOOK_NT_EXPORT LhBarrierEndStackTrace(PVOID InBackup)
 Description:
 
     Is expected to be called inside a hook handler. Otherwise it
-    will fail with STATUS_NOT_SUPPORTED. 
+    will fail with STATUS_NOT_SUPPORTED.
 
     You have to pass the backup pointer obtained with
     LhBarrierBeginStackTrace().
@@ -732,7 +732,7 @@ ULONGLONG LhBarrierIntro(LOCAL_HOOK_INFO* InHandle, void* InRetAddr, void** InAd
 /*
 Description:
 
-    Will be called from assembler code and enters the 
+    Will be called from assembler code and enters the
     thread deadlock barrier.
 */
     LPTHREAD_RUNTIME_INFO		Info;
@@ -839,7 +839,7 @@ Description:
 	Runtime->AddrOfRetAddr = InAddrOfRetAddr;
 
 	ReleaseSelfProtection();
-	
+
 	return TRUE;
 
 DONT_INTERCEPT:
@@ -864,9 +864,9 @@ void* __stdcall LhBarrierOutro(LOCAL_HOOK_INFO* InHandle, void** InAddrOfRetAddr
 {
 /*
 Description:
-    
+
     Will just reset the "thread deadlock barrier" for the current hook handler and provides
-	some important integrity checks. 
+	some important integrity checks.
 
 	The hook handle is just passed through, because the assembler code has no chance to
 	save it in any efficient manner at this point of execution...

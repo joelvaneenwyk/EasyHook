@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using EasyHook;
@@ -41,7 +41,7 @@ namespace ManagedTest
             Int64 t1 = w.ElapsedTicks;
 
             w.Reset();
-            
+
             w.Start();
 
             Callback = HookRuntimeInfo.Callback;

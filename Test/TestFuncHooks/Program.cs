@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -159,7 +159,7 @@ namespace TestFuncHooks
             }
 
             Console.WriteLine();
-            
+
             if (is64 != EasyHook.RemoteHooking.IsX64Process(p.Id))
             {
                 Console.WriteLine("Target process must be " + (is64 ? "64-bit" : "32-bit") + " like current process");
@@ -192,7 +192,7 @@ namespace TestFuncHooks
                     options.FilterByName = null;
                     options.Filename = @"EntryPoints64\_" + Path.GetFileNameWithoutExtension(module.FileName) + ".txt";
                     string moduleName = Path.GetFileName(module.FileName);
-                    
+
                     NativeAPI_Pub_x64.TestFuncHooks(targetPID, moduleName, options, out resultsPtr, out resultCount);
                     if (resultCount > 0)
                     {

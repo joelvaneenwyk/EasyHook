@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -45,14 +45,14 @@ namespace ProcessMonitor
 
     /*
      * This is the class where our clients will connect to!
-     * 
+     *
      * Please note that setting any breakpoint here will cause the related
      * thread in the client process to block until you continue execution!
-     * So don't wonder if your browser (for example) hangs when you set a 
+     * So don't wonder if your browser (for example) hangs when you set a
      * breakpoint ;-)... Let's say you can debug a part of the code the client
      * is executing (that's not technically correct)
-     * 
-     * In Windows 2000 debugging the following seems to cause problems. 
+     *
+     * In Windows 2000 debugging the following seems to cause problems.
      */
     public class DemoInterface : MarshalByRefObject
     {

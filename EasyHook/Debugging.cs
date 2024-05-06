@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\Debugging.cs)
+// EasyHook (File: EasyHook\Debugging.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -48,14 +48,14 @@ namespace EasyHook
         /// </summary>
         /// <remarks>
         /// This is not always possible. The handle has to be opened with <c>THREAD_QUERY_INFORMATION</c>
-        /// access. 
+        /// access.
         /// </remarks>
         /// <param name="InThreadHandle">A valid thread handle.</param>
         /// <returns>A valid thread ID associated with the given thread handle.</returns>
         /// <exception cref="AccessViolationException">
         /// The given handle was not opened with <c>THREAD_QUERY_INFORMATION</c> access.</exception>
         /// <exception cref="ArgumentException">
-        /// The handle is invalid. 
+        /// The handle is invalid.
         /// </exception>
         /// <exception cref="NotSupportedException">
         /// Should never occur and just notifies you that a handle to thread ID conversion is not
@@ -75,14 +75,14 @@ namespace EasyHook
         /// </summary>
         /// <remarks>
         /// This is not always possible. The handle has to be opened with <c>PROCESS_QUERY_INFORMATION</c>
-        /// access. 
+        /// access.
         /// </remarks>
         /// <param name="InProcessHandle">A valid process handle.</param>
         /// <returns>A valid process ID associated with the given process handle.</returns>
         /// <exception cref="AccessViolationException">
         /// The given handle was not opened with <c>PROCESS_QUERY_INFORMATION</c> access.</exception>
         /// <exception cref="ArgumentException">
-        /// The handle is invalid. 
+        /// The handle is invalid.
         /// </exception>
         /// <exception cref="NotSupportedException">
         /// Should never occur and just notifies you that a handle to thread ID conversion is not
@@ -138,11 +138,11 @@ namespace EasyHook
                 Buffer = IntPtr.Zero;
             }
         }
-        private static NameBuffer Buffer = new NameBuffer();
+        private static readonly NameBuffer Buffer = new NameBuffer();
 
         /// <summary>
         /// Reads the kernel object name for a given windows usermode handle.
-        /// Executes in approx. 100 micro secounds.
+        /// Executes in approx. 100 micro seconds.
         /// </summary>
         /// <remarks><para>
         /// This allows you to translate a handle back to the associated filename for example.

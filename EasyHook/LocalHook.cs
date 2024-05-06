@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\LocalHook.cs)
+// EasyHook (File: EasyHook\LocalHook.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -35,7 +35,7 @@ namespace EasyHook
     /// Provides a managed interface to the native thread ACLs.
     /// </summary>
     /// <remarks>
-    /// Refer to the official guide to learn more about why thread ACLs are useful. 
+    /// Refer to the official guide to learn more about why thread ACLs are useful.
     /// They can be used to exclude/include dedicated threads from interception or to dynamically
     /// apply different kind of hooks to different threads. Even if you could do this
     /// in managed code, it is not that easy to implement and also EasyHook evaluates
@@ -154,7 +154,7 @@ namespace EasyHook
         /// <summary>
         ///	Is the current thread within a valid hook handler? This is only the case
         ///	if your handler was called through the hooked entry point...
-        ///	Executes in max. one micro secound.
+        ///	Executes in max. one micro second.
         /// </summary>
         public static Boolean IsHandlerContext
         {
@@ -200,7 +200,7 @@ namespace EasyHook
 
         /// <summary>
         /// Allows you to explicitly update the unmanaged module list which is required for
-        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>. 
+        /// <see cref="CallingUnmanagedModule"/>, <see cref="UnmanagedStackTrace"/> and <see cref="PointerToModule"/>.
         /// Normally this is not necessary, but if you hook a process that frequently loads/unloads modules, you
         /// may call this method in a <c>LoadLibrary</c> hook to always operate on the latest module list.
         /// </summary>
@@ -222,7 +222,7 @@ namespace EasyHook
         /// Retrives the unmanaged module that contains the given pointer. If no module can be
         /// found, <c>null</c> is returned. This method will automatically update the unmanaged
         /// module list from time to time.
-        /// Executes in less than one micro secound.
+        /// Executes in less than one micro second.
         /// </summary>
         /// <param name="InPointer"></param>
         /// <returns></returns>
@@ -238,7 +238,9 @@ TRY_AGAIN:
             {
                 if ((Pointer >= ModuleArray[i].BaseAddress.ToInt64()) &&
                     (Pointer <= ModuleArray[i].BaseAddress.ToInt64() + ModuleArray[i].ModuleMemorySize))
+                {
                     return ModuleArray[i];
+                }
             }
 
             if ((DateTime.Now.Ticks - LastUpdate) > 1000 * 1000 * 10 /* 1000 ms*/)
@@ -253,13 +255,13 @@ TRY_AGAIN:
 
         /// <summary>
         /// Determines the first unmanaged module on the current call stack. This is always the module
-        /// that invoked the hook. 
-        /// Executes in max. 15 micro secounds.
+        /// that invoked the hook.
+        /// Executes in max. 15 micro seconds.
         /// </summary>
         /// <remarks>
         /// The problem is that if the calling module is a NET assembly
         /// and invokes the hook through a P-Invoke binding, you will get
-        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example 
+        /// "mscorwks.dll" as calling module and not the NET assembly. This is only an example
         /// but I think you got the idea. To solve this issue, refer to <see cref="UnmanagedStackTrace"/>
         /// and <see cref="ManagedStackTrace"/>!
         /// </remarks>
@@ -273,8 +275,8 @@ TRY_AGAIN:
 
         /// <summary>
         /// Determines the first managed module on the current call stack. This is always the module
-        /// that invoked the hook. 
-        /// Executes in max. 40 micro secounds.
+        /// that invoked the hook.
+        /// Executes in max. 40 micro seconds.
         /// </summary>
         /// <remarks>
         /// Imagine your hook targets CreateFile. A NET assembly will now invoke this hook through
@@ -304,8 +306,8 @@ TRY_AGAIN:
 
         /// <summary>
         /// Returns the address where execution is continued, after you hook has
-        /// been completed. This is always the instruction behind the hook invokation.
-        /// Executes in max. one micro secound.
+        /// been completed. This is always the instruction behind the hook invocation.
+        /// Executes in max. one micro second.
         /// </summary>
         public static IntPtr ReturnAddress
         {
@@ -321,7 +323,7 @@ TRY_AGAIN:
 
         /// <summary>
         /// A stack address pointing to <see cref="ReturnAddress"/>.
-        /// Executes in max. one micro secound.
+        /// Executes in max. one micro second.
         /// </summary>
         public static IntPtr AddressOfReturnAddress
         {
@@ -371,7 +373,7 @@ TRY_AGAIN:
         /// Creates a call stack trace of the unmanaged code path that finally
         /// lead to your hook. To detect whether the desired module is within the
         /// call stack you will have to walk through the whole list!
-        /// Executes in max. 20 micro secounds.
+        /// Executes in max. 20 micro seconds.
         /// </summary>
         /// <remarks>
         /// This method is not supported on Windows 2000 and will just return the
@@ -423,7 +425,7 @@ TRY_AGAIN:
         /// Creates a call stack trace of the managed code path that finally
         /// lead to your hook. To detect whether the desired module is within the
         /// call stack you will have to walk through the whole list!
-        /// Executes in max. 80 micro secounds.
+        /// Executes in max. 80 micro seconds.
         /// </summary>
         public static System.Reflection.Module[] ManagedStackTrace
         {
@@ -514,7 +516,10 @@ TRY_AGAIN:
                 if (IntPtr.Zero == m_Handle)
                     throw new ObjectDisposedException(typeof(LocalHook).FullName);
 
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
                 IntPtr address = IntPtr.Zero;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+
                 NativeAPI.LhGetHookBypassAddress(m_Handle, out address);
                 return address;
             }
@@ -532,7 +537,7 @@ TRY_AGAIN:
         /// <code>
         /// if(InThreadID == 0)
         ///     InThreadID = GetCurrentThreadId();
-        /// 
+        ///
         /// if(GlobalACL.Contains(InThreadID))
         /// {
         ///     if(LocalACL.Contains(InThreadID))
@@ -544,7 +549,7 @@ TRY_AGAIN:
         /// 	{
         /// 		if(GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
@@ -560,12 +565,12 @@ TRY_AGAIN:
         /// 	{
         /// 		if(!GlobalACL.IsExclusive)
         /// 			return false;
-        /// 
+        ///
         /// 		if(!LocalACL.IsExclusive)
         /// 			return false;
         /// 	}
         /// }
-        /// 
+        ///
         /// return true;
         /// </code>
         /// </para>
@@ -588,7 +593,7 @@ TRY_AGAIN:
         }
 
         /// <summary>
-        /// Returns the gloabl thread ACL associated with ALL hooks. Refer to <see cref="IsThreadIntercepted"/>
+        /// Returns the global thread ACL associated with ALL hooks. Refer to <see cref="IsThreadIntercepted"/>
         /// for more information about access negotiation.
         /// </summary>
         public static HookAccessControl GlobalThreadACL { get { return m_GlobalThreadACL; } }
@@ -596,12 +601,12 @@ TRY_AGAIN:
         /// <summary>
         /// If you want to immediately uninstall a hook, the only way is to dispose it. A disposed
         /// hook is guaranteed to never invoke your handler again but may still consume
-        /// memory even for process life-time! 
+        /// memory even for process life-time!
         /// </summary>
         /// <remarks>
-        /// As we are living in a manged world, you don't have to dispose a hook because the next 
+        /// As we are living in a manged world, you don't have to dispose a hook because the next
         /// garbage collection will do it for you, assuming that your code does not reference it
-        /// anymore. But there are times when you want to uninstall it excplicitly, with no delay.
+        /// anymore. But there are times when you want to uninstall it explicitly, with no delay.
         /// If you dispose a disposed or not installed hook, nothing will happen!
         /// </remarks>
         public void Dispose()
@@ -661,7 +666,7 @@ TRY_AGAIN:
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">
@@ -744,7 +749,7 @@ TRY_AGAIN:
         /// that no memory can be allocated within a 31-Bit boundary around the given entry point.
         /// </exception>
         /// <exception cref="ArgumentException">
-        /// The given function pointer does not map to executable memory (valid machine code) or 
+        /// The given function pointer does not map to executable memory (valid machine code) or
         /// you passed <c>null</c> as delegate.
         /// </exception>
         /// <exception cref="NotSupportedException">
@@ -797,7 +802,7 @@ TRY_AGAIN:
         /// </summary>
         /// <remarks>
         /// If you wonder how to get native entry points in a managed environment,
-        /// this is the anwser. You will only be able to hook native code from a managed
+        /// this is the answer. You will only be able to hook native code from a managed
         /// environment if you have access to a method like this, returning the native
         /// entry point. Please note that you will also hook any managed code, which
         /// of course ultimately relies on the native windows API!
