@@ -45,18 +45,15 @@ exit /b 0
 
 :$Main
 setlocal EnableExtensions
+    set "TARGET_ARG="
+    if not "%*"=="" set "TARGET_ARG= -Target %*"
+
     set "VSCMD_DEBUG=1"
     set "POWERSHELL=%SystemRoot%\SysWOW64\WindowsPowerShell\v1.0\powershell.exe"
     set "POWERSHELL_CONSOLE=-NoProfile -ExecutionPolicy Bypass -Command"
 
-    if "[%*]" == "[]" (
-        set "TARGET_ARG="
-    ) else (
-        set "TARGET_ARG= -Target %*"
-    )
-
-    echo ##[cmd] "%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'" -Initialize%TARGET_ARG%
-    "%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'" -Initialize%TARGET_ARG%
+    echo ##[cmd] "%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'"%TARGET_ARG%
+    "%POWERSHELL%" %POWERSHELL_CONSOLE% "& '%~dp0setup.ps1'"%TARGET_ARG%
     if errorlevel 1 goto:$Main.done
 
     call :SetupEnvironment

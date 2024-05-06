@@ -5,8 +5,7 @@ by other scripts/tools here.
 
 param(
     [Parameter(Position = 0)]
-    [string] $Target = $null,
-    [switch] $Initialize = $false
+    [string] $Target = $null
 )
 
 $script:ToolsDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
@@ -18,7 +17,7 @@ $script:EasyHookPackages = Join-Path $EasyHookRoot 'Packages'
 $script:EasyHookBin = Join-Path $EasyHookRoot 'Bin'
 
 $script:Nuget = Join-Path $EasyHookBin nuget.exe
-$script:VsWhereVersion = '3.1.1'
+$script:VsWhereVersion = '3.1.7'
 $script:VSWhere = [IO.Path]::Combine($EasyHookPackages, "vswhere.$script:VsWhereVersion", 'tools', 'vswhere.exe')
 
 function Write-Diagnostic {
@@ -40,17 +39,16 @@ function DownloadNuget() {
 }
 
 function RestoreNugetPackages() {
-    . $script:Nuget sources add -name NuGet -Source https://api.nuget.org/v3/index.json
-
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages JetBrains.Annotations -Version 2022.3.1 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages Microsoft.Build -Version 16.4.0 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSTest.TestAdapter -Version 2.2.10 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSTest.TestFramework -Version 2.2.10 | Out-Null
-    . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages vswhere -Version $script:VsWhereVersion | Out-Null
-
-    . $script:Nuget restore -NonInteractive -Force -OutputDirectory $script:EasyHookPackages $script:EasyHookSln
+    Install-NugetPackage -PackageId vswhere -OutputDirectory $script:EasyHookPackages -ExcludeVersionInOutput
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages JetBrains.Annotations -Version 2022.3.1 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages Microsoft.Build -Version 16.4.0 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages Microsoft.TestPlatform -Version 16.5.0 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSBuildTasks -Version 1.5.0.196 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSTest.TestAdapter -Version 2.2.10 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages MSTest.TestFramework -Version 2.2.10 | Out-Null
+    # . $script:Nuget install -NonInteractive -OutputDirectory $script:EasyHookPackages vswhere -Version $script:VsWhereVersion | Out-Null
+    #
+    # . $script:Nuget restore -NonInteractive -Force -OutputDirectory $script:EasyHookPackages $script:EasyHookSln
 }
 
 # https://github.com/jbake/Powershell_scripts/blob/master/Invoke-BatchFile.ps1
@@ -291,6 +289,8 @@ Function Get-Toolchain {
     param(
         [string] $Target
     )
+
+    Initialize-Environment -Target $Target
 
     $toolchainArguments = ''
 
@@ -552,11 +552,6 @@ Function Initialize-Environment {
     Write-Host 'Environment setup complete.' -ForegroundColor $DefaultForeground -BackgroundColor $DefaultBackground
 }
 
-if ($Initialize) {
-    $ToolchainInfo = Initialize-Environment -Target $Target
-}
-else {
-    $ToolchainInfo = Get-Toolchain $Target
-}
+$global:ToolchainInfo = Initialize-Environment $Target
 
-return $ToolchainInfo
+return $global:ToolchainInfo
