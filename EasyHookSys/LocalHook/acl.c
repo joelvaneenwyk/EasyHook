@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ Description:
 
     This method is used internally to provide a generic interface to
     either the global or local hook ACLs.
-    
+
 Parameters:
     - InAcl
         NULL if you want to set the global ACL.
@@ -52,7 +52,7 @@ Parameters:
 
     - InProcessCount
         The count of entries listed in the process ID list. This value must not exceed
-        MAX_ACE_COUNT! 
+        MAX_ACE_COUNT!
 */
 
     ULONG           Index;
@@ -100,7 +100,7 @@ Parameters:
 
     - InProcessCount
         The count of entries listed in the process ID list. This value must not exceed
-        MAX_ACE_COUNT! 
+        MAX_ACE_COUNT!
 
     - InHandle
         The hook handle whose local ACL is going to be set.
@@ -122,7 +122,7 @@ EASYHOOK_NT_EXPORT LhSetExclusiveACL(
 Description:
 
     Sets an inclusive hook local ACL based on the given process ID list.
-    
+
 Parameters:
     - InProcessIdList
         An array of process IDs. If you specific zero for an entry in this array,
@@ -130,7 +130,7 @@ Parameters:
 
     - InProcessCount
         The count of entries listed in the process ID list. This value must not exceed
-        MAX_ACE_COUNT! 
+        MAX_ACE_COUNT!
 
     - InHandle
         The hook handle whose local ACL is going to be set.
@@ -151,7 +151,7 @@ EASYHOOK_NT_EXPORT LhSetGlobalInclusiveACL(
 Description:
 
     Sets an inclusive global ACL based on the given process ID list.
-    
+
 Parameters:
     - InProcessIdList
         An array of process IDs. If you specific zero for an entry in this array,
@@ -159,7 +159,7 @@ Parameters:
 
     - InProcessCount
         The count of entries listed in the process ID list. This value must not exceed
-        MAX_ACE_COUNT! 
+        MAX_ACE_COUNT!
 */
     return LhSetACL(LhBarrierGetAcl(), FALSE, InProcessIdList, InProcessCount);
 }
@@ -172,7 +172,7 @@ EASYHOOK_NT_EXPORT LhSetGlobalExclusiveACL(
 Description:
 
     Sets an exclusive global ACL based on the given process ID list.
-    
+
 Parameters:
     - InProcessIdList
         An array of process IDs. If you specific zero for an entry in this array,
@@ -180,7 +180,7 @@ Parameters:
 
     - InProcessCount
         The count of entries listed in the process ID list. This value must not exceed
-        MAX_ACE_COUNT! 
+        MAX_ACE_COUNT!
 */
     return LhSetACL(LhBarrierGetAcl(), TRUE, InProcessIdList, InProcessCount);
 }

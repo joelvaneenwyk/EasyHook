@@ -9,6 +9,7 @@
             "type": "PowerShell",
             "request": "launch",
             "script": "${file}",
+            "args": [],
             "cwd": "${file}"
         },
         {

@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\NativeMethods.cs)
+// EasyHook (File: EasyHook\NativeMethods.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -136,7 +136,7 @@ namespace EasyHook
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr OpenProcess(ProcessAccessFlags access, bool inheritHandle, int procId);
-        
+
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetExitCodeProcess(IntPtr hProcess, out uint lpExitCode);
@@ -171,7 +171,7 @@ namespace EasyHook
             public SafeLocalMemHandle lpSecurityDescriptor =
                 new SafeLocalMemHandle(IntPtr.Zero, false);
 
-            // We don't support ACL's on Silverlight nor on CoreSystem builds in our API's.  
+            // We don't support ACL's on Silverlight nor on CoreSystem builds in our API's.
             // But, we need P/Invokes to occasionally take these as parameters.  We can pass null.
             public int nLength = 12;
         }

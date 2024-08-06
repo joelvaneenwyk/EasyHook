@@ -1,4 +1,4 @@
-﻿namespace FileMonitorController
+namespace FileMonitorController
 {
     partial class FormMain
     {
@@ -48,9 +48,9 @@
             this.Splitter.Panel2.SuspendLayout();
             this.Splitter.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // ListViewProcesses
-            // 
+            //
             this.ListViewProcesses.CheckBoxes = true;
             this.ListViewProcesses.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnPid,
@@ -70,34 +70,34 @@
             this.ListViewProcesses.UseCompatibleStateImageBehavior = false;
             this.ListViewProcesses.View = System.Windows.Forms.View.Details;
             this.ListViewProcesses.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.ListViewProcesses_ItemChecked);
-            // 
+            //
             // ColumnPid
-            // 
+            //
             this.ColumnPid.Text = "Process ID";
             this.ColumnPid.Width = 67;
-            // 
+            //
             // ColumnArchitecture
-            // 
+            //
             this.ColumnArchitecture.Text = "Architecture";
             this.ColumnArchitecture.Width = 78;
-            // 
+            //
             // ColumnName
-            // 
+            //
             this.ColumnName.Text = "Process Name";
             this.ColumnName.Width = 144;
-            // 
+            //
             // ColumnOwner
-            // 
+            //
             this.ColumnOwner.Text = "Owner";
             this.ColumnOwner.Width = 96;
-            // 
+            //
             // ColumnPath
-            // 
+            //
             this.ColumnPath.Text = "Image Path";
             this.ColumnPath.Width = 382;
-            // 
+            //
             // ListViewLog
-            // 
+            //
             this.ListViewLog.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ColumnProcess,
             this.ColumnTime,
@@ -113,50 +113,50 @@
             this.ListViewLog.TabIndex = 1;
             this.ListViewLog.UseCompatibleStateImageBehavior = false;
             this.ListViewLog.View = System.Windows.Forms.View.Details;
-            // 
+            //
             // ColumnProcess
-            // 
+            //
             this.ColumnProcess.Text = "Process Name";
             this.ColumnProcess.Width = 127;
-            // 
+            //
             // ColumnTime
-            // 
+            //
             this.ColumnTime.Text = "Time";
             this.ColumnTime.Width = 108;
-            // 
+            //
             // ColumnFilePath
-            // 
+            //
             this.ColumnFilePath.Text = "File";
             this.ColumnFilePath.Width = 531;
-            // 
+            //
             // Timer_UpdateMonitorLog
-            // 
+            //
             this.Timer_UpdateMonitorLog.Enabled = true;
             this.Timer_UpdateMonitorLog.Interval = 1000;
             this.Timer_UpdateMonitorLog.Tick += new System.EventHandler(this.Timer_UpdateMonitorLog_Tick);
-            // 
+            //
             // Splitter
-            // 
-            this.Splitter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            //
+            this.Splitter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Splitter.Location = new System.Drawing.Point(0, 63);
             this.Splitter.Name = "Splitter";
-            // 
+            //
             // Splitter.Panel1
-            // 
+            //
             this.Splitter.Panel1.Controls.Add(this.ListViewProcesses);
-            // 
+            //
             // Splitter.Panel2
-            // 
+            //
             this.Splitter.Panel2.Controls.Add(this.ListViewLog);
             this.Splitter.Size = new System.Drawing.Size(1381, 472);
             this.Splitter.SplitterDistance = 690;
             this.Splitter.SplitterWidth = 5;
             this.Splitter.TabIndex = 3;
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.Dock = System.Windows.Forms.DockStyle.Top;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(0, 0);
@@ -167,9 +167,9 @@
             this.label1.Text = "Place a checkmark beside each process you want to intercept. Then, select (or mul" +
     "ti-select) which process(es) you\'d like to view in the log to the right.";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // ButtonRefreshList
-            // 
+            //
             this.ButtonRefreshList.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ButtonRefreshList.Location = new System.Drawing.Point(555, 34);
             this.ButtonRefreshList.MinimumSize = new System.Drawing.Size(109, 23);
@@ -179,9 +179,9 @@
             this.ButtonRefreshList.Text = "Refresh Processes List";
             this.ButtonRefreshList.UseVisualStyleBackColor = true;
             this.ButtonRefreshList.Click += new System.EventHandler(this.ButtonRefreshList_Click);
-            // 
+            //
             // ButtonClearEventLog
-            // 
+            //
             this.ButtonClearEventLog.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.ButtonClearEventLog.Location = new System.Drawing.Point(695, 34);
             this.ButtonClearEventLog.MaximumSize = new System.Drawing.Size(109, 23);
@@ -192,9 +192,9 @@
             this.ButtonClearEventLog.Text = "Clear Event Log";
             this.ButtonClearEventLog.UseVisualStyleBackColor = true;
             this.ButtonClearEventLog.Click += new System.EventHandler(this.ButtonClearEventLog_Click);
-            // 
+            //
             // FormMain
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(253)))), ((int)(((byte)(253)))));
@@ -234,4 +234,3 @@
         private System.Windows.Forms.Button ButtonClearEventLog;
     }
 }
-

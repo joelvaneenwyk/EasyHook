@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -114,7 +114,7 @@ void RtlZeroMemory(
     }
 }
 #ifndef _DEBUG
-    #pragma optimize ("", on) 
+    #pragma optimize ("", on)
 #endif
 
 
@@ -154,9 +154,9 @@ BOOL RtlIsValidPointer(PVOID InPtr, ULONG InSize)
 // Write Protection Off
 KIRQL RtlWPOff()
 {
-	// prevent rescheduling 
+	// prevent rescheduling
 	KIRQL irql = KeRaiseIrqlToDpcLevel();
-	// disable memory protection (disable WP bit of CR0)   
+	// disable memory protection (disable WP bit of CR0)
 	UINT64 cr0 = __readcr0();
 	cr0 &= ~0x10000;
 	__writecr0(cr0);
@@ -167,7 +167,7 @@ KIRQL RtlWPOff()
 //Write Protection On
 void RtlWPOn(KIRQL irql)
 {
-	// re-enable memory protection (enable WP bit of CR0)   
+	// re-enable memory protection (enable WP bit of CR0)
 	UINT64 cr0 = __readcr0();
 	cr0 |= 0x10000;
 	// enable interrupts

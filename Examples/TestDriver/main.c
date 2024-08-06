@@ -37,7 +37,7 @@ NTSTATUS DriverEntry(
 {
     UNREFERENCED_PARAMETER(InRegistryPath);
 
-    NTSTATUS						Status;    
+    NTSTATUS						Status;
 	PDEVICE_OBJECT					DeviceObject = NULL;
 
 	/*
@@ -124,4 +124,3 @@ VOID TestDriverUnload(IN PDRIVER_OBJECT InDriverObject)
 
     IoDeleteDevice(InDriverObject->DeviceObject);
 }
-

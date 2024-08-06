@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using EasyHook;
 using System.IO;
 using System.Reflection;

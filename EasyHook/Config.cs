@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -130,7 +130,7 @@ namespace EasyHook
         /// For 32-bit targets, the dll that will be injected that exports int Load([MarshalAs(UnmanagedType.LPWStr)]String inParam)
         /// </summary>
         public static string HelperLibrary32Bit { get { return _helperLibrary32Bit; } set { _helperLibrary32Bit = value; } }
-        
+
         private static string _helperLibrary64Bit = "EasyLoad64.dll";
         /// <summary>
         /// For 64-bit targets, the dll that will be injected that exports int Load([MarshalAs(UnmanagedType.LPWStr)]String inParam)
@@ -203,17 +203,17 @@ namespace EasyHook
         /// </para><para>
         /// The problem with NET assemblies is that the CLR only searches the GAC and
         /// directories starting with the application base directory for assemblies.
-        /// To get injected assemblies working either all of them have to be located 
+        /// To get injected assemblies working either all of them have to be located
         /// under the target base directory (which is not suitable in most cases) or
-        /// reside in the GAC. 
+        /// reside in the GAC.
         /// </para><para>
         /// EasyHook provides a way to automatically register all of its own assemblies
         /// and custom ones temporarily in the GAC. It also ensures
-        /// that all of these assemblies are removed if the installing process exists. 
+        /// that all of these assemblies are removed if the installing process exists.
         /// So you don't need to care about and may write applications according to
         /// the XCOPY standard. If your application ships with an installer, you may
         /// statically install all of your assemblies and the ones of EasyHook into the
-        /// GAC. In this case just don't call <see cref="Register"/>. 
+        /// GAC. In this case just don't call <see cref="Register"/>.
         /// </para><para>
         /// Of course EasyHook does also take care of multiple processes using the same
         /// injection libraries. So if two processes are sharing some of those DLLs,
@@ -227,16 +227,16 @@ namespace EasyHook
         /// </para>
         /// </remarks>
         /// <param name="InDescription">
-        /// A description under which the installed files should be referenced. 
+        /// A description under which the installed files should be referenced.
         /// </param>
         /// <param name="InUserAssemblies">
-        /// A list of user assemblies as relative or absolute paths. 
+        /// A list of user assemblies as relative or absolute paths.
         /// </param>
         /// <exception cref="System.IO.FileNotFoundException">
         /// At least one of the files specified could not be found!
         /// </exception>
         /// <exception cref="BadImageFormatException">
-        /// Unable to load at least one of the given files for reflection. 
+        /// Unable to load at least one of the given files for reflection.
         /// </exception>
         /// <exception cref="ArgumentException">
         /// At least one of the given files does not have a strong name.

@@ -1,0 +1,10 @@
+# Custom Dictionary Words
+Cdecl
+fclose
+Finalizer
+Finalizers
+fopen
+Fprint
+fprintf
+msvcrt
+Remoting

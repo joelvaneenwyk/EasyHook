@@ -3,7 +3,6 @@
   "dependencies": {
     ".NETFramework,Version=v4.8": {},
     ".NETFramework,Version=v4.8/win": {},
-    ".NETFramework,Version=v4.8/win-arm64": {},
     ".NETFramework,Version=v4.8/win-x64": {},
     ".NETFramework,Version=v4.8/win-x86": {}
   }

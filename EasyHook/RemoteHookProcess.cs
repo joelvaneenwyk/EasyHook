@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -189,7 +189,7 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
+        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation
         /// with the usual <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])"/> method.
         /// </para>
         /// <para>
@@ -212,12 +212,12 @@ namespace EasyHook
         /// A valid combination of options.
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InPassThruArgs">
         /// A serializable list of parameters being passed to your library entry points <c>Run()</c> and
@@ -270,13 +270,13 @@ namespace EasyHook
                 this._standardOutput = new StreamReader(
                     new FileStream(
                         this._standardOutputReadPipeHandle, FileAccess.Read,
-                        4096, false), 
+                        4096, false),
                     enc, true, 4096);
 
                 this._standardError = new StreamReader(
                     new FileStream(
                         this._standardErrorReadPipeHandle, FileAccess.Read,
-                        4096, false), 
+                        4096, false),
                     enc, true, 4096);
 
                 // Start reading before we inject because this will almost certainly wake the processes which
@@ -324,7 +324,7 @@ namespace EasyHook
         /// Please note that this method might fail when injecting into managed processes, especially
         /// when the target is using the CLR hosting API and takes advantage of AppDomains. For example,
         /// the Internet Explorer won't be hookable with this method. In such a case your only options
-        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation 
+        /// are either to hook the target with the unmanaged API or to hook it after (non-suspended) creation
         /// with the usual <see cref="RemoteHooking.Inject(int, InjectionOptions, string, string, object[])">method</see>.
         /// </para>
         /// <para>
@@ -347,12 +347,12 @@ namespace EasyHook
         /// A valid combination of options.
         /// </param>
         /// <param name="InLibraryPath_x86">
-        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 32-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InLibraryPath_x64">
-        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library. 
-        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll". 
+        /// A partially qualified assembly name or a relative/absolute file path of the 64-bit version of your library.
+        /// For example "MyAssembly, PublicKeyToken=248973975895496" or ".\Assemblies\\MyAssembly.dll".
         /// </param>
         /// <param name="InChannelName"></param>
         /// <param name="InAttempts"></param>
@@ -564,11 +564,11 @@ namespace EasyHook
                         0);
                 }
 
-                // Duplicate the parent handle to be non-inheritable so that the child process 
+                // Duplicate the parent handle to be non-inheritable so that the child process
                 // doesn't have access. This is done for correctness sake, exact reason is unclear.
-                // One potential theory is that child process can do something brain dead like 
+                // One potential theory is that child process can do something brain dead like
                 // closing the parent end of the pipe and there by getting into a blocking situation
-                // as parent will not be draining the pipe at the other end anymore. 
+                // as parent will not be draining the pipe at the other end anymore.
                 if (!NativeMethods.DuplicateHandle(
                     new HandleRef(this, NativeMethods.GetCurrentProcess()),
                     hTmp,

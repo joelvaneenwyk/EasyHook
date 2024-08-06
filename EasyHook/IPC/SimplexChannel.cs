@@ -1,6 +1,6 @@
-﻿/*
+/*
     EasyHook - The reinvention of Windows API hooking
- 
+
     Copyright (C) 2009-2010 EasyHook
 
     This library is free software; you can redistribute it and/or
@@ -139,6 +139,6 @@ namespace EasyHook.IPC
     }
 
     #endregion
-    
+
   }
 }

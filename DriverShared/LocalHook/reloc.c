@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -37,7 +37,7 @@ Description:
 
     Takes a pointer to machine code and returns the length of the
     referenced instruction in bytes.
-    
+
 Returns:
     STATUS_INVALID_PARAMETER
 
@@ -114,7 +114,7 @@ Description:
 
     Takes a pointer to machine code and returns the length and
     ASM code for the referenced instruction.
-    
+
 Returns:
     STATUS_INVALID_PARAMETER
 
@@ -134,7 +134,7 @@ Returns:
     ud_set_asm_buffer(&ud_obj, buf, buffSize);
     ud_set_input_buffer(&ud_obj, (uint8_t *)InPtr, 32);
     *length = ud_disassemble(&ud_obj);
-    
+
     *nextInstr = (ULONG64)InPtr + *length;
 
     if(*length > 0)
@@ -208,7 +208,7 @@ Parameters:
     // Disassemble the current instruction
     if(!RTL_SUCCESS(LhDisassembleInstruction((void*)InOffset, &AsmSize, Buf, sizeof(Buf), &NextInstr)))
         THROW(STATUS_INVALID_PARAMETER_1, L"Unable to disassemble entry point. ");
-    
+
     // Check that the address is RIP relative (i.e. look for "[rip+")
     Pos = RtlAnsiIndexOf(Buf, '[');
       if(Pos < 0)
@@ -218,7 +218,7 @@ Parameters:
     {
         /*
           Support negative relative addresses
-          
+
           https://easyhook.codeplex.com/workitem/25592
             e.g. Win8.1 64-bit OLEAUT32.dll!VarBoolFromR8
             Entry Point:
@@ -228,7 +228,7 @@ Parameters:
         */
         if (Buf[Pos + 4] == '-')
             RelAddrSign = -1;
-        
+
         Pos += 4;
         // parse content
 		if (RtlAnsiSubString(Buf, Pos + 1, RtlAnsiIndexOf(Buf, ']') - Pos - 1, Line, MAX_INSTR) <= 0)
@@ -245,14 +245,14 @@ Parameters:
         // Verify that we are really RIP relative (i.e. must be 32-bit)
         if(RelAddr != (LONG)RelAddr)
             RETURN;
-        
+
         /*
           Ensure the RelAddr is equal to the RIP address in code
-         
+
           https://easyhook.codeplex.com/workitem/25487
-		  Thanks to Michal for pointing out that the operand will not always 
+		  Thanks to Michal for pointing out that the operand will not always
           be at *(NextInstr - 4)
-		  e.g. Win8.1 64-bit OLEAUT32.dll!GetVarConversionLocaleSetting 
+		  e.g. Win8.1 64-bit OLEAUT32.dll!GetVarConversionLocaleSetting
               Entry Point:
                  83 3D 71 08 06 00 00    cmp dword [rip+0x60871], 0x0  IP:ffa1937
               Relocated:
@@ -262,7 +262,7 @@ Parameters:
 			if (*((LONG*)(InOffset + Pos)) == RelAddr) {
 				if (RelAddrOffset != 0) {
 					// More than one offset matches the address, therefore we can't determine correct offset for operand
-                    RelAddrOffset = 0;  
+                    RelAddrOffset = 0;
                     break;
 				}
 
@@ -327,7 +327,7 @@ Parameters:
         To ensure that there is always enough space, you should
         reserve around 100 bytes. After completion this method will
         store the real size in bytes in "OutRelocSize".
-		Important: all instructions using RIP relative addresses will 
+		Important: all instructions using RIP relative addresses will
 		be relative to the buffer location in memory.
 
     - OutRelocSize
@@ -369,8 +369,8 @@ Returns:
             case 0x67: // address-size override prefix
     			// TODO: this implementation does not take into consideration all scenarios
                 //       e.g. http://wiki.osdev.org/X86-64_Instruction_Encoding#Operand-size_and_address-size_override_prefix
-                a16 = TRUE; 
-                // We increment pOld to skip this prefix, pOld is then decremented 
+                a16 = TRUE;
+                // We increment pOld to skip this prefix, pOld is then decremented
                 // if the instruction is to be copied unchanged.
 				pOld++;
 				continue;
@@ -386,8 +386,8 @@ Returns:
 		{
 			case 0xE9: // jmp imm16/imm32
 			{
-				/* only allowed as first instruction and only if the trampoline can be planted 
-				   within a 32-bit boundary around the original entrypoint. So the jumper will 
+				/* only allowed as first instruction and only if the trampoline can be planted
+				   within a 32-bit boundary around the original entrypoint. So the jumper will
 				   be only 5 bytes and whereever the underlying code returns it will always
 				   be in a solid state. But this can only be guaranteed if the jump is the first
 				   instruction... */
@@ -395,7 +395,7 @@ Returns:
 				if(pOld != InEntryPoint)
 					THROW(STATUS_NOT_SUPPORTED, L"Hooking far jumps is only supported if they are the first instruction.");
 #endif
-				
+
 				// ATTENTION: will continue in "case 0xE8"
 			}
 			case 0xE8: // call imm16/imm32
@@ -532,9 +532,9 @@ Description:
 	This function should be called each time the address is required to ensure the hook  and
 	associated memory is still valid at the time of use.
 	CAUTION:
-	This must be used with extreme caution. If the hook is uninstalled and pending hooks 
-	removed, the address returned by this function will no longer point to valid memory and 
-	attempting to use the address will result in unexpected behaviour, most likely crashing 
+	This must be used with extreme caution. If the hook is uninstalled and pending hooks
+	removed, the address returned by this function will no longer point to valid memory and
+	attempting to use the address will result in unexpected behaviour, most likely crashing
 	the process.
 
 Parameters:
@@ -549,7 +549,7 @@ Parameters:
 		the address of the relocated function entry point. This address
 		can be used to call the original function from outside of a hook
 		while still bypassing the hook.
-	
+
 Returns:
 
 	STATUS_SUCCESS             - OutAddress will contain the result

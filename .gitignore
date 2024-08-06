@@ -2,6 +2,7 @@
 # EasyHook
 #
 
+.venv/
 .build/
 *Backup.csproj
 

@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -55,8 +55,8 @@ typedef void __stdcall PROC_UserLibraryClose();
 #define UNMANAGED_ERROR(code) {ErrorCode = ((code) & 0xFF) | 0xF0000000; goto ABORT_ERROR;}
 
 // a macro that outputs the message to the Debug console if a debug build
-void DEBUGOUT(const char * fmt, ...) 
-{ 
+void DEBUGOUT(const char * fmt, ...)
+{
 #if _DEBUG
     va_list ap;
     va_start(ap, fmt);
@@ -128,8 +128,8 @@ Description:
     will be called to initiate .NET rather than manually loading
     the framework. This provides a more reliable approach and
     greater control over the .NET Framework version that is loaded.
-    
-    The EasyLoad32 and EasyLoad64 .NET assemblies provide these 
+
+    The EasyLoad32 and EasyLoad64 .NET assemblies provide these
     exports.
 */
     ICLRMetaHost*           MetaClrHost = NULL;
@@ -241,7 +241,7 @@ Description:
                 // TODO: add documentation about what happens when injecting into a managed process where the .NET framework is already loaded
                 LPCWSTR frameworkVersion = L"v4.0.30319"; // TODO: .NET version string to be passed in "InInfo"
                 if (FAILED(MetaClrHost->GetRuntime(
-                    frameworkVersion, 
+                    frameworkVersion,
                     IID_ICLRRuntimeInfo,
                     (LPVOID*)&RuntimeInfo)))
                 {
@@ -278,7 +278,7 @@ Description:
                 DEBUGOUT("CorBindToRuntime failed");
                 UNMANAGED_ERROR(11);
             }
-        
+
             RuntimeClrHost->Start();
         }
 
@@ -307,12 +307,12 @@ Description:
             // Stop and attempt to run it in the .NET 2.0/3.5 Runtime
             if(RuntimeClrHost != NULL)
                 RuntimeClrHost->Release();
-        
+
             if(!RTL_SUCCESS(CorBindToRuntime(NULL, NULL, CLSID_CLRRuntimeHost, IID_ICLRRuntimeHost, (void**)&RuntimeClrHost)))
                 UNMANAGED_ERROR(11);
-        
+
             RuntimeClrHost->Start();
-        
+
             RtlLongLongToUnicodeHex((LONGLONG)&EntryInfo, ParamString);
             if(!RTL_SUCCESS(RuntimeClrHost->ExecuteInDefaultAppDomain(InInfo->UserLibrary, L"EasyHook.InjectionLoader", L"Main", ParamString, &RetVal)))
                 UNMANAGED_ERROR(14); // Execution under both .NET 4 and .NET 2/3.5 failed (new ErrorCode: 14, for EasyHook 2.7)
@@ -404,9 +404,9 @@ Description:
     {
         UNMANAGED_ERROR(3);
     }
-    
 
-    /* 
+
+    /*
         Make directory of user library path available to current process...
         This is to find dependencies without copying them into a global
         directory which might cause trouble.

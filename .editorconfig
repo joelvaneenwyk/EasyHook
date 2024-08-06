@@ -32,7 +32,8 @@ tab_width = 4
 #-----------
 #
 
-[*.{c,h,hxx,inl,cpp,cxx,idl}]
+[*.{c,h,hxx,cs,inl,cpp,cxx,idl}]
+encoding = utf-8
 indent_style = space
 indent_size = 4
 trim_trailing_whitespace = true

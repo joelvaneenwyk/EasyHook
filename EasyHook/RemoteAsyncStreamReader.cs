@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -235,7 +235,7 @@ namespace EasyHook
             int lineStart = 0;
             int len = this.sb.Length;
 
-            // skip a beginning '\n' character of new block if last block ended 
+            // skip a beginning '\n' character of new block if last block ended
             // with '\r'
             if (this.bLastCarriageReturn && len > 0 && this.sb[0] == '\n')
             {
@@ -325,7 +325,7 @@ namespace EasyHook
                         this.sb.Length = 0;
                     }
 
-                    // UserCallback could throw, we should still set the eofEvent 
+                    // UserCallback could throw, we should still set the eofEvent
                     FlushMessageQueue();
                 }
                 finally

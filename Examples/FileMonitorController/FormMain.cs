@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -106,7 +106,7 @@ namespace FileMonitorController
                     {
                         process.Id.ToString(),
                         process.IsX64 ? "64-bit" : "32-bit",
-                        process.ImageName,  
+                        process.ImageName,
                         process.Owner,
                         process.FullPath
                     }));
@@ -158,7 +158,7 @@ namespace FileMonitorController
                 try
                 {
                     //hookedProcessIds.Add(process.Id);
-                    RemoteHooking.Inject(process.Id, 
+                    RemoteHooking.Inject(process.Id,
                         "FileMonitorInterceptor.dll", /* the 32-bit dll */
                         "FileMonitorInterceptor.dll", /* the 64-bit dll ; notice both are identical because the dll is compiled as AnyCPU */
                         channelName); /* the optional parameter list ; the length and type of which must be identical to FileMonitorInterceptor's ctor() and Run() */

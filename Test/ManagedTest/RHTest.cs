@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using EasyHook;
@@ -50,7 +50,7 @@ namespace ManagedTest
                     Info.Id = Proc.Id;
                     Info.Is64Bit = RemoteHooking.IsX64Process(Proc.Id);
                     Info.Identity = RemoteHooking.GetProcessIdentity(Proc.Id).Owner.ToString();
-                    
+
                     Result.Add(Info);
                 }
                 catch
@@ -70,7 +70,7 @@ namespace ManagedTest
             /*
             Config.Register("EasyHook managed test application",
                 "..\\x64\\ManagedTest.exe");
-            
+
             /*
             RemoteHooking.CreateAndInject(
                 @"..\x86\ManagedTarget.exe",
@@ -80,10 +80,10 @@ namespace ManagedTest
                 "..\\x64\\ManagedTest.exe",
                 out ProcessId,
                 0x12345678);*/
-            
-          
+
+
           //  ProcessInfo[] Result = (ProcessInfo[])RemoteHooking.ExecuteAsService<RHTest>("Enum");
-            
+
             RemoteHooking.Inject(
                 RemoteHooking.GetCurrentProcessId(),
                 "..\\x86\\ManagedTest.exe",

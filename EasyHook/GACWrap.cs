@@ -1,4 +1,4 @@
-﻿// EasyHook (File: EasyHook\GACWrap.cs)
+// EasyHook (File: EasyHook\GACWrap.cs)
 //
 // Copyright (c) 2009 Christoph Husse & Copyright (c) 2015 Justin Stenning
 //
@@ -8,10 +8,10 @@
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
+//
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-// 
+//
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -192,10 +192,10 @@ namespace System.GACManagedAccess
         /// <summary>
         /// Returns a FUSION_INSTALL_REFERENCE structure, <see cref="InstallReference"/>.
         /// </summary>
-        /// <param name="pRefData">A pointer to a FUSION_INSTALL_REFERENCE structure. 
-        /// The memory is allocated by the GetReference method and is freed when 
-        /// <see cref="IInstallReferenceItem"/> is released. Callers must not hold a reference to this 
-        /// buffer after the IInstallReferenceItem object is released. 
+        /// <param name="pRefData">A pointer to a FUSION_INSTALL_REFERENCE structure.
+        /// The memory is allocated by the GetReference method and is freed when
+        /// <see cref="IInstallReferenceItem"/> is released. Callers must not hold a reference to this
+        /// buffer after the IInstallReferenceItem object is released.
         /// To avoid allocation issues with the interop layer, the <see cref="InstallReference"/> is not marshaled directly - therefore use of out IntPtr</param>
         /// <param name="flags"></param>
         /// <param name="pvReserced"></param>
@@ -426,7 +426,7 @@ namespace System.GACManagedAccess
         {
             cbSize = (int)(2 * IntPtr.Size + 16 + (id.Length + data.Length) * 2);
             flags = 0;
-            // quiet compiler warning 
+            // quiet compiler warning
             if (flags == 0) { }
             guidScheme = guid;
             identifier = id;
